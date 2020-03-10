@@ -3,7 +3,8 @@
                        InputCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
-  (:require [yaw.mesh]))
+  (:require [yaw.mesh]
+            [yaw.loader]))
   ;;(gen-class)
 
 (def empty-item-map
@@ -75,7 +76,7 @@
   "Create an item in the `world` with the  specified id, position, mesh"
   [world & {:keys [vertices text-coord normals faces weight rgb texture-name]
             :or   {texture-name ""
-                   rgb          [1 1 1]
+                   rgb          [0 0 1]
                    weight       1
                    vertices     {:v0 [-1 1 1] :v1 [-1 -1 1] :v2 [1 -1 1] :v3 [1 1 1]
                                  :v4 [-1 1 -1] :v5 [1 1 -1] :v6 [-1 -1 -1] :v7 [1 -1 -1]}
@@ -122,10 +123,35 @@
   "Create an item in the `world` with the
   specified id, position, mesh"
   [world id & {:keys [position scale mesh]
-               :or   {position [0 0 2] 
+               :or   {position [0 0 -5] 
                       scale    1
                       mesh     (create-mesh! world)}}]         ;;error here
   (.createItemObject world id (position 0) (position 1) (position 2) scale mesh))
+
+(defn load-item!
+  "Load an item (in a .obj file) in the `world` 
+   with the position, weight ans scale of the mesh"
+  [world file & {:keys [position weight scale]
+                 :or {position [0 0 -5]
+                      weight 1
+                      scale 1}}]
+  (let [model (yaw.loader/load-model file)
+        mesh (.createMesh world
+                          (float-array (flat-map (get model :vertices)))
+                          (float-array (flat-map (get model :text_coord)))
+                          (float-array (flat-map (into (sorted-map) (get model :normals))))
+                          (int-array (flat-map (into (sorted-map) (get model :faces))))
+                          (int weight)
+                          (float-array (get model :rbg))
+                          "")]
+    (.createItemObject world (str (gensym "item-")) (position 0) (position 1) (position 2) scale mesh)))
+                  
+
+
+;(create-mesh! world (get model :vertices) (get model :text_coord) (get model :normals)
+;                               (get model :faces) weight (get model :rbg) (cast String (get model :texture-name))))))
+;=> ERROR: Execution error (IllegalArgumentException) at yaw.world/create-mesh! (world.clj:75). No value supplied for key: Material
+
 
 (defn remove-item!
   "Remove the specified `item` from the `world`"
