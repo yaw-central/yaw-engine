@@ -137,8 +137,8 @@
                       scale 1}}]
   (let [model (yaw.loader/load-model file)
         mesh (.createMesh world
-                          (float-array (flat-map (get model :vertices)))
-                          (float-array (flat-map (get model :text_coord)))
+                          (float-array (flat-map (into (sorted-map) (get model :vertices))))
+                          (float-array (flat-map (into (sorted-map) (get model :text_coord))))
                           (float-array (flat-map (into (sorted-map) (get model :normals))))
                           (int-array (flat-map (into (sorted-map) (get model :faces))))
                           (int weight)
