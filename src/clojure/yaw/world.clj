@@ -143,10 +143,9 @@
                           (int-array (flat-map (into (sorted-map) (get model :faces))))
                           (int weight)
                           (float-array (get model :rbg))
-                          "")]
+                          (get model :texture-name))]
     (.createItemObject world (str (gensym "item-")) (position 0) (position 1) (position 2) scale mesh)))
                   
-
 
 ;(create-mesh! world (get model :vertices) (get model :text_coord) (get model :normals)
 ;                               (get model :faces) weight (get model :rbg) (cast String (get model :texture-name))))))
