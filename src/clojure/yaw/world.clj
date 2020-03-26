@@ -3,7 +3,8 @@
                        InputCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
-  (:require [yaw.mesh]))
+  (:require [yaw.mesh]
+            [yaw.loader]))
   ;;(gen-class)
 
 (def empty-item-map
@@ -29,18 +30,25 @@
     (atom {:world world
            :meshes {:mesh/box (yaw.mesh/box-geometry)
                     :mesh/cone (yaw.mesh/cone-geometry)
-                    :mesh/pyramid (yaw.mesh/pyramid-geometry)}
+                    :mesh/pyramid (yaw.mesh/pyramid-geometry)
+                    :mesh/cuboid (yaw.mesh/cuboid-geometry)}
            :data empty-item-map
            :items {}
            :components {}})))
 
-(defn register-mesh!
-  "Given a universe, a keyword id, and mesh data, associates the id to the data in the universe atom"
-  [univ id mesh]
-  (swap! univ assoc-in [:meshes id] mesh))
+;; (defn register-mesh!
+;;   "Given a universe, a keyword id, and mesh data, associates the id to the data in the universe atom"
+;;   [univ id mesh]
+;;   (swap! univ assoc-in [:meshes id] mesh))
 
 ;;CALLBACKS---------------------------------------------------------------
 
+;;{
+;; Register a callback to a given world
+;; When a keyboard inputs is detected, the callback is called
+;; The callback takes a key, a scancode, an action and a mode in its parameters
+;;}
+;; To remove since the way the keyboard is handled has changed
 (defn register-input-callback! 
   "Register the input callback for low-level keyboard management."
   [world callback]
@@ -68,7 +76,7 @@
   "Create an item in the `world` with the  specified id, position, mesh"
   [world & {:keys [vertices text-coord normals faces weight rgb texture-name]
             :or   {texture-name ""
-                   rgb          [1 1 1]
+                   rgb          [0 0 1]
                    weight       1
                    vertices     {:v0 [-1 1 1] :v1 [-1 -1 1] :v2 [1 -1 1] :v3 [1 1 1]
                                  :v4 [-1 1 -1] :v5 [1 1 -1] :v6 [-1 -1 -1] :v7 [1 -1 -1]}
@@ -115,12 +123,35 @@
   "Create an item in the `world` with the
   specified id, position, mesh"
   [world id & {:keys [position scale mesh]
-               :or   {position [0 0 2] 
+               :or   {position [0 0 -5] 
                       scale    1
                       mesh     (create-mesh! world)}}]         ;;error here
   (.createItemObject world id (position 0) (position 1) (position 2) scale mesh))
 
-  
+(defn load-item!
+  "Load an item (in a .obj file) in the `world` 
+   with the position, weight ans scale of the mesh"
+  [world file & {:keys [position weight scale]
+                 :or {position [0 0 -5]
+                      weight 1
+                      scale 1}}]
+  (let [model (yaw.loader/load-model file)
+        mesh (.createMesh world
+                          (float-array (flat-map (into (sorted-map) (get model :vertices))))
+                          (float-array (flat-map (into (sorted-map) (get model :text_coord))))
+                          (float-array (flat-map (into (sorted-map) (get model :normals))))
+                          (int-array (flat-map (into (sorted-map) (get model :faces))))
+                          (int weight)
+                          (float-array (get model :rbg))
+                          (get model :texture-name))]
+    (.createItemObject world (str (gensym "item-")) (position 0) (position 1) (position 2) scale mesh)))
+                  
+
+;(create-mesh! world (get model :vertices) (get model :text_coord) (get model :normals)
+;                               (get model :faces) weight (get model :rbg) (cast String (get model :texture-name))))))
+;=> ERROR: Execution error (IllegalArgumentException) at yaw.world/create-mesh! (world.clj:75). No value supplied for key: Material
+
+
 (defn remove-item!
   "Remove the specified `item` from the `world`"
   [world item]
@@ -261,25 +292,28 @@
 
 ;;COLLISIONS------------------------------------------------------
 
-(defn create-bouding-box!
-  "Create a boundingbox in the `world` with the
+(defn create-hitbox!
+  "Create a hitbox in the `world` with the
   specified id, position, length, scale"
-  [world & {:keys [id position length scale]
-            :or   {id       "can't read the doc..."
-                   position [0 0 -2]
-                   length   [1 1 1]
-                   scale    1}}]
+  [world id & {:keys [position length scale]
+               :or   {position [0 0 -2]
+                      length   [1 1 1]
+                      scale 1}}]
+  (.createHitBox world
+                 (str id)
+                 (get position 0) (get position 1) (get position 2)
+                 scale
+                 (get length 0) (get length 1) (get length 2)))
 
-  (.createBoundingBox world id (float-array position) scale (float-array length)))
-(defn add-bounding-box!
-  "Add the specified 'bounding box' to the specified 'item'"
-  [item bounding-box]
-  (.setBoundingBox item bounding-box))
 (defn check-collision!
-  "Check if 2 items are in collision in the `world` with the
-  specified items"
-  [world item1 item2]
-  (.isInCollision world item1 item2))
+  "Check if 2 hitboxes are in collision in the `world`"
+  [world hitbox1 hitbox2]
+  (.isInCollision world hitbox1 hitbox2))
+
+(defn fetch-hitbox!
+  "Fetch and return the hitbox of the given a `group` and its `id`"
+  [group id]
+  (.fetchHitBox group (str id)))
 
 ;;SKYBOX MANAGEMENT---------------------------------------------------
 (defn skybox "Retrieve the skybox of the world" [world] (.getSkybox world))
@@ -299,17 +333,19 @@
   (.removeSkybox world))
 
 ;;GROUP MANAGEMENT---------------------------------------------------------
-(defn groups "Retrieve the groups of the `world`" [world] (into [] (.getItemGroupArrayList world)))
+(defn groups "Retrieve the groups of the `world`"
+  [world]
+  (into [] (.getItemGroupArrayList world)))
 
 (defn new-group!
-  "Get a new group created in the `world`"
-  [world]
-  (.createGroup world))
+  "Create and return a new group in the `world` with the given `id`"
+  [world id]
+  (.createGroup world (str id)))
 
 (defn group-add!
-  "Add the specified `item` to the `group`."
-  [group item]
-  (.add group item))
+  "Add the specified item or hitbox with the given the `id` to the `group`."
+  [group id item]
+  (.add group (str id) item))
 
 (defn remove-group!
   "Remove the specified group from the `world`"

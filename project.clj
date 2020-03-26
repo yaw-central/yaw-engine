@@ -16,7 +16,7 @@
 (def LWJGL_NS "org.lwjgl")
 
 ;; Edit this to change the version.
-(def LWJGL_VERSION "3.1.5")
+(def LWJGL_VERSION "3.2.3")
 
 ;; Edit this to add/remove packages.
 (def LWJGL_MODULES ["lwjgl"
@@ -71,20 +71,19 @@
 
 (def all-dependencies
   (into ;; Add your non-LWJGL dependencies here
-   '[[org.clojure/clojure "1.9.0"]
-     [org.joml/joml "1.9.7"]
+   '[[org.clojure/clojure "1.10.1"]
+     [org.joml/joml "1.9.20"]
      [org.l33tlabs.twl/pngdecoder "1.0"]]
    (lwjgl-deps-with-natives)))
 
-(defproject yaw "0.2.0"
+(defproject yaw-engine "0.3.0"
   :description "A simple 3D programming world."
   :url "https://github.com/fredokun/yaw"
   :license {:name "The MIT License"
             :url  "http://opensource.org/licenses/MIT"}
   :dependencies ~all-dependencies
-  :min-lein-version "2.1.0"
   :jvm-opts ^:replace ~(jvm-opts)
-  :source-paths ["src/clojure" "examples"]
+  :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]
   :test-paths ["test" "src/test"])
 

@@ -1,5 +1,4 @@
-
-(ns yaw.cube-in-a-box
+(ns yaw.group-test
   "A simple 3D example using a reagent-like approach."
   (:require 
    [clojure.set :as set]
@@ -33,7 +32,7 @@
                (limit-set > y max-y :overflow-y)
                (limit-set < z min-z :underflow-z)
                (limit-set > z max-z :overflow-z))))
-                       
+
 (def pos-check (bounds-checker min-x max-x min-y max-y min-z max-z))
 
 ;; (pos-check [0 0 -7])
@@ -56,18 +55,25 @@
     :scale 0.05}])
 
 
-(defn the-cube
+(defn the-group
   "Create a cube with its position linked to the `pos` reactive atom."
   [state]
-  [:item :test/box {:mesh :mesh/box
-                    :pos (:pos @state)
-                    :rot [0 0 0]
-                    :mat :red
-                    :scale 0.3}])
-
+  [:group :test/group {:pos (:pos @state)
+                       :rot [0 0 0]
+                       :scale 1}
+   [:item :test/box {:mesh :mesh/box
+                     :pos [0 0 0]
+                     :rot [34 32 0]
+                     :mat :red
+                     :scale 0.3}]
+   [:item :test/box2 {:mesh :mesh/box
+                      :pos [-1.5 0 0]
+                      :rot [0 0 0]
+                      :mat :red
+                      :scale 0.3}]])
 
 (defn scene
-  [cube-state]
+  [group-state]
   [:scene
    [:ambient {:color :white :i 0.4}]
    [:sun {:color :red :i 1 :dir [-1 0 0]}]
@@ -80,14 +86,14 @@
    [marker [min-x max-y min-z] "6"]
    [marker [max-x max-y min-z] "7"]
    [marker [max-x min-y min-z] "8"]
-   [the-cube cube-state]])
+   [the-group group-state]])
 
 (def +myctrl+ (w/start-universe!))
 
-(def +cube-state+ (r/reactive-atom +myctrl+ {:pos [0 0 -5]
-                                             :delta [0.02 -0.04 0.03]}))
+(def +group-state+ (r/reactive-atom +myctrl+ {:pos [0 0 -5]
+                                             :delta [0.01 0 0]}))
 
-(render/render! +myctrl+ [scene +cube-state+])
+(render/render! +myctrl+ [scene +group-state+])
 
 (def +update+ (r/create-update-ratom +myctrl+))
 
@@ -113,7 +119,7 @@
    (if (inter? #{:underflow-z :overflow-z} checks)
      (- dz) dz)])
 
-(defn update-cube-state [{pos :pos
+(defn update-group-state [{pos :pos
                           delta :delta}]
   (let [checks (pos-check pos)
         delta' (update-delta checks delta)]
@@ -124,8 +130,8 @@
 
 (add-watch +update+ :yaw.reaction/propagation
            (fn [_ _ _ _]
-             (swap! +cube-state+
-                    update-cube-state)))
+             (swap! +group-state+
+                    update-group-state)))
 
 
 
