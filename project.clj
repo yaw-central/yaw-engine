@@ -76,7 +76,7 @@
      [org.l33tlabs.twl/pngdecoder "1.0"]]
    (lwjgl-deps-with-natives)))
 
-(defproject yaw-engine "0.3.0"
+(defproject yaw-engine "0.3.0-SNAPSHOT"
   :description "A simple 3D programming world."
   :url "https://github.com/fredokun/yaw"
   :license {:name "The MIT License"
