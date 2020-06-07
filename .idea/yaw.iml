@@ -138,5 +138,9 @@
     <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl:3.1.5:natives-linux" level="project" />
     <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl:3.1.5:natives-macos" level="project" />
     <orderEntry type="library" name="Leiningen: org.lwjgl/lwjgl:3.1.5:natives-windows" level="project" />
+    <orderEntry type="library" name="clojure-1.10.0" level="project" />
+    <orderEntry type="library" name="lwjgl-release-3.2" level="project" />
+    <orderEntry type="library" name="joml-1.9.22" level="project" />
+    <orderEntry type="library" name="PNGDecoder-1" level="project" />
   </component>
 </module>

@@ -3,7 +3,8 @@
                        InputCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
-  (:require [yaw.mesh]))
+  (:require [yaw.mesh]
+            [yaw.loader]))
   ;;(gen-class)
 
 (def empty-item-map
@@ -105,6 +106,22 @@
                (int-array (flat-map faces))
                (int weight) (float-array rgb) texture-name))
 
+  (defn createObjMesh
+      [world objFilename]
+      (let [model (yaw.loader/load-model objFilename)
+            texture-name (if (clojure.string/blank? (:texture-name model))
+                            ""
+                            (str "/resources/" (:texture-name model)))]
+          (.createMesh world
+                     (float-array (flatten (:vertices model)))
+                     (float-array (flat-map (:text_coord model)))
+                     (float-array (flat-map (:normals model)))
+                     (int-array (flat-map (:faces model)))
+                     (int 0) (float-array (first (:rgb model))) texture-name)))
+
+
+;;this function should not be used in yaw-react if you create meshes via the OBJ loader
+;; (because these meshes do not contain a geometry with tris and vertices)
 (defn create-simple-mesh!
   "Create an item in the `world` from the specified mesh object"
   [world & {:keys [geometry rgb]
@@ -122,9 +139,9 @@
   "Create an item in the `world` with the
   specified id, position, mesh"
   [world id & {:keys [position scale mesh]
-               :or   {position [0 0 2] 
-                      scale    1
-                      mesh     (create-mesh! world)}}]         ;;error here
+               :or   {position [0 0 2]
+                      scale 1
+                      mesh (create-mesh! world) }}];;error here, create-mesh is always called, even when a mesh is provided...
   (.createItemObject world id (position 0) (position 1) (position 2) scale mesh))
 
 (defn remove-item!
@@ -270,15 +287,17 @@
 (defn create-hitbox!
   "Create a hitbox in the `world` with the
   specified id, position, length, scale"
-  [world id & {:keys [position length scale]
+  [world id & {:keys [position length scale is-visible]
                :or   {position [0 0 -2]
                       length   [1 1 1]
-                      scale 1}}]
+                      scale 1
+                      is-visible true}}]
   (.createHitBox world
                  (str id)
                  (get position 0) (get position 1) (get position 2)
                  scale
-                 (get length 0) (get length 1) (get length 2)))
+                 (get length 0) (get length 1) (get length 2)
+                 is-visible))
 
 (defn check-collision!
   "Check if 2 hitboxes are in collision in the `world`"
