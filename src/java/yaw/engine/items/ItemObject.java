@@ -3,6 +3,7 @@ package yaw.engine.items;
 import org.joml.*;
 import yaw.engine.meshs.Material;
 import yaw.engine.meshs.Mesh;
+import java.lang.Math;
 
 /**
  * An ItemObject is a concrete 3D item associated to a Mesh
@@ -91,7 +92,7 @@ public class ItemObject extends Item {
      * @param angleZ same for axis Z
      */
     public void rotateXYZ(float angleX, float angleY, float angleZ) {
-        orientation.rotateXYZ(toRadians(angleX), toRadians(angleY), toRadians(angleZ));
+        orientation.rotateXYZ((float)Math.toRadians(angleX), (float)Math.toRadians(angleY), (float)Math.toRadians(angleZ));
         invalidate();
     }
 

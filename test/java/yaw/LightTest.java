@@ -23,7 +23,7 @@ public class LightTest {
                 , MeshBuilder.generateBlock(1, 1, 1));
         float[] tab = {0.0f, 0.0f, 0.0f}; // a cube
 
-        c1.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+        c1.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
 
 
         world.getCamera().translate(-5, 0, 0);

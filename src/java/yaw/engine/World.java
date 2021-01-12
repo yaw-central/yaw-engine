@@ -120,6 +120,7 @@ public class World  {
         if (rgb.length != 3) {
             throw new RuntimeException("RGB must represent 3 colors");
         }
+        System.out.println("pTextureName " + pTextureName);
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
         Material lMaterial = new Material(lMaterialColor);
         
@@ -172,8 +173,8 @@ public class World  {
      * @param pScale    scale
      * @return BoundingBox
      */
-    public HitBox createHitBox(String id, float x, float y, float z, float pScale, float xLength, float yLength, float zLength){
-        HitBox hb = new HitBox(id, new Vector3f(x, y, z), new Quaternionf(), pScale, xLength, yLength, zLength);
+    public HitBox createHitBox(String id, float x, float y, float z, float pScale, float xLength, float yLength, float zLength, boolean isVisible){
+        HitBox hb = new HitBox(id, new Vector3f(x, y, z), new Quaternionf(), pScale, xLength, yLength, zLength, isVisible);
         mainLoop.addToScene(hb);
         return hb;
 
@@ -297,4 +298,3 @@ public class World  {
     }
 
 }
-

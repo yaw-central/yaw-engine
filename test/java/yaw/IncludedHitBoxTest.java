@@ -79,14 +79,14 @@ public class IncludedHitBoxTest implements UpdateCallback {
 
         //Creation of the First group
 
-        HitBox i = world.createHitBox("c1 first bounding box",0.f,0.f, 0.0f,1f,1.0f, 1.0f, 1f);
+        HitBox i = world.createHitBox("c1 first bounding box",0.f,0.f, 0.0f,1f,1.0f, 1.0f, 1f, true);
 
 
 
 
         //Creation of the second group
 
-        HitBox j = world.createHitBox("c1 first bounding box",0.f, 0.5f, 0f,0.05f, 1.0f, 1.0f, 1f);
+        HitBox j = world.createHitBox("c1 first bounding box",0.f, 0.5f, 0f,0.05f, 1.0f, 1.0f, 1f, true);
 
 
 
