@@ -26,7 +26,6 @@
   ([model k1 k2 val]
    (assoc model k1 (assoc (get model k1) k2 val)))) ;;For the maps of vertices, normals, faces and text_coord
 
-
 ;------------- HANDLE OBJ --------------
 (defn- handle-v
   "Add to the model the node in vertices"

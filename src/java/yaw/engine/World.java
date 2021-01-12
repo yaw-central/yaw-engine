@@ -123,8 +123,9 @@ public class World  {
         System.out.println("pTextureName " + pTextureName);
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
         Material lMaterial = new Material(lMaterialColor);
+        
         //Texture part
-        if (pTextureName != null && !pTextureName.isEmpty()) {
+        if (pTextureName != null && !(pTextureName.matches("Material.*") || pTextureName.isEmpty())) {
             Texture lTexture = mainLoop.fetchTexture(pTextureName);
             if (lTexture == null) {
                 lTexture = new Texture(pTextureName);
