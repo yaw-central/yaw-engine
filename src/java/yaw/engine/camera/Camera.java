@@ -186,11 +186,6 @@ public class Camera {
 
     }
 
-    public void update() {
-
-    }
-
-
     /**
      * Generate the Matrix for the camera position
      *

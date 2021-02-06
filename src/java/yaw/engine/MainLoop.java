@@ -274,7 +274,6 @@ public class MainLoop implements Runnable {
 
             //refresh rate ??
 //            Thread.sleep(20); // XXX ? Why sleep ?
-            mCamera.update();
 
             if(updateCallback != null) {
                 while (lag >= dt) {

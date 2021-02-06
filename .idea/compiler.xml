@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <resourceExtensions />
     <wildcardResourcePatterns>
       <entry name="!dev-resources:*" />
       <entry name="!resources:*" />
@@ -16,9 +15,15 @@
       <entry name="!?*.aj" />
     </wildcardResourcePatterns>
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
-        <processorPath useClasspath="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="yaw" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="yaw" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>

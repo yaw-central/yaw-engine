@@ -84,6 +84,6 @@
   :dependencies ~all-dependencies
   :jvm-opts ^:replace ~(jvm-opts)
   :source-paths ["src/clojure"]
-  :java-source-paths ["src/java"]
-  :test-paths ["test" "src/test"])
+  :java-source-paths ["src/java" "test/java"]
+  :test-paths ["test/clojure"])
 

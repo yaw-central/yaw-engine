@@ -113,8 +113,8 @@
   (let [{:keys [vertices tris]} geometry
         vidx (zipmap (keys vertices) (range (count vertices)))
         coords (float-array (mapcat second vertices))
-        normals (float-array (mapcat (fn [{n :n v :v}] (concat n n n)) tris))
-        indices (int-array (mapcat (fn [{n :n v :v}] (map #(% vidx) v)) tris))]
+        normals (float-array (mapcat (fn [{n :n _ :v}] (concat n n n)) tris))
+        indices (int-array (mapcat (fn [{_ :n v :v}] (map #(% vidx) v)) tris))]
     (.createMesh world coords normals indices (float-array rgb))))
 
 ;; Items Functions------------------------------------------------
