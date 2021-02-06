@@ -122,10 +122,11 @@
   "Create an item in the `world` with the
   specified id, position, mesh"
   [world id & {:keys [position scale mesh]
-               :or   {position [0 0 2] 
+               :or   {position [0 0 2]
                       scale    1
-                      mesh     (create-mesh! world)}}]         ;;error here
-  (.createItemObject world id (position 0) (position 1) (position 2) scale mesh))
+                      mesh     nil}}]         ;;error here
+  (.createItemObject world id (position 0) (position 1) (position 2) scale (or mesh
+                                                                               (create-mesh! world))))
 
 (defn remove-item!
   "Remove the specified `item` from the `world`"
