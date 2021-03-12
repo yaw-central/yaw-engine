@@ -1,10 +1,10 @@
 package yaw.engine.camera;
 
 
-import yaw.engine.Input;
-import yaw.engine.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import yaw.engine.Input;
+import yaw.engine.Window;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -209,7 +209,7 @@ public class Camera {
     public void updateCameraMat() {
         perspectiveMat = new Matrix4f().perspective(fieldOfView,
                 (float) Window.aspectRatio(), zNear, zFar);
-       /* perspectiveMat = perspectiveMat.mul(setupViewMatrix()); */
+        /* perspectiveMat = perspectiveMat.mul(setupViewMatrix()); */
     }
 
 
@@ -238,16 +238,17 @@ public class Camera {
 
     public void move() {
 
-        if(Input.isKeyDown(GLFW_KEY_UP)){
-            this.rotate(1f,0,0);
-            System.out.println(this.getOrientation());}
-        if(Input.isKeyDown(GLFW_KEY_DOWN))
-            this.rotate(-1f,0,0);
-        if(Input.isKeyDown(GLFW_KEY_LEFT))
-            this.rotate(0,1,0);
-        if(Input.isKeyDown(GLFW_KEY_RIGHT))
-            this.rotate(0f,-1f,0);
-        if(Input.isKeyDown(GLFW_KEY_W)){
+        if (Input.isKeyDown(GLFW_KEY_UP)) {
+            this.rotate(1f, 0, 0);
+            System.out.println(this.getOrientation());
+        }
+        if (Input.isKeyDown(GLFW_KEY_DOWN))
+            this.rotate(-1f, 0, 0);
+        if (Input.isKeyDown(GLFW_KEY_LEFT))
+            this.rotate(0, 1, 0);
+        if (Input.isKeyDown(GLFW_KEY_RIGHT))
+            this.rotate(0f, -1f, 0);
+        if (Input.isKeyDown(GLFW_KEY_W)) {
             float xO = getOrientation().x;
             float yO = getOrientation().y;
             float zO = getOrientation().z;
@@ -256,31 +257,31 @@ public class Camera {
             float yP = getPosition().y;
             float zP = getPosition().z;
 
-            int signX=1;
-            int signY=1;
-            int signZ=1;
-            if(xO < xP){
-                signX=-1;
+            int signX = 1;
+            int signY = 1;
+            int signZ = 1;
+            if (xO < xP) {
+                signX = -1;
             }
-            if(yO < yP){
-                signX=-1;
+            if (yO < yP) {
+                signX = -1;
             }
 
-            if(zO < zP){
-                signZ=-1;
+            if (zO < zP) {
+                signZ = -1;
             }
-            this.setOrientation(0,0,45);
+            this.setOrientation(0, 0, 45);
 
         }
-        if(Input.isKeyDown(GLFW_KEY_A))
-            this.translate(-0.1f,0,0);
-        if(Input.isKeyDown(GLFW_KEY_S))
-            this.translate(0,0,0.1f);
-        if(Input.isKeyDown(GLFW_KEY_D))
-            this.translate(0.1f,0,0);
-        if(Input.isKeyDown(GLFW_KEY_BACKSPACE)){
-            this.setPosition(0,0,5);
-            this.setOrientation(0,0,0);
+        if (Input.isKeyDown(GLFW_KEY_A))
+            this.translate(-0.1f, 0, 0);
+        if (Input.isKeyDown(GLFW_KEY_S))
+            this.translate(0, 0, 0.1f);
+        if (Input.isKeyDown(GLFW_KEY_D))
+            this.translate(0.1f, 0, 0);
+        if (Input.isKeyDown(GLFW_KEY_BACKSPACE)) {
+            this.setPosition(0, 0, 5);
+            this.setOrientation(0, 0, 0);
         }
 
     }

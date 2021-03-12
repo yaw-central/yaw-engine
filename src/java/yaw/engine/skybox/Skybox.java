@@ -1,10 +1,10 @@
 package yaw.engine.skybox;
 
-import yaw.engine.camera.Camera;
-import yaw.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+import yaw.engine.camera.Camera;
+import yaw.engine.shader.ShaderProgram;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

@@ -1,10 +1,10 @@
 package yaw.engine.meshs;
 
+import org.joml.Matrix4f;
+import org.lwjgl.BufferUtils;
 import yaw.engine.items.ItemObject;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.util.LoggerYAW;
-import org.joml.Matrix4f;
-import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -55,9 +55,9 @@ public class Mesh {
     /**
      * Construct a Mesh with the specified mVertices, mNormals and mIndices.
      *
-     * @param pVertices   Vertex array
-     * @param pNormals    Normal vectors
-     * @param pIndices    Triangles
+     * @param pVertices Vertex array
+     * @param pNormals  Normal vectors
+     * @param pIndices  Triangles
      */
     public Mesh(float[] pVertices, float[] pNormals, int[] pIndices) {
         this(pVertices, null, pNormals, pIndices, pVertices.length);

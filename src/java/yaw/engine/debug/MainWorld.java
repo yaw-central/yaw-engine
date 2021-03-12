@@ -1,5 +1,6 @@
 package yaw.engine.debug;
 
+import org.joml.Vector3f;
 import yaw.engine.World;
 import yaw.engine.items.HitBox;
 import yaw.engine.items.ItemGroup;
@@ -7,9 +8,8 @@ import yaw.engine.items.ItemObject;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.SpotLight;
-import yaw.engine.skybox.Skybox;
-import org.joml.Vector3f;
 import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.skybox.Skybox;
 
 /**
  * The Main Class that launches our game engine.
@@ -39,17 +39,15 @@ public class MainWorld {
 
         ItemGroup g1 = new ItemGroup("g1");
         ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, -2.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
-        HitBox i = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f, 1f, 1.0f, 1.0f, 1.0f);
+        HitBox i = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, -2.0f, 1f, 1.0f, 1.0f, 1.0f);
         g1.add("cube", c1);
         g1.add("hitbox", i);
-
-
 
 
         ItemGroup g2 = new ItemGroup("g2");
         ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, -2.0f, 1
                 , MeshBuilder.generateHalfBlock(1, 1, 1));
-        HitBox i2 = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f,1f, 1.0f, 1.0f, 1.0f);
+        HitBox i2 = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, -2.0f, 1f, 1.0f, 1.0f, 1.0f);
         g2.add("cube", c2);
         g2.add("hitbox", i2);
 
@@ -68,7 +66,7 @@ public class MainWorld {
 
         //world.sc.add(GroundGenerator.generate(400,400,-2,new Material(new Vector3f(1,1,1))));
 
-       /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
+        /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
         world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0, 0, 0)));
 
         world.getCamera().translate(0, 2, 7);

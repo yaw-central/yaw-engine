@@ -5,7 +5,9 @@ import yaw.engine.World;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SpotLight;
-import yaw.engine.meshs.*;
+import yaw.engine.meshs.Mesh;
+import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.meshs.Texture;
 
 /**
  * A group of 2 items revolving around another cube, and rotating
@@ -15,7 +17,7 @@ public class RotatingGroup implements UpdateCallback {
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
     private long prevDeltaRefreshMillis = 0;
-    private ItemGroup cubes ;
+    private ItemGroup cubes;
     private float speed = 10;
 
     public RotatingGroup(ItemGroup cubes) {
@@ -39,7 +41,7 @@ public class RotatingGroup implements UpdateCallback {
         long currentMillis = System.currentTimeMillis();
         if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
             double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
+            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) + " s (" + nbUpdates + ")");
             nbUpdates = 0;
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
@@ -64,7 +66,7 @@ public class RotatingGroup implements UpdateCallback {
 
         World world = new World(0, 0, 800, 600);
 
-        world.getCamera().setPosition(0,0,0);
+        world.getCamera().setPosition(0, 0, 0);
         world.getSceneLight().setSpotLight(new SpotLight(1, 300, 1, 0, 0, 10, 1f, 0, 0.1f, 0, 0, 0, -.1f, 10f), 1);
 
 
@@ -75,21 +77,19 @@ public class RotatingGroup implements UpdateCallback {
         ItemObject cube3 = world.createItemObject("cube3", 0f, 0f, -8f, 1.0f, cubem3);
         cube2.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
         ItemGroup g = new ItemGroup("g");
-        g.add("first",cube);
+        g.add("first", cube);
 
-        g.add("second",cube2);
+        g.add("second", cube2);
         //g.rotate(0, 45, 0);
 
         RotatingGroup rGroup = new RotatingGroup(g);
-
-
 
 
         world.registerUpdateCallback(rGroup);
 
 
         world.launch();
-        world.waitFortermination();
+        world.waitTermination();
     }
 
 }

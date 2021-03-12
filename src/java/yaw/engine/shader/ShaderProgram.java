@@ -1,14 +1,14 @@
 package yaw.engine.shader;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.PointLight;
 import yaw.engine.light.SpotLight;
 import yaw.engine.meshs.Material;
 import yaw.engine.util.LoggerYAW;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -91,14 +91,14 @@ public class ShaderProgram {
         unbind();
         if (mProgramId != 0) {
             if (mVertexShaderId != 0) {
-             /*   Detaches a shader object from a program object to which it is attached*/
+                /*   Detaches a shader object from a program object to which it is attached*/
                 glDetachShader(mProgramId, mVertexShaderId);
             }
             if (mFragmentShaderId != 0) {
                 /*Detaches a shader object from a program object to which it is attached*/
                 glDetachShader(mProgramId, mFragmentShaderId);
             }
-           /*Deletes a program object*/
+            /*Deletes a program object*/
             glDeleteProgram(mProgramId);
         }
     }

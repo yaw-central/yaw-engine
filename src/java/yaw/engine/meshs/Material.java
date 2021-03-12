@@ -98,7 +98,9 @@ public class Material {
         return mColor;
     }
 
-    public void setColor(Vector3f pColor) {mColor = pColor;}
+    public void setColor(Vector3f pColor) {
+        mColor = pColor;
+    }
 
     public float getReflectance() {
         return mReflectance;

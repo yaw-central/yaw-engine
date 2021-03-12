@@ -34,9 +34,9 @@ public class SpotLight extends PointLight {
     /**
      * Constructor with the specified color (cx,cy,cz), position (px,py,pz), intensity, constantAtt, linearAtt, quadraticAtt, cone direction (cdx,cdy,cdz) and angle
      *
-     * @param red           Red value
-     * @param green           Green value
-     * @param blue           Blue value
+     * @param red          Red value
+     * @param green        Green value
+     * @param blue         Blue value
      * @param px           Position x
      * @param py           Position y
      * @param pz           Position z

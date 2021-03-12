@@ -1,4 +1,3 @@
-
 // This file is generated from `vertShader.fs` shader program
 // Please do not edit directly
 package yaw.engine.shader;

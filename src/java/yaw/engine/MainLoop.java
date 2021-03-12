@@ -1,17 +1,11 @@
 package yaw.engine;
 
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
-import yaw.engine.items.HitBox;
-import yaw.engine.items.Item;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
-import yaw.engine.meshs.Material;
-import yaw.engine.meshs.Mesh;
 import yaw.engine.meshs.Texture;
-import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
@@ -22,8 +16,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  * This the main loop controlled by the World facade.
- *
- * */
+ */
 public class MainLoop implements Runnable {
     private final SceneVertex mSceneVertex;
     private final Vector<Skybox> mSkyboxToBeRemoved;
@@ -41,7 +34,7 @@ public class MainLoop implements Runnable {
 
     //3D click
 
-    private RayCaster rayCaster= new RayCaster();
+    private RayCaster rayCaster = new RayCaster();
     private Vector3f mousePosition = null;
 
     private UpdateCallback updateCallback;
@@ -102,43 +95,52 @@ public class MainLoop implements Runnable {
         this.inputCallback = null;
     }
 
-    /* package */ synchronized void addToScene(ItemObject itemObj) {
+    /* package */
+    synchronized void addToScene(ItemObject itemObj) {
         mSceneVertex.add(itemObj);
     }
 
-    /* package */ synchronized void removeFromScene(ItemObject pItem) {
+    /* package */
+    synchronized void removeFromScene(ItemObject pItem) {
         mSceneVertex.removeItem(pItem);
     }
 
-    /* package */ synchronized ItemGroup createGroup(String id) {
+    /* package */
+    synchronized ItemGroup createGroup(String id) {
         ItemGroup group = new ItemGroup(id);
         mItemGroupArrayList.add(group);
         return group;
     }
 
-    /* package */ synchronized void removeGroup(ItemGroup pGroup) {
+    /* package */
+    synchronized void removeGroup(ItemGroup pGroup) {
         pGroup.removeAll();
         mItemGroupArrayList.remove(pGroup);
     }
 
-    /* package */ synchronized Vector<ItemGroup> getItemGroupArrayList() {
+    /* package */
+    synchronized Vector<ItemGroup> getItemGroupArrayList() {
         return mItemGroupArrayList;
     }
 
-    /* package */ synchronized SceneLight getSceneLight() {
+    /* package */
+    synchronized SceneLight getSceneLight() {
         return mSceneLight;
     }
 
-    /* package */ synchronized Texture fetchTexture(String textureName) {
+    /* package */
+    synchronized Texture fetchTexture(String textureName) {
         return mStringTextureConcurrentHashMap.get(textureName);
     }
 
-    /* package */ synchronized void removeSkybox() {
+    /* package */
+    synchronized void removeSkybox() {
         mSkyboxToBeRemoved.add(mSkybox);
         this.mSkybox = null;
     }
 
-    /* package */ synchronized void clearCameras() {
+    /* package */
+    synchronized void clearCameras() {
         mCamerasList = new Vector<>();
     }
 
@@ -147,23 +149,28 @@ public class MainLoop implements Runnable {
         mCamerasList.add(pIndex, pCamera);
     }
 
-    /* package */ synchronized Camera getCamera() {
+    /* package */
+    synchronized Camera getCamera() {
         return mCamera;
     }
 
-    /* package */ synchronized void setCamera(Camera pCamera) {
+    /* package */
+    synchronized void setCamera(Camera pCamera) {
         this.mCamera = pCamera;
     }
 
-    /* package */ synchronized Vector<Camera> getCamerasList() {
+    /* package */
+    synchronized Vector<Camera> getCamerasList() {
         return mCamerasList;
     }
 
-    /* package */ synchronized Skybox getSkybox() {
+    /* package */
+    synchronized Skybox getSkybox() {
         return mSkybox;
     }
 
-    /* package */ synchronized void setSkybox(Skybox pSkybox) {
+    /* package */
+    synchronized void setSkybox(Skybox pSkybox) {
         if (this.mSkybox != null) {
             mSkyboxToBeRemoved.add(pSkybox);
         }
@@ -206,32 +213,28 @@ public class MainLoop implements Runnable {
     }
 
     public synchronized void registerInputCallback(InputCallback callback) {
-        if(inputCallback != null) {
+        if (inputCallback != null) {
             throw new Error("Input callback already registered");
         }
         inputCallback = callback;
 
-        if(initialized) {
+        if (initialized) {
             Window.getGLFWKeyCallback().registerInputCallback(callback);
         }
     }
 
     //3D click
 
-    public synchronized void registerMouse3DClickCallBack(Mouse3DClickCallBack mc){
-        if(mouseCallback != null) {
+    public synchronized void registerMouse3DClickCallBack(Mouse3DClickCallBack mc) {
+        if (mouseCallback != null) {
             throw new Error("Input callback already registered");
         }
         mouseCallback = mc;
 
-        if(initialized) {
+        if (initialized) {
             Window.getGLFWMouseCallback().registerMouseCallback(mc);
         }
     }
-
-
-
-
 
 
     // End 3D click
@@ -246,11 +249,11 @@ public class MainLoop implements Runnable {
         // Create the rendering logic of our game.
         mRenderer.init();
 
-        if(inputCallback != null) {
+        if (inputCallback != null) {
             Window.getGLFWKeyCallback().registerInputCallback(inputCallback);
         }
 
-        if(mouseCallback != null) {
+        if (mouseCallback != null) {
             Window.getGLFWMouseCallback().registerMouseCallback(mouseCallback);
         }
 
@@ -275,7 +278,7 @@ public class MainLoop implements Runnable {
             //refresh rate ??
 //            Thread.sleep(20); // XXX ? Why sleep ?
 
-            if(updateCallback != null) {
+            if (updateCallback != null) {
                 while (lag >= dt) {
                     updateCallback.update(dt);
                     lag -= dt;

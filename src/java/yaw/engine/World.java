@@ -1,30 +1,26 @@
 package yaw.engine;
 
 import org.joml.Quaternionf;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
-import yaw.engine.items.*;
+import yaw.engine.items.HitBox;
+import yaw.engine.items.ItemGroup;
+import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
-import yaw.engine.meshs.*;
+import yaw.engine.meshs.Material;
+import yaw.engine.meshs.Mesh;
+import yaw.engine.meshs.Texture;
 import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import yaw.engine.skybox.Skybox;
-import yaw.engine.InputCallback;
-import org.joml.Vector3f;
 
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  * This is the facade of the engine, most Clojure calls are
  * made on an instance of this object. The stateful part
  * is delegated to the underlying MainLoop.
- *
  */
-public class World  {
+public class World {
     private MainLoop mainLoop;
     private Thread mloopThread = null;
     private boolean isRunning = false;
@@ -59,7 +55,7 @@ public class World  {
     }
 
     public void launch() {
-        if(isRunning) {
+        if (isRunning) {
             throw new Error("World is already running (multiple calls to launch() method)");
         }
         isRunning = true;
@@ -75,39 +71,36 @@ public class World  {
         mainLoop.close();
     }
 
-    public void waitFortermination() {
+    public void waitTermination() {
         try {
             mloopThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
-     * Create an item with the specified parameters and add it to the  world
+     * Create an item with the specified parameters and add it to the world
      *
-     * @param id        id
-     * @param x         x coordinate
-     * @param y         y coordinate
-     * @param z         z coordinate
-     * @param pScale    scale
-     * @param pMesh     mesh
+     * @param id     id
+     * @param x      x coordinate
+     * @param y      y coordinate
+     * @param z      z coordinate
+     * @param pScale scale
+     * @param pMesh  mesh
      * @return the item
      */
     public ItemObject createItemObject(String id, float x, float y, float z, float pScale, Mesh pMesh) {
-        ItemObject lItem = new ItemObject(id, new Vector3f(x, y, z)
-                , new Quaternionf(), pScale, pMesh);
-
+        ItemObject lItem = new ItemObject(id, new Vector3f(x, y, z), new Quaternionf(), pScale, pMesh);
         mainLoop.addToScene(lItem);
         return lItem;
     }
 
     /**
      * Create a mesh with the specified parameters
-     * MeshOld won't be load into the grahpic cards unless you bind it to an item
+     * MeshOld won't be load into the graphic cards unless you bind it to an item
      *
-     * @param pVertices    vetices
+     * @param pVertices    vertices
      * @param pTextCoords  texture coordonates
      * @param pNormals     normals
      * @param pIndices     indices
@@ -122,10 +115,11 @@ public class World  {
         }
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
         Material lMaterial = new Material(lMaterialColor);
-        //Texture part
+
+        // Texture part
         if (pTextureName != null && !pTextureName.isEmpty()) {
             Texture lTexture = mainLoop.fetchTexture(pTextureName);
-            if (lTexture == null) {
+            if (lTexture == null) { // ?????
                 lTexture = new Texture(pTextureName);
             } else {
                 System.err.println("[Warning] Texture not found: " + pTextureName);
@@ -140,11 +134,11 @@ public class World  {
 
     /**
      * Create a mesh with the specified parameters
-     * MeshOld won't be load into the grahpic cards unless you bind it to an item
+     * MeshOld won't be load into the graphic cards unless you bind it to an item
      *
-     * @param pVertices    vetices
-     * @param pNormals     normals
-     * @param pIndices     indices
+     * @param pVertices vertices
+     * @param pNormals  normals
+     * @param pIndices  indices
      * @return the mesh
      */
     public Mesh createMesh(float[] pVertices, float[] pNormals, int[] pIndices, float[] rgb) {
@@ -160,22 +154,20 @@ public class World  {
     }
 
 
-
     /**
      * Create a bounding box with the specified parameters and add it to the  world
      *
-     * @param id        id
-     * @param x         x coordinate
-     * @param y         y coordinate
-     * @param z         z coordinate
-     * @param pScale    scale
+     * @param id     id
+     * @param x      x coordinate
+     * @param y      y coordinate
+     * @param z      z coordinate
+     * @param pScale scale
      * @return BoundingBox
      */
-    public HitBox createHitBox(String id, float x, float y, float z, float pScale, float xLength, float yLength, float zLength){
+    public HitBox createHitBox(String id, float x, float y, float z, float pScale, float xLength, float yLength, float zLength) {
         HitBox hb = new HitBox(id, new Vector3f(x, y, z), new Quaternionf(), pScale, xLength, yLength, zLength);
         mainLoop.addToScene(hb);
         return hb;
-
     }
 
     /**
@@ -199,12 +191,10 @@ public class World  {
         mainLoop.registerInputCallback(callback);
     }
 
-    //3D click
+    // 3D click
     public void registerMouseCallback(Mouse3DClickCallBack callback) {
         mainLoop.registerMouse3DClickCallBack(callback);
     }
-
-
 
 
     /**

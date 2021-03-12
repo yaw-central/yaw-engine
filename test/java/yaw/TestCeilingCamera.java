@@ -9,7 +9,7 @@ import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
 
 /**
- *  Camera view from the ceiling
+ * Camera view from the ceiling
  */
 public class TestCeilingCamera implements UpdateCallback {
     private int nbUpdates = 0;
@@ -36,12 +36,11 @@ public class TestCeilingCamera implements UpdateCallback {
         long currentMillis = System.currentTimeMillis();
         if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
             double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
+            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) + " s (" + nbUpdates + ")");
             nbUpdates = 0;
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
         }
-
 
 
     }
@@ -53,7 +52,7 @@ public class TestCeilingCamera implements UpdateCallback {
 
         for (int i = 0; i < 10; i++) {
             ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateBlock(1, 1, 1));
-            item.translate(i,i,i);
+            item.translate(i, i, i);
 
             if (i % 3 == 0)
                 item.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
@@ -63,13 +62,13 @@ public class TestCeilingCamera implements UpdateCallback {
                 item.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
         }
         world.getCamera().translate(0.f, 30, 0);
-        world.getCamera().rotate(-90,0,0);
+        world.getCamera().rotate(-90, 0, 0);
         TestCeilingCamera ceilingCamera = new TestCeilingCamera();
 
         world.registerUpdateCallback(ceilingCamera);
 
         world.launch();
-        world.waitFortermination();
+        world.waitTermination();
     }
 
 }

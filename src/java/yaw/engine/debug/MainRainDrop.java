@@ -3,8 +3,9 @@ package yaw.engine.debug;
 
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
-import yaw.engine.meshs.Texture;
 import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.meshs.Texture;
+
 /**
  * The Main Class that launches our game engine.
  */
@@ -55,7 +56,7 @@ public class MainRainDrop {
 
         //world.sc.add(GroundGenerator.generate(400,400,-2,new Material(new Vector3f(1,1,1))));
 
-       /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
+        /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
         // world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0, 0, 0)));
 
         world.getCamera().translate(1, 3, 7);

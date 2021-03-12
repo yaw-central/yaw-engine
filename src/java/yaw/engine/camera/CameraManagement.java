@@ -1,7 +1,7 @@
 package yaw.engine.camera;
 
-import yaw.engine.World;
 import org.joml.Vector3f;
+import yaw.engine.World;
 
 import java.util.Collections;
 

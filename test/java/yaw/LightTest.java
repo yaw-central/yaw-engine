@@ -1,12 +1,12 @@
 package yaw;
 
+import org.joml.Vector3f;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SpotLight;
 import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
 import yaw.engine.skybox.Skybox;
-import org.joml.Vector3f;
 
 /**
  * The Main Class that launches our game engine. this exemple goal was to fix a bug with the lights movements compared to the camera movements
@@ -27,12 +27,12 @@ public class LightTest {
 
 
         world.getCamera().translate(-5, 0, 0);
-        world.getCamera().rotate(0,90,0);
+        world.getCamera().rotate(0, 90, 0);
 
 
         /* Creating Light for Our World
-        * Creating 4 different spotlights, one for each face of the cube except the top and the bottom
-        * */
+         * Creating 4 different spotlights, one for each face of the cube except the top and the bottom
+         * */
         world.getSceneLight().setSpotLight(new SpotLight(0, 255, 255, 0, 0, 5, 1, 0, 0.5f, 0, 0, 0, -1, 3f), 0);
         world.getSceneLight().setSpotLight(new SpotLight(0, 255, 0, -5, 0, 0, 1, 0, 0.5f, 0, 1, 0, 0, 3f), 1);
         world.getSceneLight().setSpotLight(new SpotLight(255, 0, 0, 5, 0, 0, 1, 0, 0.5f, 0, -1, 0, 0, 3f), 2);
@@ -44,15 +44,12 @@ public class LightTest {
         world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0, 0, 0)));
 
 
-
-
-
         float angle = 0;
         int nbtours = 0;
 
-        while (nbtours <3) {
-            angle =(angle+1)%360;
-            if(angle == 359){
+        while (nbtours < 3) {
+            angle = (angle + 1) % 360;
+            if (angle == 359) {
                 nbtours++;
             }
             //world.getCamera().rotate(0, 5, 0); /* Allows to advance the edge in the scene 3D. */
@@ -63,9 +60,9 @@ public class LightTest {
              */
             float x = world.getCamera().getPosition().x;
             float z = world.getCamera().getPosition().z;
-            float tmp = (float)Math.toRadians((double)angle);
-            world.getCamera().setPosition((float)(5*Math.cos(tmp)),world.getCamera().getPosition().y, (float)(5*Math.sin(tmp)));
-            world.getCamera().rotate(0,-1f,0);
+            float tmp = (float) Math.toRadians((double) angle);
+            world.getCamera().setPosition((float) (5 * Math.cos(tmp)), world.getCamera().getPosition().y, (float) (5 * Math.sin(tmp)));
+            world.getCamera().rotate(0, -1f, 0);
             Thread.sleep(25); /* Allows to see the block (cube) move at constant rate. */
         }
     }
