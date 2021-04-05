@@ -21,9 +21,14 @@ import java.util.Vector;
  * is delegated to the underlying MainLoop.
  */
 public class World {
+
+    // ========== Attributes ==========
+
     private MainLoop mainLoop;
     private Thread mloopThread = null;
     private boolean isRunning = false;
+
+    // ========== Constructors ==========
 
     /**
      * Initializes the elements to create the window
@@ -62,6 +67,10 @@ public class World {
         mloopThread = new Thread(mainLoop);
         mloopThread.start();
     }
+
+
+    // ========== Methods ==========
+
 
     /**
      * Input of critical section, allows to protect the resource share loop.
@@ -170,15 +179,14 @@ public class World {
         return hb;
     }
 
-    /**
-     * Remove the specified item from the world
-     *
-     * @param pItem the item
-     */
-    public void removeItem(ItemObject pItem) {
-        mainLoop.removeFromScene(pItem);
-    }
 
+    /**
+     * Detects the collision between two hitboxes
+     *
+     * @param hb1 the first hitbox
+     * @param hb2 the second hitbox
+     * @return true if they are in collision, false otherwise
+     */
     public boolean isInCollision(HitBox hb1, HitBox hb2) {
         return hb1.collidesWith(hb2);
     }
@@ -192,14 +200,20 @@ public class World {
     }
 
     // 3D click
-    public void registerMouseCallback(Mouse3DClickCallBack callback) {
-        mainLoop.registerMouse3DClickCallBack(callback);
-    }
+    public void registerMouseCallback(Mouse3DClickCallBack callback) { mainLoop.registerMouse3DClickCallBack(callback); }
 
+    // ========== Getters ==========
 
-    /**
-     * Gets an empty camera list
-     */
+    public Camera getCamera() { return mainLoop.getCamera(); }
+
+    public Vector<Camera> getCamerasList() { return mainLoop.getCamerasList(); }
+
+    public SceneLight getSceneLight() { return mainLoop.getSceneLight(); }
+
+    public Skybox getSkybox() { return mainLoop.getSkybox(); }
+
+    // ========== Setters ==========
+
     public void clearCameras() {
         mainLoop.clearCameras();
     }
@@ -214,76 +228,40 @@ public class World {
         mainLoop.addCamera(pIndex, pCamera);
     }
 
-    public Camera getCamera() {
-        return mainLoop.getCamera();
-    }
+    public void setCamera(Camera pCamera) { mainLoop.setCamera(pCamera); }
 
-    public void setCamera(Camera pCamera) {
-        mainLoop.setCamera(pCamera);
-    }
-
-    public Vector<Camera> getCamerasList() {
-        return mainLoop.getCamerasList();
-    }
-
-    /**
-     * Create a group of item
-     *
-     * @return group of item
-     */
     public ItemGroup createGroup(String id) {
         return mainLoop.createGroup(id);
     }
 
-    /**
-     * Remove a group of item from the world
-     *
-     * @param pGroup the specified group
-     */
     public void removeGroup(ItemGroup pGroup) {
         mainLoop.removeGroup(pGroup);
     }
 
-    public Vector<ItemGroup> getItemGroupArrayList() {
-        return mainLoop.getItemGroupArrayList();
-    }
+    public Vector<ItemGroup> getItemGroupArrayList() { return mainLoop.getItemGroupArrayList(); }
 
-    public SceneLight getSceneLight() {
-        return mainLoop.getSceneLight();
+    public void setSkybox(Skybox pSkybox) { mainLoop.setSkybox(pSkybox); }
+
+    public void removeItem(ItemObject pItem) {
+        mainLoop.removeFromScene(pItem);
     }
 
     /**
-     * Create a skybox with all its parameters and replace the current skybox
+     * Sets the skybox by creating a new one from parameters values
      *
-     * @param pWidth  width
-     * @param pLength length
-     * @param pHeight height
-     * @param pR      r
-     * @param pG      g
-     * @param pB      b
+     * @param pWidth  the new skybox's width
+     * @param pLength the new skybox's length
+     * @param pHeight the new skybox's height
+     * @param pR      the new skybox's red intensity
+     * @param pG      the new skybox's green intensity
+     * @param pB      the new skybox's blue intensity
      */
     public void setSkybox(float pWidth, float pLength, float pHeight, float pR, float pG, float pB) {
         Skybox lSkybox = new Skybox(pWidth, pLength, pHeight, new Vector3f(pR, pG, pB));
         setSkybox(lSkybox);
     }
 
-    public void removeSkybox() {
-        mainLoop.removeSkybox();
-    }
-
-    public Skybox getSkybox() {
-        return mainLoop.getSkybox();
-    }
-
-    /**
-     * Allows to change the skybox by the new Skybox passed in arguments.
-     * If a skybox already exists, it's added to the list of mSkyboxToBeRemoved
-     *
-     * @param pSkybox skybox
-     */
-    public void setSkybox(Skybox pSkybox) {
-        mainLoop.setSkybox(pSkybox);
-    }
+    public void removeSkybox() { mainLoop.removeSkybox(); }
 
 }
 
