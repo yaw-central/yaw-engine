@@ -9,11 +9,23 @@ import static org.lwjgl.glfw.GLFW.*;
 
 
 public class KeyCallback {
+
+    // ========== Attributes ==========
+
+
     HashMap<Integer, ArrayList<Object>> map;
+
+
+    // ========== Constructors ==========
+
 
     public KeyCallback() {
         map = new HashMap<Integer, ArrayList<Object>>();
     }
+
+
+    // ========== Methods ==========
+
 
     /**
      * Allows to save the object in the ArrayList corresponding to the string passed as an argument.

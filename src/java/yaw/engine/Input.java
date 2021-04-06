@@ -9,8 +9,15 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class Input extends GLFWKeyCallback {
 
+    // ========== Attributes ==========
+
+
     /* A boolean array of all our keys.*/
     public static boolean[] keys = new boolean[65535];
+
+
+    // ========== Methods ==========
+
 
     /**
      * Allows to return the key corresponding to the event to be stored (event keyboard)

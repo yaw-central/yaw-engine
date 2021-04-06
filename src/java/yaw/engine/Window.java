@@ -12,30 +12,26 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * This Class allow to encapsulate all the GLFW Window initialization code and thus allowing some parameterization of its characteristics .
  */
 public class Window {
-    /*OpenGL context that is current in the current thread.*/
-    public static GLCapabilities caps;
 
+    // ========== Attributes ==========
+
+
+    /* OpenGL context that is current in the current thread.*/
+    public static GLCapabilities caps;
 
     /* package */ static long windowHandle;
     private static int width;
     private static int height;
     private static boolean resized;
     /* Protect from Garbage Collector errors. */
-    //3D click
+    // 3D click
     private static MouseInput mouseCallback;
     private static KeyInput keyCallback;
     private static GLFWWindowSizeCallback windowSizeCallback;
 
 
-    /* package */
-    static synchronized KeyInput getGLFWKeyCallback() {
-        return keyCallback;
-    }
+    // ========== Methods ==========
 
-    //3D click
-    public static synchronized MouseInput getGLFWMouseCallback() {
-        return mouseCallback;
-    }
 
     /**
      * Initializes and opens a window.
@@ -44,22 +40,26 @@ public class Window {
      * @param initHeight Height of the window.
      */
     public static void init(int initWidth, int initHeight, boolean vsync) {
-        if (!glfwInit()) { /* This function initializes the GLFW library. Before that GLFW functions can be used, GLFW must be initialized . */
+        /* This function initializes the GLFW library. Before that GLFW functions can be used, GLFW must be initialized . */
+        if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
-       /* This function sets hints for the next call to glfwCreateWindow.
-         In other words, they prepare the call to glfwCreateWindow. */
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); /* Allow to specify the opengl version used, here opengl 3.3 (opengl MAJOR.MINOR). */
+        /* This function sets hints for the next call to glfwCreateWindow.
+           In other words, they prepare the call to glfwCreateWindow. */
+        // Allow to specify the opengl version used, here opengl 3.3 (opengl MAJOR.MINOR) :
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);/* The window will stay visible after creation. */
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); /* The window will be resizable. */
+        // The window will stay visible after creation :
+        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+        // The window will be resizable :
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
         width = initWidth;
         height = initHeight;
         resized = false;
 
-       /* Create the window and its associated OpenGL context.
+        /* Create the window and its associated OpenGL context.
           The window is created with its dimensions and its title.
           The second last element "monitor" allows to create windows in full screen.
           Finally, the last element share, allows to indicate to the new window that its context will possess
@@ -72,7 +72,7 @@ public class Window {
 
         /*
             3D click
-         */
+        */
 
         glfwSetMouseButtonCallback(windowHandle, mouseCallback = new MouseInput());
 
@@ -84,18 +84,22 @@ public class Window {
             public void invoke(long window, int width, int height) {
                 Window.width = width;
                 Window.height = height;
-                Window.resized = true; /* When the resize attribute is false, it does not prevent the resizing of the window with the mouse
-                                          but does not take into account the resize event in our program. */
+                /* When the resize attribute is false, it does not prevent the resizing of the window with the mouse
+                  but does not take into account the resize event in our program : */
+                Window.resized = true;
             }
         });
 
-        glfwMakeContextCurrent(windowHandle); /* Update to context for the window. */
+        // Update to context for the window
+        glfwMakeContextCurrent(windowHandle);
 
-        caps = GL.createCapabilities(); /* Creates a new GLCapabilities instance for the OpenGL context that is current in the current thread. */
-
+        //  Creates a new GLCapabilities instance for the OpenGL context that is current in the current thread
+        caps = GL.createCapabilities();
 
         glfwSwapInterval(vsync ? 1 : 0);
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);/* Specifies the red, green, blue, and alpha values used by glClear to clear the color buffers. */
+
+        // Specify the red, green, blue, and alpha values used by glClear to clear the color buffers
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         /* activate depth comparisons and update the depth buffer */
         glEnable(GL_DEPTH_TEST);
@@ -134,7 +138,7 @@ public class Window {
     }
 
     /**
-     * Verify the resizing of the window, useful especially for transformation (moving objects in the world) .
+     * Verifies the resizing of the window, useful especially for transformation (moving objects in the world) .
      * Define according to the size of the created window .
      *
      * @return aspectRatio
@@ -144,11 +148,22 @@ public class Window {
     }
 
     /**
-     * Indicate if the windows should be closed
+     * Indicates if the windows should be closed
      *
      * @return true when the window should be closed otherwise false
      */
     public static boolean windowShouldClose() {
         return glfwWindowShouldClose(windowHandle);
     }
+
+    /* package */
+    static synchronized KeyInput getGLFWKeyCallback() {
+        return keyCallback;
+    }
+
+    // 3D click
+    public static synchronized MouseInput getGLFWMouseCallback() {
+        return mouseCallback;
+    }
+
 }

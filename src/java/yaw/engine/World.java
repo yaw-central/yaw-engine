@@ -24,11 +24,14 @@ public class World {
 
     // ========== Attributes ==========
 
+
     private MainLoop mainLoop;
     private Thread mloopThread = null;
     private boolean isRunning = false;
 
+
     // ========== Constructors ==========
+
 
     /**
      * Initializes the elements to create the window
@@ -202,7 +205,9 @@ public class World {
     // 3D click
     public void registerMouseCallback(Mouse3DClickCallBack callback) { mainLoop.registerMouse3DClickCallBack(callback); }
 
+
     // ========== Getters ==========
+
 
     public Camera getCamera() { return mainLoop.getCamera(); }
 
@@ -212,7 +217,9 @@ public class World {
 
     public Skybox getSkybox() { return mainLoop.getSkybox(); }
 
+
     // ========== Setters ==========
+
 
     public void clearCameras() {
         mainLoop.clearCameras();

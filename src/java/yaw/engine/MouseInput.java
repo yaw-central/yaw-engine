@@ -4,12 +4,17 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
 public class MouseInput extends GLFWMouseButtonCallback {
 
+    // ========== Attributes ==========
+
     private Mouse3DClickCallBack mouseCallback;
+
+    // ========== Constructors ==========
 
     public MouseInput() {
         this.mouseCallback = null;
     }
 
+    // ========== Methods ==========
 
     public synchronized void registerMouseCallback(Mouse3DClickCallBack mouseCallback) {
         if (this.mouseCallback != null) {

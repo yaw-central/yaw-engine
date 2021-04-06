@@ -7,7 +7,7 @@ import java.io.*;
  */
 public class OBJLoader {
 
-    // ===== Methods =====
+    // ========== Methods ==========
 
     public static Model loadModel(File file) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(file));

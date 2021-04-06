@@ -14,15 +14,24 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
+
 public class Skybox {
+
+    // ========== Attributes ==========
+
+
     public final float width, length, height;
+    private int vaoId, vboVertex, vboIndices;
     public Vector3f color;
     public boolean init = false;
     private ShaderProgram shaderProg;
-    private int vaoId, vboVertex, vboIndices;
+
+
+    // ========== Constructors ==========
+
 
     /**
-     * Construct a skybox with the specified width length height and color(vector)
+     * Constructs a skybox with the specified width, length, height and color vector
      *
      * @param width  width
      * @param length length
@@ -37,13 +46,13 @@ public class Skybox {
     }
 
     /**
-     * Construct a skybox with the specified width length height and color(r,g,b)
+     * Constructs a skybox with the specified width, length, height and color (r,g,b)
      *
      * @param width  width
      * @param length length
      * @param height height
      * @param r      red value of the color
-     * @param g      greeb value of the color
+     * @param g      green value of the color
      * @param b      blue value of the color
      */
     public Skybox(float width, float length, float height, float r, float g, float b) {
@@ -53,25 +62,30 @@ public class Skybox {
         this.color = new Vector3f(r, g, b);
     }
 
+
+    // ========== Methods ==========
+
+
     /**
-     * initialize the skybox shadders and vbo
+     * Initializes the skybox shaders and VBO
      *
      * @throws Exception if the last compile operation on shader was unsuccessful or an
-     *                   error occured during the shadder creation
+     *                   error occurred during the shader creation
      */
     public void init() throws Exception {
-        //if the last compile operation on shader was unsuccessful then an exception is launched
+
+        // If the last compile operation on shader was unsuccessful then an exception is launched
         shaderProg = new ShaderProgram();
 
         shaderProg.createVertexShader(skyboxVertexShader.SHADER_STRING);
         shaderProg.createFragmentShader(skyboxFragmentShader.SHADER_STRING);
 
         shaderProg.link();
-        //Initialization of the uniforms
+
+        // Initialization of the uniforms
         shaderProg.createUniform("projectionMatrix");
         shaderProg.createUniform("viewMatrix");
         shaderProg.createUniform("color");
-
 
         float lWidth = width / 2, lHeight = height / 2, lLength = length / 2;
 
@@ -110,18 +124,18 @@ public class Skybox {
         vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
 
-        //Initialization of VBO
-        //VBO of vertex
+        // Initialization of VBO
+        // VBO of vertex
         FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
         verticesBuffer.put(vertices).flip();
         vboVertex = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vboVertex);
         glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
 
-        //We explain to OpenGL how to read our Buffers.
+        // We explain to OpenGL how to read our Buffers
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-        //VBO of indices
+        // VBO of indices
         IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
         indicesBuffer.put(indices).flip();
         vboIndices = glGenBuffers();
@@ -133,6 +147,7 @@ public class Skybox {
         init = true;
     }
 
+
     public void draw(Camera cam) {
         shaderProg.bind();
         // Bind to the VAO
@@ -142,7 +157,7 @@ public class Skybox {
         shaderProg.setUniform("projectionMatrix", cam.getCameraMat());
 
         Matrix4f mat = new Matrix4f(cam.setupViewMatrix());
-        // we do not want translation to be applied to the sky box. so we fixed the value to 0
+        // We do not want translation to be applied to the sky box, so we set the value to 0
         mat.m30(0);
         mat.m31(0);
         mat.m32(0);
@@ -158,10 +173,10 @@ public class Skybox {
     }
 
     /**
-     * Deallocation and deletion of VAO and VBO
+     * Unallocation and deletion of VAO and VBO
      */
     public void cleanUp() {
-        // Deallocation of VAO and VBO
+        // Unallocation of VAO and VBO
         glDisableVertexAttribArray(0);
 
         // Delete the VBO

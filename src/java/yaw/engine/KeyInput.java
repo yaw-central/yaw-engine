@@ -12,13 +12,24 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class KeyInput extends GLFWKeyCallback {
 
+    // ========== Attributes ==========
+
+
     private Map<Integer, String> trackedKeys;
     private Set<String> keyDowns;
     private InputCallback inputCallback;
 
+
+    // ========== Constructors ==========
+
+
     public KeyInput() {
         this.inputCallback = null;
     }
+
+
+    // ========== Methods ==========
+
 
     /**
      * Allows to return the key corresponding to the event to be stored (event keyboard)
