@@ -13,6 +13,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class Window {
 
+
     // ========== Attributes ==========
 
 

@@ -19,10 +19,17 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class ShaderProgram {
 
+
+    // ========== Attributes ==========
+
+
     private final int mProgramId;
     private final HashMap<String, Integer> mUniformsList = new HashMap<>();
     private int mVertexShaderId;
     private int mFragmentShaderId;
+
+
+    // ========== Constructors ==========
 
 
     /**
@@ -36,6 +43,10 @@ public class ShaderProgram {
             throw new Exception("Could not create Shader");
         }
     }
+
+
+    // ========== Methods ==========
+
 
     /**
      * Create a vertex type shader
@@ -84,9 +95,7 @@ public class ShaderProgram {
 
     }
 
-    /**
-     *
-     */
+    
     public void cleanup() {
         unbind();
         if (mProgramId != 0) {
@@ -182,6 +191,70 @@ public class ShaderProgram {
     }
 
     /**
+     * Create a shader attach the specified source to it compile it and attach the shader to the main program
+     *
+     * @param shaderCode source code for the shader
+     * @param shaderType the type of shader to be created. One of:
+     *                   VERTEX_SHADER	FRAGMENT_SHADER	GEOMETRY_SHADER	TESS_CONTROL_SHADER
+     *                   TESS_EVALUATION_SHADER
+     * @return the id of the shader
+     * @throws Exception the exception o/
+     */
+    private int createShader(String shaderCode, int shaderType) throws Exception {
+        /*the shader object whose source code is to be replaced*/
+        int shaderId = glCreateShader(shaderType);
+        System.out.println(glGetShaderInfoLog(shaderId));
+        /*can't use glIsShader here because it alwayse return false and we don't know why */
+        if (shaderId == GL_FALSE) {
+            throw new Exception("Error creating shader. Code: " + shaderId);
+        }
+        /*Sets the source code in shader to the source code in the array of strings specified by strings.*/
+        glShaderSource(shaderId, shaderCode);
+        /*Compiles a shader object.*/
+        glCompileShader(shaderId);
+
+        if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == GL_FALSE) {
+            throw new Exception("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
+        }
+
+        /*void function */
+        glAttachShader(mProgramId, shaderId);
+
+        return shaderId;
+    }
+
+    /**
+     * Create uniform for each attribute of the point light
+     *
+     * @param uniformName uniform name
+     * @throws Exception the exception
+     */
+    private void createPointLightUniform(String uniformName) throws Exception {
+        createUniform(uniformName + ".color");
+        createUniform(uniformName + ".position");
+        createUniform(uniformName + ".intensity");
+        createUniform(uniformName + ".att_constant");
+        createUniform(uniformName + ".att_linear");
+        createUniform(uniformName + ".att_exponent");
+    }
+
+    /**
+     * Create uniform for each attribute of the spot light
+     *
+     * @param uniformName uniform name
+     * @throws Exception the exception
+     */
+    private void createSpotLightUniform(String uniformName) throws Exception {
+        createPointLightUniform(uniformName + ".pl");
+        createUniform(uniformName + ".conedir");
+        createUniform(uniformName + ".cutoff");
+    }
+
+
+    // ========== Getters ==========
+
+
+    /**
      * Retrieve a uniform location by name
      *
      * @param uniformName the uniform name
@@ -190,6 +263,10 @@ public class ShaderProgram {
     public int getUniform(String uniformName) {
         return mUniformsList.get(uniformName);
     }
+
+
+    // ========== Setters ==========
+
 
     /**
      * Modifies the value of a uniform variable with the specified value
@@ -318,66 +395,6 @@ public class ShaderProgram {
      */
     public void setUniform(String uniformName, AmbientLight ambient) {
         setUniform(uniformName, ambient.getShaderValue());
-    }
-
-    /**
-     * Create a shader attach the specified source to it compile it and attach the shader to the main program
-     *
-     * @param shaderCode source code for the shader
-     * @param shaderType the type of shader to be created. One of:
-     *                   VERTEX_SHADER	FRAGMENT_SHADER	GEOMETRY_SHADER	TESS_CONTROL_SHADER
-     *                   TESS_EVALUATION_SHADER
-     * @return the id of the shader
-     * @throws Exception the exception o/
-     */
-    private int createShader(String shaderCode, int shaderType) throws Exception {
-        /*the shader object whose source code is to be replaced*/
-        int shaderId = glCreateShader(shaderType);
-        System.out.println(glGetShaderInfoLog(shaderId));
-        /*can't use glIsShader here because it alwayse return false and we don't know why */
-        if (shaderId == GL_FALSE) {
-            throw new Exception("Error creating shader. Code: " + shaderId);
-        }
-        /*Sets the source code in shader to the source code in the array of strings specified by strings.*/
-        glShaderSource(shaderId, shaderCode);
-        /*Compiles a shader object.*/
-        glCompileShader(shaderId);
-
-        if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == GL_FALSE) {
-            throw new Exception("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
-        }
-
-        /*void function */
-        glAttachShader(mProgramId, shaderId);
-
-        return shaderId;
-    }
-
-    /**
-     * Create uniform for each attribute of the point light
-     *
-     * @param uniformName uniform name
-     * @throws Exception the exception
-     */
-    private void createPointLightUniform(String uniformName) throws Exception {
-        createUniform(uniformName + ".color");
-        createUniform(uniformName + ".position");
-        createUniform(uniformName + ".intensity");
-        createUniform(uniformName + ".att_constant");
-        createUniform(uniformName + ".att_linear");
-        createUniform(uniformName + ".att_exponent");
-    }
-
-    /**
-     * Create uniform for each attribute of the spot light
-     *
-     * @param uniformName uniform name
-     * @throws Exception the exception
-     */
-    private void createSpotLightUniform(String uniformName) throws Exception {
-        createPointLightUniform(uniformName + ".pl");
-        createUniform(uniformName + ".conedir");
-        createUniform(uniformName + ".cutoff");
     }
 
     /**

@@ -9,6 +9,10 @@ import static org.lwjgl.opengl.GL32.GL_PROGRAM_POINT_SIZE;
 
 public class BoundingBoxDrawingStrategy implements MeshDrawingStrategy {
 
+
+    // ========== Methods ==========
+
+
     @Override
     public void drawMesh(Mesh pMesh) {
         glEnable(GL_POLYGON_OFFSET_FILL);

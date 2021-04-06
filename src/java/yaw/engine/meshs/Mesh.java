@@ -24,12 +24,17 @@ import static org.lwjgl.opengl.GL30.*;
  *
  */
 public class Mesh {
-    private final List<Integer> vboIdList;
-    //reference to the VAO(wrapper)
-    private int mVaoId;
-    //VBO's ID
 
-    //VBO
+
+    // ========== Attributes ==========
+
+
+    private final List<Integer> vboIdList;
+    // Reference to the VAO (wrapper)
+    private int mVaoId;
+    // VBO's ID
+
+    // VBO
     private float[] mVertices;//mVertices
     private float[] mNormals;
     private int[] mIndices; //order into which  mVertices should be drawn by referring to their  position
@@ -37,8 +42,11 @@ public class Mesh {
     private int mWeight;  // the mWeight of an object in a group (e.g. a mass in a group planets)
     private Material mMaterial;
     private Map<String, String> mOptionalAttributes;
-    //strategy when we draw the elements
+    // Strategy when we draw the elements
     private MeshDrawingStrategy mDrawingStrategy;
+
+
+    // ========== Constructors ==========
 
     /**
      * Construct a Mesh with the specified mMaterial , mVertices, mNormals , mTextureCoordinate and mIndices.
@@ -82,6 +90,10 @@ public class Mesh {
         this.mOptionalAttributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
     }
+
+
+    // ========== Methods ==========
+
 
     /**
      * Initialize  vertex, mNormals, mIndices and mTextureCoordinate buffer
@@ -244,16 +256,16 @@ public class Mesh {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+
+    // ========== Getters ==========
+
+
     public float[] getVertices() {
         return mVertices;
     }
 
     public Material getMaterial() {
         return mMaterial;
-    }
-
-    public void setMaterial(Material pMaterial) {
-        this.mMaterial = pMaterial;
     }
 
     public float[] getNormals() {
@@ -268,6 +280,14 @@ public class Mesh {
         return mWeight;
     }
 
+
+    // ========== Setters ==========
+
+
+    public void setMaterial(Material pMaterial) {
+        this.mMaterial = pMaterial;
+    }
+
     public void setDrawingStrategy(MeshDrawingStrategy pDrawingStrategy) {
         mDrawingStrategy = pDrawingStrategy;
     }
@@ -275,4 +295,5 @@ public class Mesh {
     public void setTextCoords(float[] pTextCoord) {
         mTextCoords = pTextCoord;
     }
+
 }

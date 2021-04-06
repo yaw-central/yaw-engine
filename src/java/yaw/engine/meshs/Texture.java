@@ -12,12 +12,19 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class Texture {
 
+
+    // ========== Attributes ==========
+
+
     private final String mFileName;
     private int mId;
     private int mWidth;
     private int mHeight;
     private int mNumRows = 1;
     private int mNumCols = 1;
+
+
+    // ========== Constructors ==========
 
 
     public Texture(String pFileName, int pNumCols, int pNumRows) {
@@ -37,6 +44,9 @@ public class Texture {
         mId = -1;
         mFileName = pFileName;
     }
+
+
+    // ========== Methods ==========
 
 
     /**
@@ -102,6 +112,10 @@ public class Texture {
         return mId >= 0;
     }
 
+
+    // ========== Getters ==========
+
+
     public int getNumCols() {
         return mNumCols;
     }
@@ -121,4 +135,5 @@ public class Texture {
     public int getId() {
         return mId;
     }
+
 }

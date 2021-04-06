@@ -9,6 +9,9 @@ import static org.lwjgl.opengl.GL11.*;
 public class DefaultDrawingStrategy implements MeshDrawingStrategy {
 
 
+    // ========== Methods ==========
+
+
     @Override
     public void drawMesh(Mesh pMesh) {
         // Draw the mVertices

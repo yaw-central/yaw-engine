@@ -12,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class KeyInput extends GLFWKeyCallback {
 
+
     // ========== Attributes ==========
 
 

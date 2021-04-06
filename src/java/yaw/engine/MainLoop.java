@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
  */
 public class MainLoop implements Runnable {
 
+
     // ========== Attributes ==========
 
 

@@ -26,9 +26,12 @@ import java.util.logging.*;
 
 
 /**
- * This class represents our logger it inherited from PrintStream to be used for debug opengl .
+ * This class represents our logger it inherited from PrintStream to be used for debug opengl.
+ * It is a singleton.
  */
 public class LoggerYAW extends PrintStream {
+
+    // ========== Attributes ==========
 
 
     /**
@@ -36,33 +39,6 @@ public class LoggerYAW extends PrintStream {
      */
     private static LoggerYAW instance = new LoggerYAW(APIUtil.DEBUG_STREAM);
     private static Logger logger;
-
-
-    /**
-     * Get instance
-     *
-     * @return the singleton
-     */
-    public static LoggerYAW getInstance() {
-        return instance;
-    }
-
-    public static void logOpenGl() {
-        GLUtil.setupDebugMessageCallback(instance);
-    }
-
-    /**
-     * set the debug level of the logger
-     *
-     * @param filtreLev filtreLev Allows to filter the messages according to the level of the messages
-     */
-    public static void setLevelDebug(Level filtreLev) {
-        logger.setLevel(filtreLev);
-    }
-
-    public static Logger getLogger() {
-        return logger;
-    }
 
     /**
      * level of the current message
@@ -79,10 +55,22 @@ public class LoggerYAW extends PrintStream {
      **/
     private String messageLogOpenGL = "";
 
+
+    // ========== Constructors ==========
+
+
     private LoggerYAW(OutputStream out) {
         super(out);
         /** Allows to initialize the internal logger  */
         init("loggerYAW");
+    }
+
+
+    // ========== Methods ==========
+
+
+    public static void logOpenGl() {
+        GLUtil.setupDebugMessageCallback(instance);
     }
 
     @Override
@@ -210,11 +198,38 @@ public class LoggerYAW extends PrintStream {
         logger.removeHandler(mFileHandler);
     }
 
+
+
+    // ========== Getters ==========
+
+
+    public static LoggerYAW getInstance() {
+        return instance;
+    }
+
     public String getNameLogger() {
         return mNameLogger;
     }
 
+    public static Logger getLogger() {
+        return logger;
+    }
+
+
+    // ========== Setters ==========
+
+
     public void setNameLogger(String nLogger) {
         this.mNameLogger = nLogger;
     }
+
+    /**
+     * set the debug level of the logger
+     *
+     * @param filtreLev filtreLev Allows to filter the messages according to the level of the messages
+     */
+    public static void setLevelDebug(Level filtreLev) {
+        logger.setLevel(filtreLev);
+    }
+
 }

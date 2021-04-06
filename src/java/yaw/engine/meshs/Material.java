@@ -8,6 +8,11 @@ import org.joml.Vector3f;
  */
 
 public class Material {
+
+
+    // ========== Attributes ==========
+
+
     private static final float REFLECTANCE_DEFAULT_VALUE = 0f;
     private static final Vector3f DEFAULT_COLOUR = new Vector3f(1.0f, 1.0f, 1.0f);
 
@@ -17,6 +22,10 @@ public class Material {
     private float mReflectance;
     //texture
     private Texture mTexture;
+
+
+    // ========== Constructors ==========
+
 
     /**
      * Construct a material with the specified reflectance value and white
@@ -82,31 +91,43 @@ public class Material {
     }
 
 
-    public Texture getTexture() {
-        return mTexture;
-    }
+    // ========== Methods ==========
 
-    public void setTexture(Texture pTexture) {
-        mTexture = pTexture;
-    }
 
     public boolean isTextured() {
         return this.mTexture != null;
+    }
+
+
+    // ========== Getters ==========
+
+
+    public Texture getTexture() {
+        return mTexture;
     }
 
     public Vector3f getColor() {
         return mColor;
     }
 
-    public void setColor(Vector3f pColor) {
-        mColor = pColor;
-    }
-
     public float getReflectance() {
         return mReflectance;
+    }
+
+
+    // ========== Setters ==========
+
+
+    public void setTexture(Texture pTexture) {
+        mTexture = pTexture;
+    }
+
+    public void setColor(Vector3f pColor) {
+        mColor = pColor;
     }
 
     public void setReflectance(float pReflectance) {
         mReflectance = pReflectance;
     }
+
 }

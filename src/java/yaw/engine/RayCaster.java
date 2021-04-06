@@ -14,7 +14,9 @@ import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 
 public class RayCaster {
 
+
     // ========== Methods ==========
+
 
     /**
      * Calculate the ray casted by the mouse click in our world, using the camera

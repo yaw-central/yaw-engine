@@ -17,11 +17,15 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class Renderer {
 
+
     // ========== Attributes ==========
+
 
     protected ShaderProgram mShaderProgram;
 
+
     // ========== Methods ==========
+
 
     /**
      * Basic rendering.
@@ -78,7 +82,7 @@ public class Renderer {
         }
 
         //Debug
-      /*  int err = GL11.GL_NO_ERROR;
+        /*  int err = GL11.GL_NO_ERROR;
         if ((err = GL11.glGetError()) != GL11.GL_NO_ERROR) {
 
             System.out.println(err);
