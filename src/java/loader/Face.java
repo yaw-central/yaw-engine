@@ -1,5 +1,7 @@
 package loader;
 
+import org.joml.Vector3f;
+
 /**
  * A Face represents a face of a 3D object read from an OBJ file.
  */

@@ -1,5 +1,7 @@
 package loader;
 
+import org.joml.Vector3f;
+
 import java.util.ArrayList;
 import java.util.List;
 
