@@ -9,8 +9,18 @@ import org.joml.Vector3f;
  **/
 
 public class SpotLight extends PointLight {
+
+
+    // ========== Attributes ==========
+
+
     Vector3f mConedir;
     float mCutoffAngle;
+
+
+
+    // ========== Constructors ==========
+
 
     /**
      * Constructor with the specified color, position, intensity, constantAtt, linearAtt, quadraticAtt, conedir, cutoffAngle
@@ -76,12 +86,21 @@ public class SpotLight extends PointLight {
         this.mCutoffAngle = source.mCutoffAngle;
     }
 
-    /**
-     * getters and setters
-     */
+
+    // ========== Getters ==========
+
+
     public Vector3f getConedir() {
         return mConedir;
     }
+
+    public float getCutoffAngle() {
+        return mCutoffAngle;
+    }
+
+
+    // ========== Setters ==========
+
 
     public void setConeDir(float x, float y, float z) {
         this.mConedir = new Vector3f(x, y, z);
@@ -91,11 +110,8 @@ public class SpotLight extends PointLight {
         this.mConedir = cd;
     }
 
-    public float getCutoffAngle() {
-        return mCutoffAngle;
-    }
-
     public void setCutoffAngle(float coa) {
         this.mCutoffAngle = coa;
     }
+
 }

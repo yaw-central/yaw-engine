@@ -148,6 +148,7 @@ public class Window {
         return width / (double) height;
     }
 
+
     /**
      * Indicates if the windows should be closed
      *
@@ -157,14 +158,14 @@ public class Window {
         return glfwWindowShouldClose(windowHandle);
     }
 
+
+    // ========== Getters ==========
+
+
     /* package */
-    static synchronized KeyInput getGLFWKeyCallback() {
-        return keyCallback;
-    }
+    static synchronized KeyInput getGLFWKeyCallback() { return Window.keyCallback; }
 
     // 3D click
-    public static synchronized MouseInput getGLFWMouseCallback() {
-        return mouseCallback;
-    }
+    public static synchronized MouseInput getGLFWMouseCallback() { return Window.mouseCallback; }
 
 }

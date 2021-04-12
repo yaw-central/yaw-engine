@@ -11,6 +11,11 @@ import java.util.ArrayList;
  * HitBox is an ItemObject, but unlike a classical ItemObject we can check if there is a collision with other Hitboxes
  */
 public class HitBox extends ItemObject {
+
+
+    // ========== Constructors ==========
+
+
     /**
      * @param id          Name of the HitBox
      * @param orientation Initial Rotation
@@ -22,6 +27,9 @@ public class HitBox extends ItemObject {
         super(id, position, orientation, scale, MeshBuilder.generateBoundingBox(xLength, yLength, zLength));
         getMesh().getMaterial().setColor(new Vector3f(0, 255, 0));
     }
+
+
+    // ========== Methods ==========
 
 
     /**

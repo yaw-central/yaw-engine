@@ -22,7 +22,7 @@ public class MeshBuilder {
     private static final String PYRAMID_MESH = "pyramid";
     private static final String OCTAHEDRON_MESH = "octahedron";
     private static final String TETRAHEDRON_MESH = "tetrahedron";
-    //
+
 
     //TODO remove the text coord array, only use it for test
 

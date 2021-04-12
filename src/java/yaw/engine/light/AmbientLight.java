@@ -7,10 +7,19 @@ import org.joml.Vector3f;
  */
 
 public class AmbientLight {
+
+
+    // ========== Attributes ==========
+
+
     private Vector3f mColor;
     private float mIntensity;
     // Value put in the shader
     private Vector3f mShaderValue;
+
+
+    // ========== Constructors ==========
+
 
     /**
      * Constructor with the specified color and intensity
@@ -62,6 +71,26 @@ public class AmbientLight {
         this.mShaderValue = new Vector3f(mColor.x * intensity, mColor.y * intensity, mColor.z * intensity);
     }
 
+
+    // ========== Getters ==========
+
+
+    public Vector3f getColor() {
+        return mColor;
+    }
+
+    public float getIntensity() {
+        return mIntensity;
+    }
+
+    public Vector3f getShaderValue() {
+        return mShaderValue;
+    }
+
+
+    // ========== Setters ==========
+
+
     /**
      * Setter for the color.
      * Initialize the color.
@@ -85,18 +114,4 @@ public class AmbientLight {
         this.mShaderValue = new Vector3f(mColor.x * intensity, mColor.y * intensity, mColor.z * intensity);
     }
 
-    /**
-     * getters
-     */
-    public Vector3f getColor() {
-        return mColor;
-    }
-
-    public float getIntensity() {
-        return mIntensity;
-    }
-
-    public Vector3f getShaderValue() {
-        return mShaderValue;
-    }
 }

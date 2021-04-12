@@ -11,11 +11,17 @@ import yaw.engine.meshs.Mesh;
  */
 public class ItemObject extends Item {
 
+
+    // ========== Attributes ==========
+
+
     /** The mesh (geometry) of the object */
     private Mesh mesh;
-
     /** The transformation matrix to world coordinates */
     private Matrix4f worldMatrix;
+
+
+    // ========== Constructors ==========
 
 
     public ItemObject(String id, Vector3f position, Quaternionf orientation, float scale, Mesh mesh) {
@@ -25,16 +31,9 @@ public class ItemObject extends Item {
         invalidate();
     }
 
-    public void buildWorldMatrix() {
-        worldMatrix.identity()
-                .translate(getPosition())
-                .rotate(getOrientation())
-                .scale(getScale());
-    }
 
-    public Matrix4f getWorldMatrix() {
-        return worldMatrix;
-    }
+    // ========== Methods ==========
+
 
     @Override
     public void invalidate() {
@@ -50,12 +49,6 @@ public class ItemObject extends Item {
             dif.add(center);
             position = dif;
         }
-    }
-
-
-    /** Get the mesh (geometry) of the item */
-    public Mesh getMesh() {
-        return this.mesh;
     }
 
     /**
@@ -182,6 +175,25 @@ public class ItemObject extends Item {
             System.out.println(aaxis.x + " " + aaxis.y + " " + aaxis.z + " ");
             rotateAxisAround(toDegrees(aaxis.angle), new Vector3f(aaxis.x, aaxis.y, aaxis.z), center);
         }
+    }
+
+    public void buildWorldMatrix() {
+        worldMatrix.identity()
+                .translate(getPosition())
+                .rotate(getOrientation())
+                .scale(getScale());
+    }
+
+
+    // ========== Getters ==========
+
+
+    public Matrix4f getWorldMatrix() {
+        return worldMatrix;
+    }
+
+    public Mesh getMesh() {
+        return this.mesh;
     }
 
 

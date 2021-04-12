@@ -12,7 +12,16 @@ import java.util.Map;
  * The natural position of a group is at the centroid of its contained items.
  */
 public class ItemGroup extends Item {
+
+
+    // ========== Getters ==========
+
+
     private Map<String, Item> items;
+
+
+    // ========== Constructors ==========
+
 
     public ItemGroup(String id, Vector3f position, Quaternionf orientation, float scale) {
         super(id, position, orientation, scale);
@@ -24,7 +33,7 @@ public class ItemGroup extends Item {
     }
 
     /**
-     * this method adds an item to the group, updates the weight and the center.
+     * Adds an item to the group, updates the weight and the center.
      *
      * @param id   the identity of the item (must be unique)
      * @param item the Item to add
@@ -40,21 +49,22 @@ public class ItemGroup extends Item {
 
 
     /**
-     * remove the item i from the group, update the center and the weight
+     * Removes the item id from the group, update the center and the weight
      *
      * @param id the item to remove
      * @throws Error if there is no item with such identity inside the group
      */
     public void remove(String id) {
         if (!items.containsKey(id)) {
-            throw new Error("The group does not contains an item with identity: " + id);
+            throw new Error("The group does not contain an item with identity: " + id);
         }
         items.remove(id);
         positionAtCentroid();
     }
 
+    @Override
     public void invalidate() {
-        // do nothing for group
+        // Does nothing for group
     }
 
 

@@ -11,6 +11,10 @@ import java.util.ArrayList;
  */
 public class Collision {
 
+
+    // ========== Methods ==========
+
+
     /**
      * Returns true if the segment passes through the face
      * Segment define by 2 points (segmentStart, segmentEnd)
@@ -27,9 +31,7 @@ public class Collision {
     public static boolean isIntersectSegmentAndFace(Vector4f segmentStart, Vector4f segmentEnd, Vector4f corner1Face, Vector4f corner2Face, Vector4f corner3Face, Vector4f corner4Face) {
 
         Vector3f vecSegment = new Vector3f(segmentEnd.x - segmentStart.x, segmentEnd.y - segmentStart.y, segmentEnd.z - segmentStart.z);
-
         Vector3f vecCD = new Vector3f(corner2Face.x - corner1Face.x, corner2Face.y - corner1Face.y, corner2Face.z - corner1Face.z);
-
         Vector3f vecCF = new Vector3f(corner4Face.x - corner1Face.x, corner4Face.y - corner1Face.y, corner4Face.z - corner1Face.z);
 
         float a1 = vecSegment.x;
@@ -48,13 +50,11 @@ public class Collision {
         float d2 = segmentStart.y - corner1Face.y;
         float d3 = segmentStart.z - corner1Face.z;
 
-
         float det = -(a1 * (b2 * c3 - c2 * b3) - b1 * (a2 * c3 - a3 * c2) + c1 * (a2 * b3 - a3 * b2));
         if (det != 0) {
             float x = (d1 * (b2 * c3 - c2 * b3) - b1 * (d2 * c3 - d3 * c2) + c1 * (d2 * b3 - d3 * b2)) / (det);
             float y = (a1 * (d2 * c3 - c2 * d3) - d1 * (a2 * c3 - a3 * c2) + c1 * (a2 * d3 - a3 * d2)) / (det);
             float z = (a1 * (b2 * d3 - d2 * b3) - b1 * (a2 * d3 - a3 * d2) + d1 * (a2 * b3 - a3 * b2)) / (det);
-
 
             if (x >= 0 && x <= 1 && y >= 0 && y <= 1 && z >= 0 && z <= 1)
                 return true;
@@ -80,10 +80,9 @@ public class Collision {
                 listVertex.add(vec);
         }
 
-        //get Real position of vertex after rotation or translation
+        // Get real position of vertex after rotation or translation
         for (int i = 0; i < listVertex.size(); i++)
             listVertex.set(i, listVertex.get(i).mul(item.getWorldMatrix()));
-
 
         return listVertex;
     }
@@ -95,4 +94,5 @@ public class Collision {
         }
         return false;
     }
+
 }

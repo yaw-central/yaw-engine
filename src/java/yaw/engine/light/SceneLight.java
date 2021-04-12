@@ -6,6 +6,11 @@ import org.joml.Vector4f;
 import yaw.engine.shader.ShaderProgram;
 
 public class SceneLight {
+
+
+    // ========== Attributes ==========
+
+
     // Maximum number of pointLight and spotLight which can be created.
     // If this value is modified, it is needed to change the value in the frag.sh
     public static final int MAX_POINTLIGHT = 5;
@@ -16,6 +21,10 @@ public class SceneLight {
     private DirectionalLight mSun;
     private PointLight[] mPointTable;
     private SpotLight[] mSpotTable;
+
+
+    // ========== Constructors ==========
+
 
     /**
      * Constructor without parameters, it used to create the maximum of point light and spot light.
@@ -31,21 +40,9 @@ public class SceneLight {
             this.mSpotTable[i] = new SpotLight();
     }
 
-    public void removeAmbient() {
-        this.mAmbient = new AmbientLight();
-    }
 
-    public void removeSun() {
-        this.mSun = new DirectionalLight();
-    }
+    // ========== Methods ==========
 
-    public void setPointTable(PointLight point, int pos) {
-        this.mPointTable[pos] = point;
-    }
-
-    public void setSpotTable(SpotLight spot, int pos) {
-        this.mSpotTable[pos] = spot;
-    }
 
     /**
      * Set to the render the different light
@@ -53,7 +50,6 @@ public class SceneLight {
      * @param sh         shaderProgram
      * @param viewMatrix viewMatrix
      */
-
     public void render(ShaderProgram sh, Matrix4f viewMatrix) {
         sh.setUniform("ambientLight", mAmbient);
         sh.setUniform("specularPower", mSpecularPower);
@@ -104,25 +100,9 @@ public class SceneLight {
         sh.setUniform("directionalLight", currDirLight);
     }
 
-    /**
-     * getters and setters
-     */
 
-    public void setPointLight(PointLight pl, int pos) {
-        mPointTable[pos] = pl;
-    }
+    // ========== Getters ==========
 
-    public void setSpotLight(SpotLight sl, int pos) {
-        mSpotTable[pos] = sl;
-    }
-
-    public DirectionalLight getSun() {
-        return this.mSun;
-    }
-
-    public void setSun(DirectionalLight sun) {
-        this.mSun = sun;
-    }
 
     public AmbientLight getAmbientLight() {
         return mAmbient;
@@ -136,16 +116,52 @@ public class SceneLight {
         return mPointTable;
     }
 
-    /**
-     * setters
-     */
+    public DirectionalLight getSun() {
+        return this.mSun;
+    }
+
+    public SpotLight[] getSpotTable() {
+        return mSpotTable;
+    }
+
+
+    // ========== Setters ==========
+
+
+    public void setAmbient(AmbientLight ambient) {
+        this.mAmbient = ambient;
+    }
+
+    public void removeAmbient() {
+        this.mAmbient = new AmbientLight();
+    }
+
+    public void setSun(DirectionalLight sun) {
+        this.mSun = sun;
+    }
+
+    public void removeSun() {
+        this.mSun = new DirectionalLight();
+    }
+
+    public void setPointLight(PointLight pl, int pos) {
+        mPointTable[pos] = pl;
+    }
+
+    public void setPointTable(PointLight point, int pos) {
+        this.mPointTable[pos] = point;
+    }
 
     public void setPointTable(PointLight[] pointTable) {
         this.mPointTable = pointTable;
     }
 
-    public SpotLight[] getSpotTable() {
-        return mSpotTable;
+    public void setSpotLight(SpotLight sl, int pos) {
+        mSpotTable[pos] = sl;
+    }
+
+    public void setSpotTable(SpotLight spot, int pos) {
+        this.mSpotTable[pos] = spot;
     }
 
     public void setSpotTable(SpotLight[] spotTable) {
@@ -160,11 +176,5 @@ public class SceneLight {
         mSpecularPower = x;
     }
 
-    /**
-     * setters and  method remove for the ambient and directional light
-     */
 
-    public void setAmbient(AmbientLight ambient) {
-        this.mAmbient = ambient;
-    }
 }

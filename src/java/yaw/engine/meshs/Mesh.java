@@ -199,29 +199,6 @@ public class Mesh {
 
     }
 
-    /**
-     * Returns the value to which the specified @attributeName is mapped,
-     * or null if this map contains no mapping for the key.
-     *
-     * @param pAttributeName name of the attribute (most of the time it will be clojure keywords)
-     * @return the corresponding value if exist null otherwise
-     */
-    public Object getAttribute(String pAttributeName) {
-        return this.mOptionalAttributes.get(pAttributeName);
-    }
-
-    /**
-     * Copies all of the mappings from the specified map to this map (optional operation).
-     * The effect of this call is equivalent to that of calling put(k, v) on this map once for each mapping
-     * from key k to value v in the specified map.
-     * The behavior of this operation is undefined if the specified map is modified while the operation is in progress.
-     *
-     * @param pOptionalAttributes mappings to be stored in this map
-     */
-    public void putOptionalAttributes(Map<String, String> pOptionalAttributes) {
-        this.mOptionalAttributes.putAll(pOptionalAttributes);
-    }
-
     public void initRender() {
 
         Texture texture = mMaterial != null ? mMaterial.getTexture() : null;
@@ -260,6 +237,17 @@ public class Mesh {
     // ========== Getters ==========
 
 
+    /**
+     * Returns the value to which the specified @attributeName is mapped,
+     * or null if this map contains no mapping for the key.
+     *
+     * @param pAttributeName name of the attribute (most of the time it will be clojure keywords)
+     * @return the corresponding value if exist null otherwise
+     */
+    public Object getAttribute(String pAttributeName) {
+        return this.mOptionalAttributes.get(pAttributeName);
+    }
+
     public float[] getVertices() {
         return mVertices;
     }
@@ -283,6 +271,17 @@ public class Mesh {
 
     // ========== Setters ==========
 
+    /**
+     * Copies all of the mappings from the specified map to this map (optional operation).
+     * The effect of this call is equivalent to that of calling put(k, v) on this map once for each mapping
+     * from key k to value v in the specified map.
+     * The behavior of this operation is undefined if the specified map is modified while the operation is in progress.
+     *
+     * @param pOptionalAttributes mappings to be stored in this map
+     */
+    public void putOptionalAttributes(Map<String, String> pOptionalAttributes) {
+        this.mOptionalAttributes.putAll(pOptionalAttributes);
+    }
 
     public void setMaterial(Material pMaterial) {
         this.mMaterial = pMaterial;

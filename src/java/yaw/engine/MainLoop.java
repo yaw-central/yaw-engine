@@ -317,19 +317,17 @@ public class MainLoop implements Runnable {
     }
 
     /* package */
-    synchronized void removeSkybox() {
-        mSkyboxToBeRemoved.add(mSkybox);
-        this.mSkybox = null;
+    synchronized void setSkybox(Skybox pSkybox) {
+        if (this.mSkybox != null) {
+            mSkyboxToBeRemoved.add(pSkybox);
+        }
+        this.mSkybox = pSkybox;
     }
 
     /* package */
-    synchronized void clearCameras() {
-        mCamerasList = new Vector<>();
-    }
-
-    /* package */ void addCamera(int pIndex, Camera pCamera) {
-        if (pIndex == 0) mCamera = pCamera;
-        mCamerasList.add(pIndex, pCamera);
+    synchronized void removeSkybox() {
+        mSkyboxToBeRemoved.add(mSkybox);
+        this.mSkybox = null;
     }
 
     /* package */
@@ -338,12 +336,18 @@ public class MainLoop implements Runnable {
     }
 
     /* package */
-    synchronized void setSkybox(Skybox pSkybox) {
-        if (this.mSkybox != null) {
-            mSkyboxToBeRemoved.add(pSkybox);
-        }
-        this.mSkybox = pSkybox;
+    void addCamera(int pIndex, Camera pCamera) {
+        if (pIndex == 0) mCamera = pCamera;
+        mCamerasList.add(pIndex, pCamera);
     }
+
+    /* package */
+    synchronized void clearCameras() {
+        mCamerasList = new Vector<>();
+    }
+
+
+
 
 }
 

@@ -8,7 +8,16 @@ import org.joml.Vector3f;
  */
 
 public class DirectionalLight extends AmbientLight {
+
+
+    // ========== Attributes ==========
+
+
     public Vector3f mDirection;
+
+
+    // ========== Constructors ==========
+
 
     /**
      * Constructor with the parameters direction and the intensity = 0.
@@ -58,18 +67,25 @@ public class DirectionalLight extends AmbientLight {
         this.mDirection = new Vector3f(dx, dy, dz);
     }
 
-    //Default: vertical white light
+    /**
+     * Default constructor : vertical white light
+     */
     public DirectionalLight() {
         super(0);
         mDirection = new Vector3f(0f, -1f, 0f);
     }
 
-    /**
-     * getter and setters
-     */
+
+    // ========== Getters ==========
+
+
     public Vector3f getDirection() {
         return mDirection;
     }
+
+
+    // ========== Setters ==========
+
 
     public void setDirection(Vector3f direction) {
         this.mDirection = direction;

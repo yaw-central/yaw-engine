@@ -15,17 +15,27 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class Camera {
 
-    public Vector3f position; /* Position of the camera (the camera is represented by a point in space). */
-    public Vector3f orientation;/* Sets the position of the point fixed by the camera. */
+
+    // ========== Attributes ==========
+
+
+    /** Position of the camera (the camera is represented by a point in space). */
+    public Vector3f position;
+    /** Sets the position of the point fixed by the camera. */
+    public Vector3f orientation;
     private Matrix4f perspectiveMat;
-    /* Angle of the field of view
-       A small angle gives a zoom effect.
-       Like a zoom on a pair of binoculars.. */
+    /** Angle of the field of view
+     * A small angle gives a zoom effect.
+     * Like a zoom on a pair of binoculars.. */
     private float fieldOfView;
-    /* Scope of vision min and max.
-       Outside this range objects will not be displayed.*/
+    /** Scope of vision min and max.
+     * Outside this range objects will not be displayed.*/
     private float zNear = 0.01f;
     private float zFar = 1000.f;
+
+
+    // ========== Constructors ==========
+
 
     /**
      * The constructors of the class Camera Creates the camera of the 3D scene with the position of the camera, the perspective.
@@ -117,54 +127,12 @@ public class Camera {
         this.orientation = new Vector3f();
     }
 
-    public Matrix4f getCameraMat() {
-        return perspectiveMat;
-    }
+
+    // ========== Methods ==========
+
 
     /**
-     * Changes the position of the camera.
-     *
-     * @param x coordinate X of the camera
-     * @param y coordinate Y of the camera
-     * @param z coordinate Z of the camera
-     */
-    public void setPosition(float x, float y, float z) {
-        this.position.x = x;
-        this.position.y = y;
-        this.position.z = z;
-    }
-
-    public Vector3f getPosition() {
-        return position;
-    }
-
-    public void setPosition(Vector3f pos) {
-        this.position = pos;
-    }
-
-    /**
-     * Changes the orientation of the camera.
-     *
-     * @param x coordinate X of the camera
-     * @param y coordinate Y of the camera
-     * @param z coordinate Z of the camera
-     */
-    public void setOrientation(float x, float y, float z) {
-        this.orientation.x = x;
-        this.orientation.y = y;
-        this.orientation.z = z;
-    }
-
-    public Vector3f getOrientation() {
-        return orientation;
-    }
-
-    public void setOrientation(Vector3f pos) {
-        this.orientation = pos;
-    }
-
-    /**
-     * Allows to change the place of our object and therefore to make it navigate in our 3D scene.
+     * Allows to change the place of our object and therefore to make it navigate in our 3D scene
      *
      * @param x x
      * @param y y
@@ -175,7 +143,7 @@ public class Camera {
     }
 
     /**
-     * Changes the size of the object to adjust the 3D scene.
+     * Changes the size of the object to adjust the 3D scene
      *
      * @param x x
      * @param y y
@@ -204,7 +172,7 @@ public class Camera {
     }
 
     /**
-     * Updates the perspective of the scene.
+     * Updates the perspective of the scene
      */
     public void updateCameraMat() {
         perspectiveMat = new Matrix4f().perspective(fieldOfView,
@@ -212,42 +180,25 @@ public class Camera {
         /* perspectiveMat = perspectiveMat.mul(setupViewMatrix()); */
     }
 
-
-    public float getzNear() {
-        return zNear;
-    }
-
-    public float getzFar() {
-        return zFar;
-    }
-
-    public float getFieldOfView() {
-        return fieldOfView;
-    }
-
-    public void setFieldOfView(float fov) {
-        this.fieldOfView = fov;
-    }
-
-
-
-    /*
-    Adding ability to move the camera using the Keyboard arrows
+    /**
+     * Adds the ability to move the camera using the Keyboard arrows
      */
-
-
     public void move() {
 
         if (Input.isKeyDown(GLFW_KEY_UP)) {
             this.rotate(1f, 0, 0);
             System.out.println(this.getOrientation());
         }
+
         if (Input.isKeyDown(GLFW_KEY_DOWN))
             this.rotate(-1f, 0, 0);
+
         if (Input.isKeyDown(GLFW_KEY_LEFT))
             this.rotate(0, 1, 0);
+
         if (Input.isKeyDown(GLFW_KEY_RIGHT))
             this.rotate(0f, -1f, 0);
+
         if (Input.isKeyDown(GLFW_KEY_W)) {
             float xO = getOrientation().x;
             float yO = getOrientation().y;
@@ -260,19 +211,14 @@ public class Camera {
             int signX = 1;
             int signY = 1;
             int signZ = 1;
-            if (xO < xP) {
-                signX = -1;
-            }
-            if (yO < yP) {
-                signX = -1;
-            }
 
-            if (zO < zP) {
-                signZ = -1;
-            }
+            if (xO < xP) { signX = -1; }
+            if (yO < yP) { signX = -1; }
+            if (zO < zP) { signZ = -1; }
+
             this.setOrientation(0, 0, 45);
-
         }
+
         if (Input.isKeyDown(GLFW_KEY_A))
             this.translate(-0.1f, 0, 0);
         if (Input.isKeyDown(GLFW_KEY_S))
@@ -284,6 +230,76 @@ public class Camera {
             this.setOrientation(0, 0, 0);
         }
 
+    }
+
+
+    // ========== Getters ==========
+
+
+    public Matrix4f getCameraMat() {
+        return this.perspectiveMat;
+    }
+
+    public Vector3f getPosition() {
+        return position;
+    }
+
+    public Vector3f getOrientation() {
+        return orientation;
+    }
+
+    public float getzNear() {
+        return this.zNear;
+    }
+
+    public float getzFar() {
+        return this.zFar;
+    }
+
+    public float getFieldOfView() {
+        return this.fieldOfView;
+    }
+
+
+    // ========== Setters ==========
+
+
+    /**
+     * Changes the position of the camera.
+     *
+     * @param x coordinate X of the camera
+     * @param y coordinate Y of the camera
+     * @param z coordinate Z of the camera
+     */
+    public void setPosition(float x, float y, float z) {
+        this.position.x = x;
+        this.position.y = y;
+        this.position.z = z;
+    }
+
+    public void setPosition(Vector3f pos) {
+        this.position = pos;
+    }
+
+    /**
+     * Changes the orientation of the camera.
+     *
+     * @param x coordinate X of the camera
+     * @param y coordinate Y of the camera
+     * @param z coordinate Z of the camera
+     */
+    public void setOrientation(float x, float y, float z) {
+        this.orientation.x = x;
+        this.orientation.y = y;
+        this.orientation.z = z;
+    }
+
+    public void setOrientation(Vector3f pos) {
+        this.orientation = pos;
+    }
+
+    public void setFieldOfView(float fov) {
+        this.fieldOfView = fov;
     }
 
 }

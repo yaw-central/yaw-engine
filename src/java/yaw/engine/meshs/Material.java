@@ -91,14 +91,6 @@ public class Material {
     }
 
 
-    // ========== Methods ==========
-
-
-    public boolean isTextured() {
-        return this.mTexture != null;
-    }
-
-
     // ========== Getters ==========
 
 
@@ -112,6 +104,10 @@ public class Material {
 
     public float getReflectance() {
         return mReflectance;
+    }
+
+    public boolean isTextured() {
+        return this.mTexture != null;
     }
 
 

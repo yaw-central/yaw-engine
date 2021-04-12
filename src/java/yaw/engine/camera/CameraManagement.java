@@ -9,6 +9,11 @@ import java.util.Collections;
  * This class allows to manage the cameras of our world.
  */
 public class CameraManagement {
+
+
+    // ========== Methods ==========
+
+
     /**
      * Creates a camera
      * Adds the camera created in the camera listings of our World.

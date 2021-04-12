@@ -9,25 +9,22 @@ import org.joml.Vector3f;
  */
 public abstract class Item {
 
-    /**
-     * String identifier of the item.
-     */
+
+    // ========== Attributes ==========
+
+
+    /** String identifier of the item */
     private String id;
-
-    /**
-     * Position of (the center) of the Item in the World coordinates system.
-     */
+    /** Position of (the center) of the Item in the World coordinates system. */
     protected Vector3f position;
-
-    /**
-     * Orientation of the Item.
-     */
+    /** Orientation of the Item */
     protected Quaternionf orientation;
-
-    /**
-     * Scaling factor (1.0f default)
-     */
+    /** Scaling factor (1.0f default) */
     protected float scale;
+
+
+    // ========== Constructors ==========
+
 
     /**
      * Create a new item with the speficied values.
@@ -44,6 +41,10 @@ public abstract class Item {
         this.scale = scale;
     }
 
+
+    // ========== Methods ==========
+
+
     /**
      * Convert degrees to radians
      *
@@ -58,40 +59,10 @@ public abstract class Item {
         return (float) Math.toDegrees(angle);
     }
 
-    /* ----- Getters and Setters ----- */
-
-    public String getId() {
-        return id;
-    }
-
-
-    public Quaternionf getOrientation() {
-        return orientation;
-    }
-
-    protected void setOrientation(Quaternionf orientation) {
-        this.orientation = orientation;
-    }
-
-
-    public Vector3f getPosition() {
-        return position;
-    }
-
-    protected void setPosition(Vector3f pos) {
-        this.position = pos;
-    }
-
-    public float getScale() {
-        return scale;
-    }
-
     public void scale(float val) {
         scale = val;
         invalidate();
     }
-
-    /* ----- Transformations ----- */
 
     public abstract void invalidate();
 
@@ -191,6 +162,39 @@ public abstract class Item {
 
     // XXX : use this ?
     //public abstract void repelBy(Vector3f center, float dist);
+
+
+    // ========== Getters ==========
+
+
+    public String getId() {
+        return id;
+    }
+
+    public Quaternionf getOrientation() {
+        return orientation;
+    }
+
+    public Vector3f getPosition() {
+        return position;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+
+    // ========== Setters ==========
+
+
+    protected void setOrientation(Quaternionf orientation) {
+        this.orientation = orientation;
+    }
+
+    protected void setPosition(Vector3f pos) {
+        this.position = pos;
+    }
+
 
 }
 

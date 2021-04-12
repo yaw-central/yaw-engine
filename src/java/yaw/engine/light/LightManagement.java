@@ -8,6 +8,11 @@ import yaw.engine.World;
  */
 
 public class LightManagement {
+
+
+    // ========== Methods ==========
+
+
     /**
      * Create the directional light in the world.
      * The directional light created is like a sun.

@@ -11,15 +11,24 @@ import org.joml.Vector3f;
  **/
 
 public class PointLight {
-    //Light basic attribute
+
+
+    // ========== Attributes ==========
+
+
+    // Light basic attributes
     public Vector3f mColor;
     public Vector3f mPosition;
     public float mIntensity;
 
-    //Attenuation Attribute
+    // Attenuation attributes
     public float mConstantAtt;
     public float mLinearAtt;
     public float mQuadraticAtt;
+
+
+    // ========== Constructors ==========
+
 
     /**
      * Constructor with the specified color, position, intensity, constantAtt, linearAtt, quadraticAtt
@@ -91,12 +100,37 @@ public class PointLight {
         this.mQuadraticAtt = source.mQuadraticAtt;
     }
 
-    /**
-     * getters and setters
-     */
+
+    // ========== Getters ==========
+
+
     public Vector3f getColor() {
         return mColor;
     }
+
+    public Vector3f getPosition() {
+        return mPosition;
+    }
+
+    public float getIntensity() {
+        return mIntensity;
+    }
+
+    public float getConstantAtt() {
+        return mConstantAtt;
+    }
+
+    public float getLinearAtt() {
+        return mLinearAtt;
+    }
+
+    public float getQuadraticAtt() {
+        return mQuadraticAtt;
+    }
+
+
+    // ========== Setters ==========
+
 
     public void setColor(Vector3f color) {
         this.mColor = color;
@@ -104,10 +138,6 @@ public class PointLight {
 
     public void setColor(float r, float g, float b) {
         this.mColor = new Vector3f(r, g, b);
-    }
-
-    public Vector3f getPosition() {
-        return mPosition;
     }
 
     public void setPosition(Vector3f pos) {
@@ -118,32 +148,16 @@ public class PointLight {
         this.mPosition = new Vector3f(x, y, z);
     }
 
-    public float getIntensity() {
-        return mIntensity;
-    }
-
     public void setIntensity(float intens) {
         this.mIntensity = intens;
-    }
-
-    public float getConstantAtt() {
-        return mConstantAtt;
     }
 
     public void setConstantAtt(float att) {
         this.mConstantAtt = att;
     }
 
-    public float getLinearAtt() {
-        return mLinearAtt;
-    }
-
     public void setLinearAtt(float att) {
         this.mLinearAtt = att;
-    }
-
-    public float getQuadraticAtt() {
-        return mQuadraticAtt;
     }
 
     public void setQuadraticAtt(float att) {
