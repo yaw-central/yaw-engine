@@ -285,10 +285,9 @@ public class World {
         mainLoop.removeSkybox();
     }
 
-    public void addModel(Model m) {
+    public ItemObject addModel(String id, float x, float y, float z, float pScale, Model m) {
         float[] vertices = new float[m.getVertices().size() * 3];
         float[] normals = new float[m.getNormals().size() * 3];
-        int[] indices = {};
         float[] rgb = {75, 75, 75};
 
         for (int i = 0; i < m.getVertices().size(); i++) {
@@ -304,7 +303,9 @@ public class World {
             normals[i*3 + 1] = current.y;
             normals[i*3 + 2] = current.z;
         }
-        createMesh(vertices, normals, indices, rgb);
+        Mesh mesh = createMesh(vertices, normals, m.getpIndices(), rgb);
+        ItemObject res = createItemObject(id, x, y, z, pScale, mesh);
+        return res;
 
     }
 }

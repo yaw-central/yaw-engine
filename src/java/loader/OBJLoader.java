@@ -6,6 +6,7 @@ import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SpotLight;
 import yaw.engine.meshs.Mesh;
+import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
 
 import java.io.*;
@@ -77,16 +78,20 @@ public class OBJLoader {
 
     public static void main(String[] args) throws IOException {
         Model m = loadModel(new File("src/java/ressources/tree.obj"));
-        System.out.println(m.getFaces());
 
         World world = new World(0, 0, 800, 600);
-        //TODO fix camera position to see object
-        world.getCamera().setPosition(-10, 10, 0);
 
-        world.addModel(m);
+        world.getCamera().setPosition(0, 1, 0);
+        world.getCamera().rotate(0, 10, 0);
+
+        Mesh tmpcube = MeshBuilder.generateBlock(1, 1, 1);
+        ItemObject cube = world.createItemObject("cube", 0f, 0f, -5f, 1.0f, tmpcube);
+
+        cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+
+        ItemObject tree = world.addModel("tree", 0f, 0f, -15f, 0.5f, m);
+//        tree.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
         world.launch();
-
-
     }
 
 }
