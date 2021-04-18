@@ -1,5 +1,7 @@
 package yaw.engine;
 
+import loader.Face;
+import loader.Model;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
@@ -14,6 +16,8 @@ import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * This is the facade of the engine, most Clojure calls are
@@ -200,17 +204,27 @@ public class World {
     }
 
     // 3D click
-    public void registerMouseCallback(Mouse3DClickCallBack callback) { mainLoop.registerMouse3DClickCallBack(callback); }
+    public void registerMouseCallback(Mouse3DClickCallBack callback) {
+        mainLoop.registerMouse3DClickCallBack(callback);
+    }
 
     // ========== Getters ==========
 
-    public Camera getCamera() { return mainLoop.getCamera(); }
+    public Camera getCamera() {
+        return mainLoop.getCamera();
+    }
 
-    public Vector<Camera> getCamerasList() { return mainLoop.getCamerasList(); }
+    public Vector<Camera> getCamerasList() {
+        return mainLoop.getCamerasList();
+    }
 
-    public SceneLight getSceneLight() { return mainLoop.getSceneLight(); }
+    public SceneLight getSceneLight() {
+        return mainLoop.getSceneLight();
+    }
 
-    public Skybox getSkybox() { return mainLoop.getSkybox(); }
+    public Skybox getSkybox() {
+        return mainLoop.getSkybox();
+    }
 
     // ========== Setters ==========
 
@@ -228,7 +242,9 @@ public class World {
         mainLoop.addCamera(pIndex, pCamera);
     }
 
-    public void setCamera(Camera pCamera) { mainLoop.setCamera(pCamera); }
+    public void setCamera(Camera pCamera) {
+        mainLoop.setCamera(pCamera);
+    }
 
     public ItemGroup createGroup(String id) {
         return mainLoop.createGroup(id);
@@ -238,9 +254,13 @@ public class World {
         mainLoop.removeGroup(pGroup);
     }
 
-    public Vector<ItemGroup> getItemGroupArrayList() { return mainLoop.getItemGroupArrayList(); }
+    public Vector<ItemGroup> getItemGroupArrayList() {
+        return mainLoop.getItemGroupArrayList();
+    }
 
-    public void setSkybox(Skybox pSkybox) { mainLoop.setSkybox(pSkybox); }
+    public void setSkybox(Skybox pSkybox) {
+        mainLoop.setSkybox(pSkybox);
+    }
 
     public void removeItem(ItemObject pItem) {
         mainLoop.removeFromScene(pItem);
@@ -261,7 +281,31 @@ public class World {
         setSkybox(lSkybox);
     }
 
-    public void removeSkybox() { mainLoop.removeSkybox(); }
+    public void removeSkybox() {
+        mainLoop.removeSkybox();
+    }
 
+    public void addModel(Model m) {
+        float[] vertices = new float[m.getVertices().size() * 3];
+        float[] normals = new float[m.getNormals().size() * 3];
+        int[] indices = {};
+        float[] rgb = {75, 75, 75};
+
+        for (int i = 0; i < m.getVertices().size(); i++) {
+            Vector3f current = m.getVertices().get(i);
+            vertices[i*3] = current.x;
+            vertices[i*3 + 1] = current.y;
+            vertices[i*3 + 2] = current.z;
+        }
+
+        for (int i = 0; i < m.getNormals().size(); i++) {
+            Vector3f current = m.getNormals().get(i);
+            normals[i*3] = current.x;
+            normals[i*3 + 1] = current.y;
+            normals[i*3 + 2] = current.z;
+        }
+        createMesh(vertices, normals, indices, rgb);
+
+    }
 }
 

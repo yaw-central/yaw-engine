@@ -1,8 +1,16 @@
 package loader;
 
 import org.joml.Vector3f;
+import yaw.DifferentLights;
+import yaw.engine.World;
+import yaw.engine.items.ItemObject;
+import yaw.engine.light.SpotLight;
+import yaw.engine.meshs.Mesh;
+import yaw.engine.meshs.Texture;
 
 import java.io.*;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * OBJLoader is a tool for reading and parsing an OBJ file into a Model.
@@ -58,7 +66,27 @@ public class OBJLoader {
             }
 
         }
+        //TODO faire les indices comme il faut -- pas sur dfu procéder
+        int[] tmp = new int[model.getVertices().size()];
+        for (int i = 0; i < model.getVertices().size(); i++) {
+            tmp[i] = i+1;
+        }
+        model.setpIndices(tmp);
         return model;
+    }
+
+    public static void main(String[] args) throws IOException {
+        Model m = loadModel(new File("src/java/ressources/tree.obj"));
+        System.out.println(m.getFaces());
+
+        World world = new World(0, 0, 800, 600);
+        //TODO fix camera position to see object
+        world.getCamera().setPosition(-10, 10, 0);
+
+        world.addModel(m);
+        world.launch();
+
+
     }
 
 }

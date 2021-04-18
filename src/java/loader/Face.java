@@ -16,6 +16,14 @@ public class Face {
 
     // ===== Constructors =====
 
+    public Vector3f getVertex() {
+        return vertex;
+    }
+
+    public Vector3f getNormal() {
+        return normal;
+    }
+
     public Face(Vector3f vertex, Vector3f normal) {
         this.vertex = vertex;
         this.normal = normal;

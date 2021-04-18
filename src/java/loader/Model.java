@@ -20,8 +20,16 @@ public class Model {
     private List<Face> faces = new ArrayList<>();
 
     // TODO : comprendre ce que sont ces pIndices et rgb pour savoir où les intégrer
-    //private int[] pIndices;
+    private int[] pIndices;
     //private float[] rgb;
+
+    public int[] getpIndices() {
+        return pIndices;
+    }
+
+    public void setpIndices(int[] pIndices) {
+        this.pIndices = pIndices;
+    }
 
     // ===== Constructors =====
 
