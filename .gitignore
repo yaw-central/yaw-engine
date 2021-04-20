@@ -17,7 +17,8 @@ pom.xml.asc
 
 # IDEA
 .idea/libraries/
-.idea/workspace.xml
+.idea/*.xml
+.idea/PSTL.iml
 
 # Emacs artefacts
 *~
