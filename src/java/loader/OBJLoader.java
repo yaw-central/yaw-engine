@@ -24,7 +24,9 @@ public class OBJLoader {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         Model model = new Model();
         String line;
-
+        //TODO need fix on size
+        int[] tmp = new int[999999];
+        int cpt = 0;
         // Reading file line by line, stops at the end of the file
         while ((line = reader.readLine()) != null) {
 
@@ -54,6 +56,10 @@ public class OBJLoader {
                                 Float.parseFloat(elems[2].split("/")[0]),
                                 Float.parseFloat(elems[3].split("/")[0])
                         );
+                tmp[cpt] = (int) vertexIndices.x;
+                tmp[cpt+1] = (int) vertexIndices.y;
+                tmp[cpt+2] = (int) vertexIndices.z;
+                cpt+=3;
 
                 Vector3f normalIndices =
                         new Vector3f(
@@ -67,11 +73,7 @@ public class OBJLoader {
             }
 
         }
-        //TODO faire les indices comme il faut -- pas sur dfu procéder
-        int[] tmp = new int[model.getVertices().size()];
-        for (int i = 0; i < model.getVertices().size(); i++) {
-            tmp[i] = i+1;
-        }
+
         model.setpIndices(tmp);
         return model;
     }
