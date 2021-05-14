@@ -14,4 +14,13 @@ public class NormalVertex {
         this.y += y;
         this.z += z;
     }
+
+    @Override
+    public String toString() {
+        return "NormalVertex{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
+    }
 }

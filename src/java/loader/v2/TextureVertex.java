@@ -8,4 +8,12 @@ public class TextureVertex {
         this.u = u;
         this.v = v;
     }
+
+    @Override
+    public String toString() {
+        return "TextureVertex{" +
+                "u=" + u +
+                ", v=" + v +
+                '}';
+    }
 }

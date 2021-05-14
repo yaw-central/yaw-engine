@@ -8,4 +8,13 @@ public class GeometricVertex {
         this.y = y;
         this.z = z;
     }
+
+    @Override
+    public String toString() {
+        return "GeometricVertex{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
+    }
 }

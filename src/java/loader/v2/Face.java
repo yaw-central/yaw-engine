@@ -23,9 +23,9 @@ public class Face {
         float[] side2 = new float[3];
         float[] normal = new float[3];
 
-        GeometricVertex v1 = vertices.get(0).vertex;
-        GeometricVertex v2 = vertices.get(0).vertex;
-        GeometricVertex v3 = vertices.get(0).vertex;
+        GeometricVertex v1 = vertices.get(0).geometric;
+        GeometricVertex v2 = vertices.get(0).geometric;
+        GeometricVertex v3 = vertices.get(0).geometric;
 
         float[] p1 = {v1.x, v1.y, v1.z};
         float[] p2 = {v2.x, v2.y, v2.z};
@@ -48,5 +48,12 @@ public class Face {
         faceNormal.x = normal[0];
         faceNormal.y = normal[1];
         faceNormal.z = normal[2];
+    }
+
+    @Override
+    public String toString() {
+        return "Face{" +
+                "vertices=" + vertices +
+                '}';
     }
 }
