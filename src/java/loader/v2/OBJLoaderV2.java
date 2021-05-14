@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OBJLoaderV2 {
+public class OBJLoaderV2 implements OBJLoaderV2Interface {
 
     public String objFileName = null;
 
@@ -33,40 +33,43 @@ public class OBJLoaderV2 {
     public int facePolyCount = 0;
     public int faceErrorCount = 0;
 
-    public OBJLoaderV2() {}
+    public OBJLoaderV2() {
+    }
 
-    public void setObjFileName(String filename){objFileName = filename;}
+    public void setObjFileName(String filename) {
+        objFileName = filename;
+    }
 
-    public void addGeometricVertex(float x, float y, float z){
+    public void addGeometricVertex(float x, float y, float z) {
         verticesG.add(new GeometricVertex(x, y, z));
     }
 
-    public void addTextureVertex(float u, float v){
+    public void addTextureVertex(float u, float v) {
         verticesT.add(new TextureVertex(u, v));
     }
 
-    public void addNormalVertex(float x, float y, float z){
+    public void addNormalVertex(float x, float y, float z) {
         verticesN.add(new NormalVertex(x, y, z));
     }
 
-    public void addFace(int[] vertexIndices){
+    public void addFace(int[] vertexIndices) {
         Face f = new Face();
 
         f.material = currentMaterial;
         f.map = currentMap;
 
         int cpt = 0;
-        while(cpt < vertexIndices.length){
+        while (cpt < vertexIndices.length) {
 
             FaceVertex fv = new FaceVertex();
             int currentVertexIndice;
 
             currentVertexIndice = vertexIndices[cpt++];
 
-            if(currentVertexIndice < 0)
+            if (currentVertexIndice < 0)
                 currentVertexIndice += verticesG.size();
 
-            if ((currentVertexIndice - 1 >= 0) && (currentVertexIndice -1 < verticesG.size()))
+            if ((currentVertexIndice - 1 >= 0) && (currentVertexIndice - 1 < verticesG.size()))
                 fv.geometric = verticesG.get(currentVertexIndice - 1);
             else
                 System.out.println("ERROR -- Vertinx index out of range");
@@ -77,22 +80,22 @@ public class OBJLoaderV2 {
                 currentVertexIndice += verticesT.size();
 
             if ((currentVertexIndice - 1 >= 0) && (currentVertexIndice - 1 < verticesT.size()))
-                fv.texture = verticesT.get(currentVertexIndice -1);
+                fv.texture = verticesT.get(currentVertexIndice - 1);
             else
                 System.out.println("ERROR -- Vertinx index out of range");
 
             //----------------------------------
             currentVertexIndice = vertexIndices[cpt++];
-            if (currentVertexIndice <0)
+            if (currentVertexIndice < 0)
                 currentVertexIndice += verticesN.size();
 
             if ((currentVertexIndice - 1 >= 0) && ((currentVertexIndice - 1) < verticesN.size()))
-                fv.normal = verticesN.get(currentVertexIndice -1);
+                fv.normal = verticesN.get(currentVertexIndice - 1);
             else
                 System.out.println("ERROR -- Vertinx index out of range");
 
             //-----------------------------------
-            if (fv.geometric == null){
+            if (fv.geometric == null) {
                 System.out.println("ERROR -- cannot add vertex to face without vertex -- ignoring face");
                 faceErrorCount++;
                 return;
@@ -101,7 +104,7 @@ public class OBJLoaderV2 {
             //avoid redundant faces
             String key = fv.toString();
             FaceVertex tmp = faceVerticeMap.get(key);
-            if (tmp == null){
+            if (tmp == null) {
                 faceVerticeMap.put(key, fv);
                 fv.index = faceVerticeList.size();
                 faceVerticeList.add(fv);
@@ -111,7 +114,7 @@ public class OBJLoaderV2 {
             f.addVertex(fv);
         }
 
-        if (currentGroupFaceLists.size() > 0){
+        if (currentGroupFaceLists.size() > 0) {
             for (ArrayList<Face> currentGroupFaceList : currentGroupFaceLists) {
                 currentGroupFaceList.add(f);
             }
@@ -126,6 +129,45 @@ public class OBJLoaderV2 {
             faceQuadCount++;
         else
             facePolyCount++;
+    }
+
+    public void setCurrentGroupNames(String[] names) {
+        currentGroups.clear();
+        currentGroupFaceLists.clear();
+
+        if (names == null)
+            return;
+
+        for (String name : names) {
+            String groupname = name.trim();
+            currentGroups.add(groupname);
+            if (groups.get(groupname) == null)
+                groups.put(groupname, new ArrayList<>());
+            currentGroupFaceLists.add(groups.get(groupname));
+        }
+    }
+
+    public void addObjectName(String name) {
+        objectName = name;
+    }
+
+    public void setCurrentMap(String name) {
+        currentMap = mapLib.get(name);
+    }
+
+    public void setCurrentMaterial(String name) {
+        currentMaterial = materialLib.get(name);
+    }
+
+    public void newMaterial(String name) {
+        currentMaterialBeingParsed = new Material(name);
+        materialLib.put(name, currentMaterialBeingParsed);
+    }
+
+    @Override
+    public void doneParsingMaterial() {
+        currentMapBeingParsed = null;
+
     }
 
 
