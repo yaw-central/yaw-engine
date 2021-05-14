@@ -87,7 +87,7 @@ public class OBJLoader {
         world.getCamera().rotate(0, 10, 0);
 
         Mesh tmpcube = MeshBuilder.generateBlock(1, 1, 1);
-        ItemObject cube = world.createItemObject("cube", 0f, 0f, -5f, 1.0f, tmpcube);
+        ItemObject cube = world.createItemObject("cube", -5f, 0f, -5f, 1.0f, tmpcube);
 
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
 
