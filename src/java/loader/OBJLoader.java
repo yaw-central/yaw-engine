@@ -18,7 +18,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class OBJLoader {
 
-    // ===== Methods =====
+    // ========== Methods ==========
 
     public static Model loadModel(File file) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -91,8 +91,8 @@ public class OBJLoader {
 
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
 
-        ItemObject tree = world.addModel("tree", 0f, 0f, -15f, 0.05f, m);
-//        tree.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
+        ItemObject fig = world.addModel("tree", 0f, 0f, -15f, 0.02f, m);
+//        fig.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
         world.launch();
     }
 

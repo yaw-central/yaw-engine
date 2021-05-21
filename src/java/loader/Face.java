@@ -7,14 +7,14 @@ import org.joml.Vector3f;
  */
 public class Face {
 
-    // ===== Attributes =====
+    // ========== Attributes ==========
 
     /** 3 indices. Not vertices */
     private Vector3f vertex;
     /** 3 indices. Not normals */
     private Vector3f normal;
 
-    // ===== Constructors =====
+    // ========== Constructors ==========
 
     public Vector3f getVertex() {
         return vertex;
