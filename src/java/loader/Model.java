@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Model {
 
-    // ===== Attributes =====
+    // ========== Attributes ==========
 
     /** List of the object's vertices */
     private List<Vector3f> vertices = new ArrayList<>();
@@ -31,7 +31,7 @@ public class Model {
         this.pIndices = pIndices;
     }
 
-    // ===== Constructors =====
+    // ========== Constructors ==========
 
     public Model() { }
 
@@ -41,13 +41,13 @@ public class Model {
         this.faces = faces;
     }
 
-    // ===== Getters =====
+    // ========== Getters ==========
 
     public List<Vector3f> getVertices() { return this.vertices; }
     public List<Vector3f> getNormals() { return this.normals; }
     public List<Face> getFaces() { return this.faces; }
 
-    // ===== Methods =====
+    // ========== Methods ==========
 
     public void addVertex(Vector3f v) { this.vertices.add(v); }
     public void addNormal(Vector3f v) { this.normals.add(v); }
