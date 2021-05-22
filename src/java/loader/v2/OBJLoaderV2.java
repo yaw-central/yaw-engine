@@ -5,7 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The OBJLoader loads OBJ files into its attributes by calling a parse on them.
+ * It contains all OBJ file's elements.
+ * It allows users to manipulate every attribute from an OBJ as they want.
+ */
 public class OBJLoaderV2 implements OBJLoaderV2Interface {
+
+    // ========== Attributes ==========
+
 
     public String objFileName = null;
 
@@ -13,9 +21,9 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
     public ArrayList<TextureVertex> verticesT = new ArrayList<>();
     public ArrayList<NormalVertex> verticesN = new ArrayList<>();
 
-    Map<String, FaceVertex> faceVerticeMap = new HashMap<>();
+    public Map<String, FaceVertex> faceVertexMap = new HashMap<>();
 
-    public List<FaceVertex> faceVerticeList = new ArrayList<>();
+    public List<FaceVertex> faceVertexList = new ArrayList<>();
     public List<Face> faces = new ArrayList<>();
 
     public Map<String, ArrayList<Face>> groups = new HashMap<>();
@@ -39,12 +47,19 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
     public int facePolyCount = 0;
     public int faceErrorCount = 0;
 
+
+    // ========== Constructors ==========
+
+
+    /**
+     * Empty constructor
+     */
     public OBJLoaderV2() {
     }
 
-    public void setObjFileName(String filename) {
-        objFileName = filename;
-    }
+
+    // ========== Methods ==========
+
 
     public void addGeometricVertex(float x, float y, float z) {
         verticesG.add(new GeometricVertex(x, y, z));
@@ -60,11 +75,10 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
 
     public void addFace(int[] vertexIndices) {
         Face f = new Face();
-
         f.material = currentMaterial;
         f.map = currentMap;
-
         int cpt = 0;
+
         while (cpt < vertexIndices.length) {
 
             FaceVertex fv = new FaceVertex();
@@ -108,13 +122,13 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
                 return;
             }
 
-            //avoid redundant faces
+            // Avoid redundant faces
             String key = fv.toString();
-            FaceVertex tmp = faceVerticeMap.get(key);
+            FaceVertex tmp = faceVertexMap.get(key);
             if (tmp == null) {
-                faceVerticeMap.put(key, fv);
-                fv.index = faceVerticeList.size();
-                faceVerticeList.add(fv);
+                faceVertexMap.put(key, fv);
+                fv.index = faceVertexList.size();
+                faceVertexList.add(fv);
             } else {
                 fv = tmp;
             }
@@ -137,32 +151,8 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
         else facePolyCount++;
     }
 
-    public void setCurrentGroupNames(String[] names) {
-        currentGroups.clear();
-        currentGroupFaceLists.clear();
-
-        if (names == null)
-            return;
-
-        for (String name : names) {
-            String groupname = name.trim();
-            currentGroups.add(groupname);
-            if (groups.get(groupname) == null)
-                groups.put(groupname, new ArrayList<>());
-            currentGroupFaceLists.add(groups.get(groupname));
-        }
-    }
-
     public void addObjectName(String name) {
         objectName = name;
-    }
-
-    public void setCurrentMap(String name) {
-        currentMap = mapLib.get(name);
-    }
-
-    public void setCurrentMaterial(String name) {
-        currentMaterial = materialLib.get(name);
     }
 
     public void newMaterial(String name) {

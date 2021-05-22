@@ -2,55 +2,71 @@ package loader.v2;
 
 import java.io.*;
 
+/**
+ * The OBJParser can parse OBJ files
+ */
 public class OBJParser {
-    OBJLoaderV2Interface objloader;
-    File objFile = null;
 
+    // ========== Attributes ==========
+
+
+    /** Its OBJ loader */
+    private OBJLoaderV2Interface objloader;
+    /** The OBJ File */
+    private File objFile = null;
+
+
+    // ========== Constructors =========
+
+    /**
+     * Basic constructor. Launches the parsing on the given file
+     * @param objloader The associated OBJ loader
+     * @param filename The OBJ file name
+     * @throws IOException
+     */
     public OBJParser(OBJLoaderV2Interface objloader, String filename) throws IOException {
         this.objloader = objloader;
         objloader.setObjFileName(filename);
         parseObjFile(filename);
-
     }
 
 
+    // ========== Methods ==========
+
+
+    /** Parses the given file */
     private void parseObjFile(String objFilename) throws IOException {
         int cpt = 0;
-        FileReader fileReader;
-        BufferedReader bufferedReader;
-
         objFile = new File(objFilename);
-        fileReader = new FileReader(objFile);
-        bufferedReader = new BufferedReader(fileReader);
-
+        FileReader fileReader = new FileReader(objFile);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
         String line;
         int currentInd = 0;
 
+        // Reading all file's lines
         while (true) {
             line = bufferedReader.readLine();
-            if (line == null) {
-                break;
-            }
+            if (line == null) break;            // End of the file
 
+            // Removing first spaces
             line = line.trim();
 
-            if (line.length() == 0) {
-                continue;
-            }
+            if (line.length() == 0) continue;   // Empty line
 
+            // Matching line's keyword
             if (line.startsWith("#")) {
                 continue;
-            } else if (line.startsWith("vt")) {
+            } else if (line.startsWith("vt")) { // Texture Vertex
                 processVertexTexture(line);
-            } else if (line.startsWith("vn")) {
+            } else if (line.startsWith("vn")) { // Normal Vertex
                 processVertexNormal(line);
-            } else if (line.startsWith("v")) {
+            } else if (line.startsWith("v")) {  // Vertex
                 processVertex(line);
-            } else if (line.startsWith("f")) {
+            } else if (line.startsWith("f")) {  // Face
                 processFace(line);
-            } else if (line.startsWith("g")) {
+            } else if (line.startsWith("g")) {  // Group
                 processGroupName(line);
-            } else if (line.startsWith("o")) {
+            } else if (line.startsWith("o")) {  // Object
                 processObjectName(line);
             } else if (line.startsWith("maplib")) {
                 processMapLib(line);
@@ -179,31 +195,26 @@ public class OBJParser {
      */
     private void parseMtlFile(String mtlFilename) throws FileNotFoundException, IOException {
         int cpt = 0;
-        FileReader fileReader;
-        BufferedReader bufferedReader;
-
         File mtlFile = new File(objFile.getParent(), mtlFilename);
-        fileReader = new FileReader(mtlFile);
-        bufferedReader = new BufferedReader(fileReader);
-
+        FileReader fileReader = new FileReader(mtlFile);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
         String line;
 
+        // Reading all file's lines
         while (true) {
             line = bufferedReader.readLine();
-            if (line == null) {
-                break;
-            }
+            if (line == null) break;
+
+            // Removing first spaces
             line = line.trim();
 
-            if (line.length() == 0) {
-                continue;
-            }
+            if (line.length() == 0) continue;
 
-            if (line.startsWith("#")) // comment
-            {
-                continue;
+            // Matching line's keyword
+            if (line.startsWith("#")) {
+                continue;   // comment line
             } else if (line.startsWith("newmtl")) {
-                processNewmtl(line);
+                processNewMtl(line);
             } else if (line.startsWith("Ka")) {
                 processReflectivityTransmissivity("Ka", line);
             } else if (line.startsWith("Kd")) {
@@ -242,7 +253,6 @@ public class OBJParser {
                 processRefl(line);
             } else {
                 System.out.println("line " + cpt + " unknown line |" + line + "|");
-
             }
             cpt++;
         }
@@ -251,7 +261,7 @@ public class OBJParser {
         System.out.println("Loaded " + cpt + " lines");
     }
 
-    private void processNewmtl(String line) {
+    private void processNewMtl(String line) {
         line = line.substring("newmtl".length()).trim();
         objloader.newMaterial(line);
     }

@@ -1,5 +1,8 @@
 package loader.v2;
 
+/**
+ * The Material of a face describes the properties of this surface like its reflectivity, transparency...
+ */
 public class Material {
 
     // ========== Attributes ==========
