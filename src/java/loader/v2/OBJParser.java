@@ -24,6 +24,7 @@ public class OBJParser {
         bufferedReader = new BufferedReader(fileReader);
 
         String line;
+        int currentInd = 0;
 
         while (true) {
             line = bufferedReader.readLine();
@@ -56,9 +57,15 @@ public class OBJParser {
             } else if (line.startsWith("usemap")) {
                 processUseMap(line);
             } else if (line.startsWith("usemtl")) {
-                processUseMaterial(line);
+                //processUseMaterial(line);
             } else if (line.startsWith("mtllib")) {
-                processMaterialLib(line);
+                //processMaterialLib(line);
+            } else if (line.startsWith("s")) {
+                processSmoothingGroup(line);
+            } else if (line.startsWith("p")) {
+                processPoint(line);
+            } else if (line.startsWith("l")) {
+                processLine(line);
             } else {
                 System.out.println("line " + cpt + " unknown line |" + line + "|");
             }
@@ -70,29 +77,31 @@ public class OBJParser {
     }
 
     private void processVertex(String line) {
-        // parse float list
-        System.out.println(line);
+        float[] res = StringParser.parseStringToFloatArray(line);
+        objloader.addGeometricVertex(res[0], res[1], res[2]);
     }
 
     private void processVertexTexture(String line) {
-        // parse float list
-        System.out.println(line);
+        // Parse float list
+        float[] res = StringParser.parseStringToFloatArray(line);
+        objloader.addTextureVertex(res[0], res[1]);
     }
 
     private void processVertexNormal(String line) {
-        // parse float list
-        System.out.println(line);
+        // Parse float list
+        float[] res = StringParser.parseStringToFloatArray(line);
+        objloader.addNormalVertex(res[0], res[1], res[2]);
     }
 
     private void processFace(String line) {
         line = line.substring("f".length()).trim();
-        // parsz vertice list
-        System.out.println(line);
+        int[] res = StringParser.parseMultipleVertices(line, 3);
+        objloader.addFace(res);
     }
 
     private void processGroupName(String line) {
-        // parse white space list
-        System.out.println(line);
+        String[] res = StringParser.parseWhiteSpaces(line.substring("g".length()).trim());
+        objloader.setCurrentGroupNames(res);
     }
 
     private void processObjectName(String line) {
@@ -100,8 +109,22 @@ public class OBJParser {
     }
 
     private void processMaterialLib(String line) {
-        // parse white space list
-        System.out.println(line);
+        // Parse white space list
+//        System.out.println(line);
+        line = line.substring("g".length()).trim();
+        String[] tmp = line.split(" ");
+        if (tmp != null) {
+            for (int i = 0; i < tmp.length; i++) {
+                tmp[i] = tmp[i].trim();
+            }
+            for (int i = 0; i < tmp.length; i++) {
+                try {
+                    parseMtlFile(tmp[i]);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void processUseMaterial(String line) {
@@ -109,15 +132,51 @@ public class OBJParser {
     }
 
     private void processMapLib(String line) {
-        // parse white space list
-        System.out.println(line);
+        // Parse white space list
+//        System.out.println(line);
+        line = line.substring("g".length()).trim();
+        String[] tmp = line.split(" ");
+        for (int i = 0; i < tmp.length; i++) {
+            tmp[i] = tmp[i].trim();
+        }
+        objloader.addMapLib(tmp);
     }
 
     private void processUseMap(String line) {
         objloader.setCurrentMap(line.substring("usemap".length()).trim());
     }
 
-    //TODO parse Material File
+    private void processSmoothingGroup(String line) {
+        line = line.substring("s".length()).trim();
+        int groupNumber = 0;
+        if (!line.equalsIgnoreCase("off")) {
+            groupNumber = Integer.parseInt(line);
+        }
+        objloader.setCurrentSmoothingGroup(groupNumber);
+    }
+
+    private void processPoint(String line) {
+        line = line.substring("p".length()).trim();
+        // Parse Vertice NTuples
+        int[] res = StringParser.parseMultipleVertices(line, 1);
+        objloader.addPoints(res);
+    }
+
+    private void processLine(String line) {
+        line = line.substring("l".length()).trim();
+        // Parse Vertice NTuples
+        int[] values = StringParser.parseMultipleVertices(line, 2);
+        objloader.addLine(values);
+    }
+
+
+    // TODO: parse Material File
+    /**
+     * Parses the given MTL file
+     * @param mtlFilename
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     private void parseMtlFile(String mtlFilename) throws FileNotFoundException, IOException {
         int cpt = 0;
         FileReader fileReader;

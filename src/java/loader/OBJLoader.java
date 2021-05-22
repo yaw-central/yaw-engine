@@ -79,7 +79,7 @@ public class OBJLoader {
     }
 
     public static void main(String[] args) throws IOException {
-        Model m = loadModel(new File("src/java/ressources/mickey.obj"));
+        Model m = loadModel(new File("src/java/ressources/tree1.obj"));
 
         World world = new World(0, 0, 800, 600);
 
@@ -91,7 +91,7 @@ public class OBJLoader {
 
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
 
-        ItemObject fig = world.addModel("tree", 0f, 0f, -15f, 0.02f, m);
+        ItemObject fig = world.addModel("tree", 0f, 0f, -15f, 1.0f, m);
 //        fig.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
         world.launch();
     }

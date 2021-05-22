@@ -28,6 +28,12 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
     private Material currentMaterialBeingParsed = null;
     public Map<String, Material> mapLib = new HashMap<>();
     private Material currentMapBeingParsed = null;
+
+    public HashMap<Integer, ArrayList<Face>> smoothingGroups = new HashMap<Integer, ArrayList<Face>>();
+    private int currentSmoothingGroupNumber = 0;
+    private ArrayList<Face> currentSmoothingGroup = null;
+
+    public List<Integer> pIndices = new ArrayList<>();
     public int faceTriCount = 0;
     public int faceQuadCount = 0;
     public int facePolyCount = 0;
@@ -62,38 +68,39 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
         while (cpt < vertexIndices.length) {
 
             FaceVertex fv = new FaceVertex();
-            int currentVertexIndice;
+            int currentVertexIndex;
 
-            currentVertexIndice = vertexIndices[cpt++];
+            currentVertexIndex = vertexIndices[cpt++];
+            if (currentVertexIndex < 0)
+                currentVertexIndex += verticesG.size();
 
-            if (currentVertexIndice < 0)
-                currentVertexIndice += verticesG.size();
-
-            if ((currentVertexIndice - 1 >= 0) && (currentVertexIndice - 1 < verticesG.size()))
-                fv.geometric = verticesG.get(currentVertexIndice - 1);
+            if (((currentVertexIndex - 1) >= 0) && ((currentVertexIndex - 1) < verticesG.size()))
+                fv.geometric = verticesG.get(currentVertexIndex - 1);
             else
-                System.out.println("ERROR -- Vertinx index out of range");
+                System.out.println("ERROR -- Vertex index out of range");
 
             // --------------------------
-            currentVertexIndice = vertexIndices[cpt++];
-            if (currentVertexIndice < 0)
-                currentVertexIndice += verticesT.size();
+            currentVertexIndex = vertexIndices[cpt++];
+            if (currentVertexIndex != Integer.MIN_VALUE) {
+                if (currentVertexIndex < 0)
+                    currentVertexIndex += verticesT.size();
 
-            if ((currentVertexIndice - 1 >= 0) && (currentVertexIndice - 1 < verticesT.size()))
-                fv.texture = verticesT.get(currentVertexIndice - 1);
-            else
-                System.out.println("ERROR -- Vertinx index out of range");
-
+                if ((currentVertexIndex - 1 >= 0) && (currentVertexIndex - 1 < verticesT.size()))
+                    fv.texture = verticesT.get(currentVertexIndex - 1);
+                else
+                    System.out.println("ERROR -- Vertex index out of range");
+            }
             //----------------------------------
-            currentVertexIndice = vertexIndices[cpt++];
-            if (currentVertexIndice < 0)
-                currentVertexIndice += verticesN.size();
+            currentVertexIndex = vertexIndices[cpt++];
+            if (currentVertexIndex != Integer.MIN_VALUE) {
+                if (currentVertexIndex < 0)
+                    currentVertexIndex += verticesN.size();
 
-            if ((currentVertexIndice - 1 >= 0) && ((currentVertexIndice - 1) < verticesN.size()))
-                fv.normal = verticesN.get(currentVertexIndice - 1);
-            else
-                System.out.println("ERROR -- Vertinx index out of range");
-
+                if ((currentVertexIndex - 1 >= 0) && ((currentVertexIndex - 1) < verticesN.size()))
+                    fv.normal = verticesN.get(currentVertexIndex - 1);
+                else
+                    System.out.println("ERROR -- Vertex index out of range");
+            }
             //-----------------------------------
             if (fv.geometric == null) {
                 System.out.println("ERROR -- cannot add vertex to face without vertex -- ignoring face");
@@ -122,13 +129,12 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
 
         faces.add(f);
 
-        //stats for debug
-        if (f.vertices.size() == 3)
-            faceTriCount++;
-        else if (f.vertices.size() == 4)
-            faceQuadCount++;
-        else
-            facePolyCount++;
+//        System.out.println(pIndices);
+
+        // Stats for debug
+        if (f.vertices.size() == 3) faceTriCount++;
+        else if (f.vertices.size() == 4) faceQuadCount++;
+        else facePolyCount++;
     }
 
     public void setCurrentGroupNames(String[] names) {
@@ -164,11 +170,123 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
         materialLib.put(name, currentMaterialBeingParsed);
     }
 
-    @Override
+    public void addPoints(int[] values) {
+        //TODO
+    }
+
+    public void addLine(int[] values) {
+        //TODO
+    }
+
+    public void addMapLib(String[] names) {
+        //TODO
+    }
+
     public void doneParsingMaterial() {
         currentMapBeingParsed = null;
+    }
 
+    public void doneParsingObj(String filename) {
+        System.out.println("obj parsing done");
     }
 
 
+    // ========== Setters ==========
+
+
+    public void setObjFileName(String filename) {
+        objFileName = filename;
+    }
+
+    public void setRefl(int type, String filename) {
+        currentMaterialBeingParsed.reflType = type;
+        currentMaterialBeingParsed.reflFilename = filename;
+    }
+
+    public void setD(boolean halo, float factor) {
+        currentMaterialBeingParsed.dHalo = halo;
+        currentMaterialBeingParsed.dFactor = factor;
+    }
+
+    public void setNi(float opticalDensity) {
+        currentMaterialBeingParsed.niOpticalDensity = opticalDensity;
+    }
+
+    public void setNs(float exponent) {
+        currentMaterialBeingParsed.nsExponent = exponent;
+    }
+
+    public void setCurrentMap(String name) {
+        currentMap = mapLib.get(name);
+    }
+
+    public void setCurrentMaterial(String name) {
+        currentMaterial = materialLib.get(name);
+    }
+
+    public void setSharpness(float value) {
+        currentMaterialBeingParsed.sharpnessValue = value;
+    }
+
+    public void setCurrentGroupNames(String[] names) {
+        currentGroups.clear();
+        currentGroupFaceLists.clear();
+        if (names == null) return;
+        for (String name : names) {
+            String groupName = name.trim();
+            currentGroups.add(groupName);
+            if (groups.get(groupName) == null)
+                groups.put(groupName, new ArrayList<>());
+            currentGroupFaceLists.add(groups.get(groupName));
+        }
+    }
+
+    public void setCurrentSmoothingGroup(int groupNumber) {
+        currentSmoothingGroupNumber = groupNumber;
+        if (currentSmoothingGroupNumber == 0) return;
+        if (null == smoothingGroups.get(currentSmoothingGroupNumber)) {
+            currentSmoothingGroup = new ArrayList<>();
+            smoothingGroups.put(currentSmoothingGroupNumber, currentSmoothingGroup);
+        }
+    }
+
+    public void setXYZ(int type, float x, float y, float z) {
+        Reflectivity refl = currentMaterialBeingParsed.ka;
+        if (type == 1) { // kd
+            refl = currentMaterialBeingParsed.kd;
+        } else if (type == 2) { // ks
+            refl = currentMaterialBeingParsed.ks;
+        } else if (type == 3) { // tf
+            refl = currentMaterialBeingParsed.tf;
+        }
+        refl.rx = x;
+        refl.gy = y;
+        refl.bz = z;
+        refl.isXYZ = true;
+        refl.isRGB = false;
+    }
+
+    public void setRGB(int type, float r, float g, float b) {
+        Reflectivity refl = currentMaterialBeingParsed.ka;
+        if (type == 1) { // kd
+            refl = currentMaterialBeingParsed.kd;
+        } else if (type == 2) { // ks
+            refl = currentMaterialBeingParsed.ks;
+        } else if (type == 3) { // tf
+            refl = currentMaterialBeingParsed.tf;
+        }
+        refl.rx = r;
+        refl.gy = g;
+        refl.bz = b;
+        refl.isRGB = true;
+        refl.isXYZ = false;
+    }
+
+    public void setIllum(int illumModel) {
+        currentMaterialBeingParsed.illumModel = illumModel;
+    }
+
+    public void setMapDecalDispBump(int type, String filename) {
+        //TODO
+    }
 }
