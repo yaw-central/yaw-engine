@@ -79,19 +79,15 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
         int cpt = 0;
 
         while (cpt < vertexIndices.length) {
-
             FaceVertex fv = new FaceVertex();
             int currentVertexIndex;
-
             currentVertexIndex = vertexIndices[cpt++];
             if (currentVertexIndex < 0)
                 currentVertexIndex += verticesG.size();
-
             if (((currentVertexIndex - 1) >= 0) && ((currentVertexIndex - 1) < verticesG.size()))
                 fv.geometric = verticesG.get(currentVertexIndex - 1);
             else
                 System.out.println("ERROR -- Vertex index out of range");
-
             // --------------------------
             currentVertexIndex = vertexIndices[cpt++];
             if (currentVertexIndex != Integer.MIN_VALUE) {
@@ -103,7 +99,7 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
                 else
                     System.out.println("ERROR -- Vertex index out of range");
             }
-            //----------------------------------
+            // ----------------------------------
             currentVertexIndex = vertexIndices[cpt++];
             if (currentVertexIndex != Integer.MIN_VALUE) {
                 if (currentVertexIndex < 0)
@@ -114,7 +110,7 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
                 else
                     System.out.println("ERROR -- Vertex index out of range");
             }
-            //-----------------------------------
+            // -----------------------------------
             if (fv.geometric == null) {
                 System.out.println("ERROR -- cannot add vertex to face without vertex -- ignoring face");
                 faceErrorCount++;
@@ -139,11 +135,8 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
                 currentGroupFaceList.add(f);
             }
         }
-
         faces.add(f);
-
 //        System.out.println(pIndices);
-
         // Stats for debug
         if (f.vertices.size() == 3) faceTriCount++;
         else if (f.vertices.size() == 4) faceQuadCount++;
@@ -158,6 +151,80 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
         currentMaterialBeingParsed = new Material(name);
         materialLib.put(name, currentMaterialBeingParsed);
     }
+
+
+    public ArrayList<ArrayList<Face>> createFaceListsByMaterial() {
+        ArrayList<ArrayList<Face>> facesByTextureList = new ArrayList<>();
+        Material currentMaterial = null;
+        ArrayList<Face> currentFaceList = new ArrayList<>();
+
+        for (Face face : this.faces) {
+            if (face.material != currentMaterial) {
+                if (!currentFaceList.isEmpty()) {
+                    facesByTextureList.add(currentFaceList);
+                }
+                currentMaterial = face.material;
+                currentFaceList = new ArrayList<>();
+            }
+            currentFaceList.add(face);
+        }
+        if (!currentFaceList.isEmpty()) {
+            facesByTextureList.add(currentFaceList);
+        }
+        return facesByTextureList;
+    }
+
+    public ArrayList<Face> splitQuads(ArrayList<Face> faceList) {
+        ArrayList<Face> triangleList = new ArrayList<>();
+        for (Face face : faceList) {
+            if (face.vertices.size() == 3) {
+//                System.out.println(face.vertices.size());
+//                System.out.println(face.vertices);
+                triangleList.add(face);
+            } else if (face.vertices.size() == 4) {
+//                System.out.println(face.vertices.size());
+//                System.out.println(face.vertices);
+                FaceVertex v1 = face.vertices.get(0);
+                FaceVertex v2 = face.vertices.get(1);
+                FaceVertex v3 = face.vertices.get(2);
+                FaceVertex v4 = face.vertices.get(3);
+                Face f1 = new Face();
+                f1.map = face.map;
+                f1.material = face.material;
+                f1.addVertex(v1);
+                f1.addVertex(v2);
+                f1.addVertex(v3);
+                triangleList.add(f1);
+                Face f2 = new Face();
+                f2.map = face.map;
+                f2.material = face.material;
+                f2.addVertex(v1);
+                f2.addVertex(v3);
+                f2.addVertex(v4);
+                triangleList.add(f2);
+            }
+        }
+//        System.out.println("liste depuis splitQuads" + triangleList);
+        return triangleList;
+    }
+
+    public void calcMissingVertexNormals(ArrayList<Face> triangleList) {
+        for (Face face : triangleList) {
+            face.processTriangleNormal();
+            for (int i = 0; i < face.vertices.size(); i++) {
+                FaceVertex fv = face.vertices.get(i);
+                if (face.vertices.get(0).normal == null) {
+                    FaceVertex newFv = new FaceVertex();
+                    newFv.geometric = fv.geometric;
+                    newFv.texture = fv.texture;
+                    newFv.normal = face.faceNormal;
+                    face.vertices.set(i, newFv);
+                }
+            }
+        }
+//        System.out.println("calcmissing" + triangleList);
+    }
+
 
     public void addPoints(int[] values) {
         //TODO
