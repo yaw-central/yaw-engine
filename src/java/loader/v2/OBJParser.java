@@ -13,7 +13,7 @@ public class OBJParser {
     /**
      * Its OBJ loader
      */
-    private OBJLoaderV2Interface objloader;
+    private OBJLoader objloader;
     /**
      * The OBJ File
      */
@@ -29,7 +29,7 @@ public class OBJParser {
      * @param filename  The OBJ file name
      * @throws IOException
      */
-    public OBJParser(OBJLoaderV2Interface objloader, String filename) throws IOException {
+    public OBJParser(OBJLoader objloader, String filename) throws IOException {
         this.objloader = objloader;
         objloader.setObjFileName(filename);
         parseObjFile(filename);

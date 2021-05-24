@@ -1,7 +1,6 @@
 package yaw.engine;
 
-import loader.Face;
-import loader.Model;
+import loader.v1.Model;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
@@ -16,8 +15,6 @@ import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * This is the facade of the engine, most Clojure calls are

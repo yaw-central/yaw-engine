@@ -7,7 +7,7 @@ import java.util.*;
  * It contains all OBJ file's elements.
  * It allows users to manipulate every attribute from an OBJ as they want.
  */
-public class OBJLoaderV2 implements OBJLoaderV2Interface {
+public class OBJLoader {
 
     // ========== Attributes ==========
 
@@ -53,7 +53,7 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
     /**
      * Empty constructor
      */
-    public OBJLoaderV2() {
+    public OBJLoader() {
     }
 
 

@@ -1,4 +1,4 @@
-package loader;
+package loader.v1;
 
 import org.joml.Vector3f;
 

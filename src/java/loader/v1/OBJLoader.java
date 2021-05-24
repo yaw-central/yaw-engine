@@ -1,17 +1,13 @@
-package loader;
+package loader.v1;
 
 import org.joml.Vector3f;
-import yaw.DifferentLights;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
-import yaw.engine.light.SpotLight;
 import yaw.engine.meshs.Mesh;
 import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
 
 import java.io.*;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * OBJLoader is a tool for reading and parsing an OBJ file into a Model.
