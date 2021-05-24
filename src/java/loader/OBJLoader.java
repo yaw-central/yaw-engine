@@ -79,7 +79,7 @@ public class OBJLoader {
     }
 
     public static void main(String[] args) throws IOException {
-        Model m = loadModel(new File("src/java/ressources/tree1.obj"));
+        Model m = loadModel(new File("src/java/ressources/tree.obj"));
 
         World world = new World(0, 0, 800, 600);
 

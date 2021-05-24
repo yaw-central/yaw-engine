@@ -1,9 +1,6 @@
 package loader.v2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The OBJLoader loads OBJ files into its attributes by calling a parse on them.
@@ -30,6 +27,8 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
     private List<String> currentGroups = new ArrayList<>();
     private List<ArrayList<Face>> currentGroupFaceLists = new ArrayList<>();
     public String objectName = null;
+
+
     private Material currentMaterial = null;
     private Material currentMap = null;
     public Map<String, Material> materialLib = new HashMap<>();
@@ -277,6 +276,24 @@ public class OBJLoaderV2 implements OBJLoaderV2Interface {
     }
 
     public void setMapDecalDispBump(int type, String filename) {
-        //TODO
+        if (type == 0) {
+            currentMaterialBeingParsed.mapKaFilename = filename;
+        } else if (type == 1) {
+            currentMaterialBeingParsed.mapKdFilename = filename;
+        } else if (type == 2) {
+            currentMaterialBeingParsed.mapKsFilename = filename;
+        } else if (type == 3) {
+            currentMaterialBeingParsed.mapNsFilename = filename;
+        } else if (type == 4) {
+            currentMaterialBeingParsed.mapDFilename = filename;
+        } else if (type == 5) {
+            currentMaterialBeingParsed.decalFilename = filename;
+        } else if (type == 6) {
+            currentMaterialBeingParsed.dispFilename = filename;
+        } else if (type == 7) {
+            currentMaterialBeingParsed.bumpFilename = filename;
+        }
     }
+
+
 }

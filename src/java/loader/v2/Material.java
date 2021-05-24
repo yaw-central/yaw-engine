@@ -25,6 +25,14 @@ public class Material {
     public double nsExponent = 0.0;
     public double sharpnessValue = 0.0;
     public double niOpticalDensity = 0.0;
+    public String mapKaFilename = null;
+    public String mapKdFilename = null;
+    public String mapKsFilename = null;
+    public String mapNsFilename = null;
+    public String mapDFilename = null;
+    public String decalFilename = null;
+    public String dispFilename = null;
+    public String bumpFilename = null;
 
 
     // ========== Constructors ==========

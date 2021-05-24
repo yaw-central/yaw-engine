@@ -1,6 +1,11 @@
-package loader.v2;
+package yaw;
 
-import yaw.LoadingRotatingTest;
+import loader.v2.Face;
+import loader.v2.FaceVertex;
+import loader.v2.OBJLoaderV2;
+import loader.v2.OBJParser;
+import org.joml.Vector3f;
+import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.Mesh;
@@ -8,26 +13,60 @@ import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
-public class LoadingTest {
+public class LoadingRevolveTest implements UpdateCallback {
+    private int nbUpdates = 0;
+    private double totalDeltaTime = 0.0;
+    private static long deltaRefreshMillis = 1000;
+    private long prevDeltaRefreshMillis = 0;
+    private ItemObject teapot;
+    private float speed = 10;
+
+    public LoadingRevolveTest(ItemObject teapot) {
+        this.teapot = teapot;
+    }
+
+    public ItemObject getItem() {
+        return teapot;
+    }
+
+
+    @Override
+    public void update(double deltaTime) {
+        nbUpdates++;
+        totalDeltaTime += deltaTime;
+
+        long currentMillis = System.currentTimeMillis();
+        if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
+            double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
+            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) + " s (" + nbUpdates + ")");
+            nbUpdates = 0;
+            totalDeltaTime = 0.0;
+            prevDeltaRefreshMillis = currentMillis;
+        }
+
+        teapot.rotateXYZAround(0f, 1f, 0f, new Vector3f(0f, 0f, 0f));
+        teapot.rotateXYZ(0, 1, 0);
+
+
+    }
+
     public static void main(String[] args) {
-        String filename = "src/java/ressources/objfiles/mickey.obj";
+
+        String filename = "src/java/ressources/objfiles/teapot.obj";
 
         try {
             OBJLoaderV2 objLoaderV2 = new OBJLoaderV2();
             OBJParser obj = new OBJParser(objLoaderV2, filename);
             World world = new World(0, 0, 800, 600);
 
-            world.getCamera().setPosition(0, 1, 0);
-            world.getCamera().rotate(0, 10, 0);
+            world.getCamera().setPosition(0, 0, 6);
+
 
             // -----------------------------
 
             ArrayList<ArrayList<Face>> facesByTextureList = objLoaderV2.createFaceListsByMaterial();
-
-            List<ItemObject> test = new ArrayList<>();
 
             float[] arrayG = new float[0];
             float[] arrayN = new float[0];
@@ -119,23 +158,26 @@ public class LoadingTest {
 
                 //-----------------------------------------------
 
+//                System.out.println("arrayG" + Arrays.toString(arrayG));
             }
 
             float[] rgb = {75, 75, 75};
             Mesh mesh = world.createMesh(arrayG, arrayN, arrayIndices, rgb);
-            ItemObject object = world.createItemObject("test", 0f, 0f, -20f, 0.03f, mesh);
-//            object.rotateY(30f);
-//            object.rotateX(30f);
+//                ItemObject current = world.createItemObject("test" + cptparts++, 0f, 0f, -15f, 0.03f, mesh);
+            ItemObject object = world.createItemObject("test", 0f, 0f, -2f, 0.5f, mesh);
+            object.rotateY(30f);
+            object.rotateX(30f);
 //            object.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
-            test.add(object);
 
+            LoadingRevolveTest rObject = new LoadingRevolveTest(object);
+
+            world.registerUpdateCallback(rObject);
             world.launch();
             world.waitTermination();
+
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 }

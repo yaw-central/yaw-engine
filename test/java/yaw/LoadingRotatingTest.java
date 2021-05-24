@@ -1,6 +1,11 @@
-package loader.v2;
+package yaw;
 
-import yaw.LoadingRotatingTest;
+import loader.v2.Face;
+import loader.v2.FaceVertex;
+import loader.v2.OBJLoaderV2;
+import loader.v2.OBJParser;
+import org.joml.Vector3f;
+import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.Mesh;
@@ -8,12 +13,49 @@ import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
-public class LoadingTest {
+public class LoadingRotatingTest implements UpdateCallback {
+    private int nbUpdates = 0;
+    private double totalDeltaTime = 0.0;
+    private static long deltaRefreshMillis = 1000;
+    private long prevDeltaRefreshMillis = 0;
+    private ItemObject prism;
+    private float speed = 4;
+
+    public LoadingRotatingTest(ItemObject prism) {
+        this.prism = prism;
+    }
+
+    public ItemObject getItem() {
+        return prism;
+    }
+
+    @Override
+    public void update(double deltaTime) {
+        nbUpdates++;
+        totalDeltaTime += deltaTime;
+
+        long currentMillis = System.currentTimeMillis();
+        if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
+            double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
+            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) + " s (" + nbUpdates + ")");
+            nbUpdates = 0;
+            totalDeltaTime = 0.0;
+            prevDeltaRefreshMillis = currentMillis;
+        }
+
+        //prism.rotateXYZ(0f, 3.1415925f * speed * (float) deltaTime, 0f);
+        //prism.rotateZAround(1f, new Vector3f(0f, 0f, -3f));
+        prism.rotateZ(3.1415925f * speed * (float) deltaTime);
+        prism.rotateXYZAround(0f, 3.1415925f * speed * (float) deltaTime, 0f, new Vector3f(0f, 0f, -10f));
+        //prism.rotateX(0.0f);
+
+
+    }
+
     public static void main(String[] args) {
-        String filename = "src/java/ressources/objfiles/mickey.obj";
+        String filename = "src/java/ressources/objfiles/tree.obj";
 
         try {
             OBJLoaderV2 objLoaderV2 = new OBJLoaderV2();
@@ -23,11 +65,16 @@ public class LoadingTest {
             world.getCamera().setPosition(0, 1, 0);
             world.getCamera().rotate(0, 10, 0);
 
+            Mesh tmpcube = MeshBuilder.generateBlock(1, 1, 1);
+            ItemObject cube = world.createItemObject("cube", -5f, 0f, -5f, 1.0f, tmpcube);
+
+            cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+
             // -----------------------------
 
             ArrayList<ArrayList<Face>> facesByTextureList = objLoaderV2.createFaceListsByMaterial();
 
-            List<ItemObject> test = new ArrayList<>();
+            int cptparts = 0;
 
             float[] arrayG = new float[0];
             float[] arrayN = new float[0];
@@ -119,23 +166,31 @@ public class LoadingTest {
 
                 //-----------------------------------------------
 
-            }
+//                System.out.println("arrayG" + Arrays.toString(arrayG));
 
+            }
             float[] rgb = {75, 75, 75};
             Mesh mesh = world.createMesh(arrayG, arrayN, arrayIndices, rgb);
-            ItemObject object = world.createItemObject("test", 0f, 0f, -20f, 0.03f, mesh);
-//            object.rotateY(30f);
-//            object.rotateX(30f);
-//            object.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
-            test.add(object);
+//                ItemObject current = world.createItemObject("test" + cptparts++, 0f, 0f, -15f, 0.03f, mesh);
+            ItemObject prism = world.createItemObject("test" + cptparts++, 0f, 0f, -15f, 0.5f, mesh);
+            prism.rotateY(30f);
+            prism.rotateX(30f);
+            prism.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
 
+
+//            Mesh prismMesh;
+//            ItemObject prism = world.createItemObject("prism", 0f, 0f, -2f, 1.0f, prismMesh);
+            //prism.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+//            prism.translate(2f, 0f, -5f);
+
+            LoadingRotatingTest loadRotatingTest = new LoadingRotatingTest(prism);
+
+            world.registerUpdateCallback(loadRotatingTest);
+//            System.out.println("liste de  items" + test);
             world.launch();
-            world.waitTermination();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 }
