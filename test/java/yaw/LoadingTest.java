@@ -1,14 +1,14 @@
-package loader.v2;
+package yaw;
 
-import yaw.LoadingRotatingTest;
+import loader.v2.Face;
+import loader.v2.FaceVertex;
+import loader.v2.OBJLoader;
+import loader.v2.OBJParser;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.MeshBuilder;
-import yaw.engine.meshs.Texture;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class LoadingTest {
@@ -16,16 +16,16 @@ public class LoadingTest {
         String filename = "src/java/ressources/objfiles/mickey.obj";
 
         try {
-            OBJLoaderV2 objLoaderV2 = new OBJLoaderV2();
-            OBJParser obj = new OBJParser(objLoaderV2, filename);
+            OBJLoader objLoader = new OBJLoader();
+            OBJParser obj = new OBJParser(objLoader, filename);
             World world = new World(0, 0, 800, 600);
 
-            world.getCamera().setPosition(0, 1, 0);
-            world.getCamera().rotate(0, 10, 0);
+            world.getCamera().setPosition(0, 0, 6);
+//            world.getCamera().rotate(0, 10, 0);
 
             // -----------------------------
 
-            ArrayList<ArrayList<Face>> facesByTextureList = objLoaderV2.createFaceListsByMaterial();
+            ArrayList<ArrayList<Face>> facesByTextureList = objLoader.createFaceListsByMaterial();
 
             List<ItemObject> test = new ArrayList<>();
 
@@ -38,8 +38,8 @@ public class LoadingTest {
             for (ArrayList<Face> faceList : facesByTextureList) {
                 if (faceList.isEmpty()) continue;
 
-                ArrayList<Face> triangleList = objLoaderV2.splitQuads(faceList);
-                objLoaderV2.calcMissingVertexNormals(triangleList);
+                ArrayList<Face> triangleList = objLoader.splitQuads(faceList);
+                objLoader.calcMissingVertexNormals(triangleList);
 //                System.out.println("après process" + triangleList);
 
                 if (triangleList.size() <= 0) continue;
@@ -121,12 +121,11 @@ public class LoadingTest {
 
             }
 
-            float[] rgb = {75, 75, 75};
+            float[] rgb = {(float) Math.random(), (float) Math.random(), (float) Math.random()};
             Mesh mesh = world.createMesh(arrayG, arrayN, arrayIndices, rgb);
-            ItemObject object = world.createItemObject("test", 0f, 0f, -20f, 0.03f, mesh);
-//            object.rotateY(30f);
+            ItemObject object = world.createItemObject("test", 0f, 0f, -10f, 0.03f, mesh);
+//            object.rotateY(50f);
 //            object.rotateX(30f);
-//            object.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
             test.add(object);
 
             world.launch();

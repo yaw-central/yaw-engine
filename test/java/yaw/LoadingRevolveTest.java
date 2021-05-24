@@ -2,15 +2,13 @@ package yaw;
 
 import loader.v2.Face;
 import loader.v2.FaceVertex;
-import loader.v2.OBJLoaderV2;
+import loader.v2.OBJLoader;
 import loader.v2.OBJParser;
 import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.MeshBuilder;
-import yaw.engine.meshs.Texture;
 
 import java.io.IOException;
 import java.util.*;
@@ -57,8 +55,8 @@ public class LoadingRevolveTest implements UpdateCallback {
         String filename = "src/java/ressources/objfiles/teapot.obj";
 
         try {
-            OBJLoaderV2 objLoaderV2 = new OBJLoaderV2();
-            OBJParser obj = new OBJParser(objLoaderV2, filename);
+            OBJLoader objLoader = new OBJLoader();
+            OBJParser obj = new OBJParser(objLoader, filename);
             World world = new World(0, 0, 800, 600);
 
             world.getCamera().setPosition(0, 0, 6);
@@ -66,7 +64,7 @@ public class LoadingRevolveTest implements UpdateCallback {
 
             // -----------------------------
 
-            ArrayList<ArrayList<Face>> facesByTextureList = objLoaderV2.createFaceListsByMaterial();
+            ArrayList<ArrayList<Face>> facesByTextureList = objLoader.createFaceListsByMaterial();
 
             float[] arrayG = new float[0];
             float[] arrayN = new float[0];
@@ -77,8 +75,8 @@ public class LoadingRevolveTest implements UpdateCallback {
             for (ArrayList<Face> faceList : facesByTextureList) {
                 if (faceList.isEmpty()) continue;
 
-                ArrayList<Face> triangleList = objLoaderV2.splitQuads(faceList);
-                objLoaderV2.calcMissingVertexNormals(triangleList);
+                ArrayList<Face> triangleList = objLoader.splitQuads(faceList);
+                objLoader.calcMissingVertexNormals(triangleList);
 //                System.out.println("après process" + triangleList);
 
                 if (triangleList.size() <= 0) continue;
