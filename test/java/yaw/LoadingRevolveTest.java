@@ -56,20 +56,23 @@ public class LoadingRevolveTest implements UpdateCallback {
 
     public static void main(String[] args) {
 
+        // path to the OBJ file
         String filename = "src/java/ressources/objfiles/teapot.obj";
 
         try {
+//            instantiate the objloader and the obj
             OBJLoader objLoader = new OBJLoader();
             OBJParser obj = new OBJParser(objLoader, filename);
+//            instantiate the world
             World world = new World(0, 0, 800, 600);
-
             world.getCamera().setPosition(0, 0, 6);
 
 
             // -----------------------------
-
+            // Grouping faces lists by their material
             ArrayList<ArrayList<Face>> facesByTextureList = objLoader.createFaceListsByMaterial();
 
+            // instantiate arrays for the mesh's object
             float[] arrayG = new float[0];
             float[] arrayN = new float[0];
             float[] arrayT = new float[0];
@@ -79,14 +82,16 @@ public class LoadingRevolveTest implements UpdateCallback {
             for (ArrayList<Face> faceList : facesByTextureList) {
                 if (faceList.isEmpty()) continue;
 
+                // Split the 4-sided faces into triangles
                 ArrayList<Face> triangleList = objLoader.splitQuads(faceList);
+                // Initialize the missing normal vertices from the new triangles
                 objLoader.calcMissingVertexNormals(triangleList);
-//                System.out.println("après process" + triangleList);
 
+                //                if no triangle face in the list then go to the next list
                 if (triangleList.size() <= 0) continue;
 
                 // -----------------------------------------------
-
+//                instantiate a map for the FaceVertexs in the triangle list and adding the into the map with an index
                 Map<FaceVertex, Integer> indexMap = new HashMap<>();
                 int nextVertexIndex = 0;
                 ArrayList<FaceVertex> faceVertexList = new ArrayList<>();
@@ -99,11 +104,13 @@ public class LoadingRevolveTest implements UpdateCallback {
                     }
                 }
 
+//                create lists instead of arrays because we don't know the size in advance
                 List<Float> verticesG, verticesN, verticesT;
                 verticesG = new ArrayList<>();
                 verticesN = new ArrayList<>();
                 verticesT = new ArrayList<>();
 
+//                process each FaceVertex of the faceVertexList and add the geometric, normal and texture verticies into their respective list
                 for (FaceVertex vertex : faceVertexList) {
                     verticesG.add(vertex.geometric.getX());
                     verticesG.add(vertex.geometric.getY());
@@ -126,6 +133,7 @@ public class LoadingRevolveTest implements UpdateCallback {
                     }
                 }
 
+//                update mesh's arrays by adding the new list at the end of the current corresponding array
                 int old_size = arrayG.length;
                 arrayG = Arrays.copyOf(arrayG, old_size + verticesG.size());
                 for (int i = old_size; i < arrayG.length; i++) {
@@ -163,17 +171,21 @@ public class LoadingRevolveTest implements UpdateCallback {
 //                System.out.println("arrayG" + Arrays.toString(arrayG));
             }
 
-            float[] rgb = {75, 75, 75};
+            // color of the object
+            float[] rgb = {0.75f, 0.75f, 0.75f};
             Mesh mesh = world.createMesh(arrayG, arrayN, arrayIndices, rgb);
-//                ItemObject current = world.createItemObject("test" + cptparts++, 0f, 0f, -15f, 0.03f, mesh);
+            // You may have to change the object's scale or coordinates to see it. Here Mickey needs a 0.03f scale
             ItemObject object = world.createItemObject("test", 0f, 0f, -2f, 0.5f, mesh);
+            // set reotation of initial position of the object
             object.rotateY(30f);
             object.rotateX(30f);
-//            object.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
 
+            // create the revolve of the object
             LoadingRevolveTest rObject = new LoadingRevolveTest(object);
 
+            // launch the revolve of the object
             world.registerUpdateCallback(rObject);
+            //start the world
             world.launch();
             world.waitTermination();
 

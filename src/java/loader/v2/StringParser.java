@@ -36,7 +36,7 @@ public class StringParser {
         // For every character of the string
         while (count < listLength) {
             // Skip any whitespace
-            itemEnd = skipWhiteSpace(count, listChars, null);
+            itemEnd = skipWhiteSpace(count, listChars);
             count = itemEnd;
             if (count >= listLength) break;
 
@@ -53,7 +53,7 @@ public class StringParser {
             // Parse the item into a float number
             returnArray[returnArrayCount++] = Float.parseFloat(new String(listChars, itemStart, itemLength));
 
-            // Stop if all the desired floats ara gathered
+            // Break if all the desired floats are assembled
             if (returnArrayCount >= numFloats) break;
             count = itemEnd;
         }
@@ -86,7 +86,7 @@ public class StringParser {
 
         while (count < listLength) {
             // Skip any leading whitespace
-            itemEnd = skipWhiteSpace(count, listChars, null);
+            itemEnd = skipWhiteSpace(count, listChars);
             count = itemEnd;
             if (count >= listLength) {
                 break;
@@ -122,10 +122,7 @@ public class StringParser {
      * @return The int array representing the vertices
      */
     public static int[] parseMultipleVertices(String s, int elemsPerTuple) {
-        if (s == null) {
-            return null;
-        }
-        if (s.equals("")) {
+        if (s == null || s.equals("")) {
             return null;
         }
 
@@ -194,7 +191,7 @@ public class StringParser {
 
         while (count < listChars.length) {
             // Skip any leading whitespace
-            itemEnd = skipWhiteSpace(count, listChars, null);
+            itemEnd = skipWhiteSpace(count, listChars);
             count = itemEnd;
             if (count >= listChars.length) {
                 break;
@@ -219,25 +216,30 @@ public class StringParser {
         return returnArray;
     }
 
-
-    public static int skipWhiteSpace(int mCount, char[] messageChars, String errMsg) {
+    /**
+     * Detect the next non-whitespaces from a char array
+     * @param mCount count non whitespaces chars
+     * @param messageChars array of chars to process
+     * @return the index of the next non-whitespaces char of the array
+     */
+    public static int skipWhiteSpace(int mCount, char[] messageChars) {
         // Skip whitespace
         while (mCount < messageChars.length) {
             if (messageChars[mCount] == ' ' || messageChars[mCount] == '\n' || messageChars[mCount] == '\t') {
                 mCount++;
             } else break;
         }
-        if (errMsg != null) {
-            if (mCount >= messageChars.length) {
-                return -1;
-            }
-        }
         return mCount;
     }
 
+    /**
+     * Parse a string into an array in function of a certain delimiter
+     * @param delim parsing delimiter
+     * @param list list to parse
+     * @return a vector converted into an array
+     */
     public static String[] parseList(char delim, String list) {
-        if (list == null) return null;
-        if (list.equals("")) return null;
+        if (list == null || list.equals("")) return null;
 
         ArrayList<String> returnVec = new ArrayList<String>();
         String[] returnArray = null;
@@ -271,7 +273,7 @@ public class StringParser {
             count = itemEnd;
             returnVec.add(newItem);
         }
-        // Convert from vector to array, and return it.
+        // Convert from vector to array
         returnArray = new String[1];
         returnArray = (String[]) returnVec.toArray((Object[]) returnArray);
         return returnArray;
