@@ -9,7 +9,9 @@ public class NormalVertex {
 
 
     /** Vertex's coordinates */
-    public float x, y, z;
+    private float x;
+    private float y;
+    private float z;
 
 
     // ========== Constructors ==========
@@ -51,4 +53,37 @@ public class NormalVertex {
                 ", z=" + z +
                 '}';
     }
+
+
+    // ========== Getters ==========
+
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public float getZ() {
+        return z;
+    }
+
+
+    // ========== Setters ==========
+
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public void setZ(float z) {
+        this.z = z;
+    }
+
 }

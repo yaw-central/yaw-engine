@@ -15,7 +15,11 @@ import yaw.engine.meshs.Texture;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * This test is loading a prism from an OBJ file and makes it rotate (see RotatingCube).
+ */
 public class LoadingRotatingTest implements UpdateCallback {
+
     private int nbUpdates = 0;
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
@@ -97,7 +101,7 @@ public class LoadingRotatingTest implements UpdateCallback {
                 int nextVertexIndex = 0;
                 ArrayList<FaceVertex> faceVertexList = new ArrayList<>();
                 for (Face face : triangleList) {
-                    for (FaceVertex vertex : face.vertices) {
+                    for (FaceVertex vertex : face.getVertices()) {
                         if (!indexMap.containsKey(vertex)) {
                             indexMap.put(vertex, nextVertexIndex++);
                             faceVertexList.add(vertex);
@@ -111,17 +115,17 @@ public class LoadingRotatingTest implements UpdateCallback {
                 verticesT = new ArrayList<>();
 
                 for (FaceVertex vertex : faceVertexList) {
-                    verticesG.add(vertex.geometric.x);
-                    verticesG.add(vertex.geometric.y);
-                    verticesG.add(vertex.geometric.z);
+                    verticesG.add(vertex.geometric.getX());
+                    verticesG.add(vertex.geometric.getY());
+                    verticesG.add(vertex.geometric.getZ());
                     if (vertex.normal == null) {
                         verticesN.add(1.0f);
                         verticesN.add(1.0f);
                         verticesN.add(1.0f);
                     } else {
-                        verticesN.add(vertex.normal.x);
-                        verticesN.add(vertex.normal.y);
-                        verticesN.add(vertex.normal.z);
+                        verticesN.add(vertex.normal.getX());
+                        verticesN.add(vertex.normal.getY());
+                        verticesN.add(vertex.normal.getZ());
                     }
                     if (vertex.texture == null) {
                         verticesT.add((float) Math.random());
@@ -152,7 +156,7 @@ public class LoadingRotatingTest implements UpdateCallback {
                 List<Integer> indices;
                 indices = new ArrayList<>();
                 for (Face face : triangleList) {
-                    for (FaceVertex vertex : face.vertices) {
+                    for (FaceVertex vertex : face.getVertices()) {
                         int index = indexMap.get(vertex);
                         indices.add(index);
                     }

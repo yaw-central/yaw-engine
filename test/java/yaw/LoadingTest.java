@@ -11,8 +11,15 @@ import yaw.engine.meshs.Mesh;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * This test is the basic test for loading an OBJ file and display it.
+ * If you want to display another object, pay attention to the fact that all scales exist and you could need
+ * to hand-change the object position and/or scale.
+ * TODO : make the textures work ! The structure is already prepared to apply them.
+ */
 public class LoadingTest {
     public static void main(String[] args) {
+
         String filename = "src/java/ressources/objfiles/mickey.obj";
 
         try {
@@ -25,6 +32,7 @@ public class LoadingTest {
 
             // -----------------------------
 
+            // Grouping faces lists by their material
             ArrayList<ArrayList<Face>> facesByTextureList = objLoader.createFaceListsByMaterial();
 
             List<ItemObject> test = new ArrayList<>();
@@ -34,11 +42,13 @@ public class LoadingTest {
             float[] arrayT = new float[0];
             int[] arrayIndices = new int[0];
 
-            // Parcours des faces pour appliquer la texture
+            // Iterating on all faces groups to apply textures
             for (ArrayList<Face> faceList : facesByTextureList) {
                 if (faceList.isEmpty()) continue;
 
+                // Split the 4-sided faces into triangles
                 ArrayList<Face> triangleList = objLoader.splitQuads(faceList);
+                // Initialize the missing normal vertices from the new triangles
                 objLoader.calcMissingVertexNormals(triangleList);
 //                System.out.println("après process" + triangleList);
 
@@ -50,7 +60,7 @@ public class LoadingTest {
                 int nextVertexIndex = 0;
                 ArrayList<FaceVertex> faceVertexList = new ArrayList<>();
                 for (Face face : triangleList) {
-                    for (FaceVertex vertex : face.vertices) {
+                    for (FaceVertex vertex : face.getVertices()) {
                         if (!indexMap.containsKey(vertex)) {
                             indexMap.put(vertex, nextVertexIndex++);
                             faceVertexList.add(vertex);
@@ -64,17 +74,17 @@ public class LoadingTest {
                 verticesT = new ArrayList<>();
 
                 for (FaceVertex vertex : faceVertexList) {
-                    verticesG.add(vertex.geometric.x);
-                    verticesG.add(vertex.geometric.y);
-                    verticesG.add(vertex.geometric.z);
+                    verticesG.add(vertex.geometric.getX());
+                    verticesG.add(vertex.geometric.getY());
+                    verticesG.add(vertex.geometric.getZ());
                     if (vertex.normal == null) {
                         verticesN.add(1.0f);
                         verticesN.add(1.0f);
                         verticesN.add(1.0f);
                     } else {
-                        verticesN.add(vertex.normal.x);
-                        verticesN.add(vertex.normal.y);
-                        verticesN.add(vertex.normal.z);
+                        verticesN.add(vertex.normal.getX());
+                        verticesN.add(vertex.normal.getY());
+                        verticesN.add(vertex.normal.getZ());
                     }
                     if (vertex.texture == null) {
                         verticesT.add((float) Math.random());
@@ -105,7 +115,7 @@ public class LoadingTest {
                 List<Integer> indices;
                 indices = new ArrayList<>();
                 for (Face face : triangleList) {
-                    for (FaceVertex vertex : face.vertices) {
+                    for (FaceVertex vertex : face.getVertices()) {
                         int index = indexMap.get(vertex);
                         indices.add(index);
                     }
@@ -123,6 +133,7 @@ public class LoadingTest {
 
             float[] rgb = {(float) Math.random(), (float) Math.random(), (float) Math.random()};
             Mesh mesh = world.createMesh(arrayG, arrayN, arrayIndices, rgb);
+            // You may have to change the object's scale or coordinates to see it. Here Mickey needs a 0.03f scale
             ItemObject object = world.createItemObject("test", 0f, 0f, -10f, 0.03f, mesh);
 //            object.rotateY(50f);
 //            object.rotateX(30f);

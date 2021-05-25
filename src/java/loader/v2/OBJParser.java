@@ -82,7 +82,7 @@ public class OBJParser {
             } else if (line.startsWith("usemtl")) {
                 processUseMaterial(line);
             } else if (line.startsWith("mtllib")) {
-                // not working yet
+                // Not working yet
 //                processMaterialLib(line);
             } else if (line.startsWith("s")) {
                 processSmoothingGroup(line);
@@ -130,7 +130,7 @@ public class OBJParser {
     }
 
     private void processObjectName(String line) {
-        objloader.addObjectName(line.substring("o".length()).trim());
+        objloader.setObjectName(line.substring("o".length()).trim());
     }
 
     private void processMaterialLib(String line) {

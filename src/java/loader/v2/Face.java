@@ -6,17 +6,19 @@ import java.util.List;
 
 /**
  * A Face is a geometric element composed of 3 vertices (triangle).
+ * Faces with 4+ vertices exists but are sub-
  */
 public class Face {
 
     // ========== Attributes ==========
 
     /** The vertices that describe the face */
-    public List<FaceVertex> vertices = new ArrayList<>();
+    private List<FaceVertex> vertices = new ArrayList<>();
     /** The material attached to the face */
-    public Material material = null;
-    public Material map = null;
-    public NormalVertex faceNormal = new NormalVertex(0, 0, 0);
+    private Material material = null;
+    private Material map = null;
+    /** The face's normal */
+    private NormalVertex faceNormal = new NormalVertex(0, 0, 0);
 
 
     // ========== Constructors ==========
@@ -45,27 +47,23 @@ public class Face {
         GeometricVertex v2 = vertices.get(1).geometric;
         GeometricVertex v3 = vertices.get(2).geometric;
 
-        float[] p1 = {v1.x, v1.y, v1.z};
-        float[] p2 = {v2.x, v2.y, v2.z};
-        float[] p3 = {v3.x, v3.y, v3.z};
-
         // Processing face triangle
-        side1[0] = p2[0] - p1[0];
-        side1[1] = p2[1] - p1[1];
-        side1[2] = p2[2] - p1[2];
+        side1[0] = v2.getX() - v1.getX();
+        side1[1] = v2.getY() - v1.getY();
+        side1[2] = v2.getZ() - v1.getZ();
 
-        side2[0] = p3[0] - p2[0];
-        side2[1] = p3[1] - p2[1];
-        side2[2] = p3[2] - p2[2];
+        side2[0] = v3.getX() - v2.getX();
+        side2[1] = v3.getY() - v2.getY();
+        side2[2] = v3.getZ() - v2.getZ();
 
-        // Calculation of the triangle's normal vertex
+        // Calculation of the triangle's normal vertex. See https://en.wikipedia.org/wiki/Normal_(geometry)
         normal[0] = side1[1] * side2[2] - side1[2] * side2[1];
         normal[1] = side1[2] * side2[0] - side1[0] * side2[2];
         normal[2] = side1[0] * side2[1] - side1[1] * side2[0];
 
-        faceNormal.x = normal[0];
-        faceNormal.y = normal[1];
-        faceNormal.z = normal[2];
+        faceNormal.setX(normal[0]);
+        faceNormal.setY(normal[1]);
+        faceNormal.setZ(normal[2]);
     }
 
     @Override
@@ -74,4 +72,25 @@ public class Face {
                 "vertices=" + vertices +
                 '}';
     }
+
+
+    // ========== Getters ==========
+
+
+    public List<FaceVertex> getVertices() { return this.vertices; }
+
+    public Material getMaterial() { return this.material; }
+
+    public Material getMap() { return this.map; }
+
+    public NormalVertex getFaceNormal() { return this.faceNormal; }
+
+
+    // ========== Setters ==========
+
+
+    public void setMaterial(Material material) { this.material = material; }
+
+    public void setMap(Material map) { this.map = map; }
+
 }

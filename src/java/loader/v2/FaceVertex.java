@@ -11,11 +11,11 @@ public class FaceVertex {
 
     /** The face vertex's index */
     int index = -1;
-    /** The attached geometric vertex (optional) */
+    /** The attached geometric vertex */
     public GeometricVertex geometric = null;
     /** The attached texture vertex (optional) */
     public TextureVertex texture = null;
-    /** The attached normal vertex */
+    /** The attached normal vertex (optional) */
     public NormalVertex normal = null;
 
 

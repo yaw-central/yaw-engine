@@ -8,8 +8,12 @@ public class GeometricVertex {
     // ========== Attributes ==========
 
 
-    /** Vertex's coordinates */
-    public float x, y, z;
+    /** Vertex x coordinate */
+    private float x;
+    /** Vertex y coordinate */
+    private float y;
+    /** Vertex z coordinate */
+    private float z;
 
 
     // ========== Constructors ==========
@@ -39,4 +43,24 @@ public class GeometricVertex {
                 ", z=" + z +
                 '}';
     }
+
+
+    // ========== Getters ==========
+
+
+    public float getX() { return x; }
+
+    public float getY() { return y; }
+
+    public float getZ() { return z; }
+
+
+    // ========== Setters ==========
+
+
+    public void setX(float x) { this.x = x; }
+
+    public void setY(float y) { this.y = y; }
+
+    public void setZ(float z) { this.z = z; }
 }
