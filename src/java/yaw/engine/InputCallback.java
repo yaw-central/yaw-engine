@@ -1,4 +1,3 @@
-
 package yaw.engine;
 
 public interface InputCallback {

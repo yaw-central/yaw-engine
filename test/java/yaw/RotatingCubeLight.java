@@ -5,17 +5,19 @@ import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.SpotLight;
-import yaw.engine.meshs.*;
+import yaw.engine.meshs.Mesh;
+import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.meshs.Texture;
 
 /**
- *  Just a rotating cube with light
+ * Just a rotating cube with light
  */
 public class RotatingCubeLight implements UpdateCallback {
     private int nbUpdates = 0;
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
     private long prevDeltaRefreshMillis = 0;
-    private ItemObject cube ;
+    private ItemObject cube;
     private float speed = 10;
 
     public RotatingCubeLight(ItemObject cube) {
@@ -39,7 +41,7 @@ public class RotatingCubeLight implements UpdateCallback {
         long currentMillis = System.currentTimeMillis();
         if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
             double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
+            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) + " s (" + nbUpdates + ")");
             nbUpdates = 0;
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
@@ -55,11 +57,11 @@ public class RotatingCubeLight implements UpdateCallback {
 
 
         World world = new World(0, 0, 800, 600);
-        world.getCamera().setPosition(0,5,5);
-        world.getCamera().rotate(-45,0,0);
+        world.getCamera().setPosition(0, 5, 5);
+        world.getCamera().rotate(-45, 0, 0);
 
         //world.getSceneLight().getSpotTable()[0] = new SpotLight(0, 255, 0, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -5, 10f);
-        world.getSceneLight().getSpotTable()[1] = new SpotLight(0, 255, 0, 0f, -0.3f,-3f, 1, 0, 0.75f, 0, 0, -5, -5, 3);
+        world.getSceneLight().getSpotTable()[1] = new SpotLight(0, 255, 0, 0f, -0.3f, -3f, 1, 0, 0.75f, 0, 0, -5, -5, 3);
         world.getSceneLight().getSpotTable()[2] = new SpotLight(255, 0, 0, 0, 0.3f, -3, 1f, 0, 0.75f, 0, 0f, -5, -5, 3f);
         world.getSceneLight().setSun(new DirectionalLight());
 
@@ -71,7 +73,7 @@ public class RotatingCubeLight implements UpdateCallback {
         world.registerUpdateCallback(rCube);
 
         world.launch();
-        world.waitFortermination();
+        world.waitTermination();
 
     }
 

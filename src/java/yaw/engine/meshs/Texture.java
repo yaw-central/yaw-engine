@@ -61,7 +61,7 @@ public class Texture {
 
                 // Create a new OpenGL texture
                 this.mId = glGenTextures();
-                
+
                 // Bind the texture
                 glBindTexture(GL_TEXTURE_2D, this.mId);
 

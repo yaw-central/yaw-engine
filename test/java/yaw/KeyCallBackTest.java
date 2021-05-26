@@ -1,19 +1,13 @@
 package yaw;
 
-import clojure.lang.IFn;
-import yaw.engine.Input;
-import yaw.engine.KeyCallback;
+import yaw.engine.InputCallback;
 import yaw.engine.World;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
-import yaw.engine.InputCallback;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
 
 public class KeyCallBackTest implements InputCallback {
     private int key;
@@ -23,43 +17,37 @@ public class KeyCallBackTest implements InputCallback {
     private Camera camera;
 
 
-
-    public KeyCallBackTest(Camera camera){
+    public KeyCallBackTest(Camera camera) {
         this.camera = camera;
     }
-
-
 
 
     public void sendKey(int key, int scancode, int action, int mods) {
 
 
-                this.key=key;
-                this.scancode=scancode;
-                this.action=action;
-                this.mods=mods;
+        this.key = key;
+        this.scancode = scancode;
+        this.action = action;
+        this.mods = mods;
 
-                if(key == GLFW_KEY_UP){
-                    camera.translate(0,0,0.1f);
-                }
-
+        if (key == GLFW_KEY_UP) {
+            camera.translate(0, 0, 0.1f);
+        }
 
 
     }
 
 
-
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
         World world = new World(0, 0, 800, 600);
         KeyCallBackTest key = new KeyCallBackTest(world.getCamera());
         world.registerInputCallback(key);
         ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, MeshBuilder.generateBlock(1, 1, 1));
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
-        world.getCamera().setPosition(0,0,3);
+        world.getCamera().setPosition(0, 0, 3);
 
         world.launch();
-        world.waitFortermination();
+        world.waitTermination();
 
     }
 

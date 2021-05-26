@@ -4,7 +4,9 @@ import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
-import yaw.engine.meshs.*;
+import yaw.engine.meshs.Mesh;
+import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.meshs.Texture;
 
 /**
  * A camera moving on Z
@@ -40,21 +42,21 @@ public class MovingCameraOnZ implements UpdateCallback {
         long currentMillis = System.currentTimeMillis();
         if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
             double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
+            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) + " s (" + nbUpdates + ")");
             nbUpdates = 0;
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
         }
-        if(inversingmove){
-            z+=0.1f;
-            camera.translate(0,0,0.1f);
-            if(z>=10){
+        if (inversingmove) {
+            z += 0.1f;
+            camera.translate(0, 0, 0.1f);
+            if (z >= 10) {
                 inversingmove = false;
             }
-        }else{
-            camera.translate(0,0,-0.1f);
-            z-=0.1f;
-            if(z<=-10){
+        } else {
+            camera.translate(0, 0, -0.1f);
+            z -= 0.1f;
+            if (z <= -10) {
                 inversingmove = true;
             }
         }
@@ -70,7 +72,7 @@ public class MovingCameraOnZ implements UpdateCallback {
         for (int i = 0; i < 5; i++) {
 
             ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateBlock(1, 1, 1));
-            item.translate(i,i,i);
+            item.translate(i, i, i);
 
             if (i % 3 == 0)
                 item.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
@@ -81,7 +83,7 @@ public class MovingCameraOnZ implements UpdateCallback {
         }
 
         world.getCamera().translate(-15, 15, -10); // placing camera to have a side vue of the world
-        world.getCamera().rotate(-45,-90,0); //rotate the camera to see the center of the world
+        world.getCamera().rotate(-45, -90, 0); //rotate the camera to see the center of the world
         MovingCameraOnZ movingCamera = new MovingCameraOnZ(world.getCamera());
 
 
@@ -89,7 +91,7 @@ public class MovingCameraOnZ implements UpdateCallback {
 
 
         world.launch();
-        world.waitFortermination();
+        world.waitTermination();
     }
 
 }

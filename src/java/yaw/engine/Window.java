@@ -1,6 +1,5 @@
 package yaw.engine;
 
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
@@ -28,12 +27,13 @@ public class Window {
     private static GLFWWindowSizeCallback windowSizeCallback;
 
 
-    /* package */ static synchronized KeyInput getGLFWKeyCallback() {
+    /* package */
+    static synchronized KeyInput getGLFWKeyCallback() {
         return keyCallback;
     }
 
     //3D click
-    public static synchronized  MouseInput getGLFWMouseCallback(){
+    public static synchronized MouseInput getGLFWMouseCallback() {
         return mouseCallback;
     }
 
@@ -74,7 +74,8 @@ public class Window {
             3D click
          */
 
-        glfwSetMouseButtonCallback(windowHandle, mouseCallback= new MouseInput());
+        glfwSetMouseButtonCallback(windowHandle, mouseCallback = new MouseInput());
+
         /* Setup resize callback
            This function sets the size callback of the specified window, which is called when the window is resized.
            The callback is provided with the size, in screen coordinates, of the client area of the window.*/
@@ -84,7 +85,7 @@ public class Window {
                 Window.width = width;
                 Window.height = height;
                 Window.resized = true; /* When the resize attribute is false, it does not prevent the resizing of the window with the mouse
-                                          but does not take into account the resize event in our program.*/
+                                          but does not take into account the resize event in our program. */
             }
         });
 
@@ -93,10 +94,10 @@ public class Window {
         caps = GL.createCapabilities(); /* Creates a new GLCapabilities instance for the OpenGL context that is current in the current thread. */
 
 
-        glfwSwapInterval(vsync? 1:0);
+        glfwSwapInterval(vsync ? 1 : 0);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);/* Specifies the red, green, blue, and alpha values used by glClear to clear the color buffers. */
 
-        /*activate depth comparisons and update the depth buffe*/
+        /* activate depth comparisons and update the depth buffer */
         glEnable(GL_DEPTH_TEST);
 
     }

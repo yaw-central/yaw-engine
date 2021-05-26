@@ -1,9 +1,9 @@
 package yaw.engine.light;
 
-import yaw.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import yaw.engine.shader.ShaderProgram;
 
 public class SceneLight {
     // Maximum number of pointLight and spotLight which can be created.

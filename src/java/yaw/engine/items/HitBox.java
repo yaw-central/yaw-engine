@@ -6,7 +6,6 @@ import org.joml.Vector4f;
 import yaw.engine.meshs.MeshBuilder;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * HitBox is an ItemObject, but unlike a classical ItemObject we can check if there is a collision with other Hitboxes
@@ -20,7 +19,8 @@ public class HitBox extends ItemObject {
      */
     public HitBox(String id, Vector3f position, Quaternionf orientation, float scale
             , float xLength, float yLength, float zLength) {
-        super(id, position, orientation, scale, MeshBuilder.generateBoundingBox(xLength, yLength, zLength));getMesh().getMaterial().setColor(new Vector3f(0, 255, 0));
+        super(id, position, orientation, scale, MeshBuilder.generateBoundingBox(xLength, yLength, zLength));
+        getMesh().getMaterial().setColor(new Vector3f(0, 255, 0));
     }
 
 
@@ -66,46 +66,45 @@ public class HitBox extends ItemObject {
         ArrayList<Vector4f> listVertexboundingBox2 = tabToListVertex(item);
 
         int[] tabIndexFaces = {0, 1, 2, 3, 1, 2, 6, 5, 0, 3, 7, 4, 1, 5, 4, 0, 2, 3, 7, 6, 4, 5, 6, 7};
-        int[] tabOppositeVertice = {4, 3, 2, 2, 1, 0 };
+        int[] tabOppositeVertice = {4, 3, 2, 2, 1, 0};
         //if the two hitboxes collide there is no containment
         if (!this.collidesWith(item)) {
             boolean isIn = true;
             int k = 0;
-            for(int i =0; i<tabIndexFaces.length;i+=4){
+            for (int i = 0; i < tabIndexFaces.length; i += 4) {
                 //Using 3 points to create a plane for the face
                 Vector4f A = listVertexboundingBox2.get(tabIndexFaces[i]);
-                Vector4f B = listVertexboundingBox2.get(tabIndexFaces[i+1]);
-                Vector4f C = listVertexboundingBox2.get(tabIndexFaces[i+2]);
+                Vector4f B = listVertexboundingBox2.get(tabIndexFaces[i + 1]);
+                Vector4f C = listVertexboundingBox2.get(tabIndexFaces[i + 2]);
                 // Creating two vectors with these points
-                Vector3f AB = new Vector3f(B.x-A.x, B.y-A.y,B.z-A.z);
-                Vector3f AC = new Vector3f(C.x-A.x, C.y-A.y,C.z-A.z);
+                Vector3f AB = new Vector3f(B.x - A.x, B.y - A.y, B.z - A.z);
+                Vector3f AC = new Vector3f(C.x - A.x, C.y - A.y, C.z - A.z);
                 //Cross product of the two vectors
-                Vector3f crossProductABC = new Vector3f((AB.y*AC.z)-(AB.z*AC.y),(AB.z*AC.x)-(AB.x*AC.z),(AB.x*AC.y)-(AB.y*AC.x));
+                Vector3f crossProductABC = new Vector3f((AB.y * AC.z) - (AB.z * AC.y), (AB.z * AC.x) - (AB.x * AC.z), (AB.x * AC.y) - (AB.y * AC.x));
                 // Taking a point that we know it don't belongs to the plane
                 Vector4f opposite = listVertexboundingBox2.get(tabOppositeVertice[k]);
-                Vector3f opp = new Vector3f(opposite.x-A.x, opposite.y-A.y, opposite.z-A.z);
+                Vector3f opp = new Vector3f(opposite.x - A.x, opposite.y - A.y, opposite.z - A.z);
                 // computing the dot product to get it's sign and to know what is "the right face" of the plane (negative dot product or positive)
-                float dotProductABC_Op = crossProductABC.x*opp.x+crossProductABC.y*opp.y+crossProductABC.z*opp.z;
+                float dotProductABC_Op = crossProductABC.x * opp.x + crossProductABC.y * opp.y + crossProductABC.z * opp.z;
 
 
                 //Taking one point of the contained HitBox
                 Vector4f point = listVertexboundingBox1.get(0);
-                Vector3f p = new Vector3f(point.x-A.x, point.y-A.y , point.z-A.z);
+                Vector3f p = new Vector3f(point.x - A.x, point.y - A.y, point.z - A.z);
                 // computing the dot product to get it's sign
-                float  dotProductABC_P = crossProductABC.x*p.x+crossProductABC.y*p.y+crossProductABC.z*p.z;
+                float dotProductABC_P = crossProductABC.x * p.x + crossProductABC.y * p.y + crossProductABC.z * p.z;
                 //if the two dot products have different signs, the point is not on the right face so it's not contained in the HitBox
-                if(dotProductABC_Op*dotProductABC_P<0){
-                    isIn=false;
+                if (dotProductABC_Op * dotProductABC_P < 0) {
+                    isIn = false;
                 }
                 k++;
             }
             //returns true if all the dotProducts have the right sign
             return isIn;
-        }else{
+        } else {
             return false;
         }
     }
-
 
 
     /**
@@ -120,48 +119,45 @@ public class HitBox extends ItemObject {
         ArrayList<Vector4f> listVertexboundingBox2 = tabToListVertex(this);
 
         int[] tabIndexFaces = {0, 1, 2, 3, 1, 2, 6, 5, 0, 3, 7, 4, 1, 5, 4, 0, 2, 3, 7, 6, 4, 5, 6, 7};
-        int[] tabOppositeVertice = {4, 3, 2, 2, 1, 0 };
+        int[] tabOppositeVertice = {4, 3, 2, 2, 1, 0};
         //if the two hitboxes collide there is no containment
         if (!this.collidesWith(item)) {
             boolean isIn = true;
             int k = 0;
-            for(int i =0; i<tabIndexFaces.length;i+=4){
+            for (int i = 0; i < tabIndexFaces.length; i += 4) {
                 //Using 3 points to create a plane for the face
                 Vector4f A = listVertexboundingBox2.get(tabIndexFaces[i]);
-                Vector4f B = listVertexboundingBox2.get(tabIndexFaces[i+1]);
-                Vector4f C = listVertexboundingBox2.get(tabIndexFaces[i+2]);
+                Vector4f B = listVertexboundingBox2.get(tabIndexFaces[i + 1]);
+                Vector4f C = listVertexboundingBox2.get(tabIndexFaces[i + 2]);
                 // Creating two vectors with these points
-                Vector3f AB = new Vector3f(B.x-A.x, B.y-A.y,B.z-A.z);
-                Vector3f AC = new Vector3f(C.x-A.x, C.y-A.y,C.z-A.z);
+                Vector3f AB = new Vector3f(B.x - A.x, B.y - A.y, B.z - A.z);
+                Vector3f AC = new Vector3f(C.x - A.x, C.y - A.y, C.z - A.z);
                 //Cross product of the two vectors
-                Vector3f crossProductABC = new Vector3f((AB.y*AC.z)-(AB.z*AC.y),(AB.z*AC.x)-(AB.x*AC.z),(AB.x*AC.y)-(AB.y*AC.x));
+                Vector3f crossProductABC = new Vector3f((AB.y * AC.z) - (AB.z * AC.y), (AB.z * AC.x) - (AB.x * AC.z), (AB.x * AC.y) - (AB.y * AC.x));
                 // Taking a point that we know it don't belongs to the plane
                 Vector4f opposite = listVertexboundingBox2.get(tabOppositeVertice[k]);
-                Vector3f opp = new Vector3f(opposite.x-A.x, opposite.y-A.y, opposite.z-A.z);
+                Vector3f opp = new Vector3f(opposite.x - A.x, opposite.y - A.y, opposite.z - A.z);
                 // computing the dot product to get it's sign and to know what is "the right face" of the plane (negative dot product or positive)
-                float dotProductABC_Op = crossProductABC.x*opp.x+crossProductABC.y*opp.y+crossProductABC.z*opp.z;
+                float dotProductABC_Op = crossProductABC.x * opp.x + crossProductABC.y * opp.y + crossProductABC.z * opp.z;
 
 
                 //Taking one point of the contained HitBox
                 Vector4f point = listVertexboundingBox1.get(0);
-                Vector3f p = new Vector3f(point.x-A.x, point.y-A.y , point.z-A.z);
+                Vector3f p = new Vector3f(point.x - A.x, point.y - A.y, point.z - A.z);
                 // computing the dot product to get it's sign
-                float  dotProductABC_P = crossProductABC.x*p.x+crossProductABC.y*p.y+crossProductABC.z*p.z;
+                float dotProductABC_P = crossProductABC.x * p.x + crossProductABC.y * p.y + crossProductABC.z * p.z;
                 //if the two dot products have different signs, the point is not on the right face so it's not contained in the HitBox
-                if(dotProductABC_Op*dotProductABC_P<0){
-                    isIn=false;
+                if (dotProductABC_Op * dotProductABC_P < 0) {
+                    isIn = false;
                 }
                 k++;
             }
             //returns true if all the dotProducts have the right sign
             return isIn;
-        }else{
+        } else {
             return false;
         }
     }
-
-
-
 
 
     /**
@@ -218,6 +214,7 @@ public class HitBox extends ItemObject {
         return false;
     }
     //Utility methods
+
     /**
      * Construct a list of vertex with the vertices of specified item
      *

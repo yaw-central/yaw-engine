@@ -1,19 +1,14 @@
 package yaw;
 
-import clojure.lang.IFn;
-import yaw.engine.Input;
-import yaw.engine.KeyCallback;
+import yaw.engine.InputCallback;
 import yaw.engine.World;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
-import yaw.engine.InputCallback;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
 
 public class InputCallbackTest implements InputCallback {
     private int key;
@@ -23,45 +18,39 @@ public class InputCallbackTest implements InputCallback {
     private Camera camera;
 
 
-
-    public InputCallbackTest(Camera camera){
+    public InputCallbackTest(Camera camera) {
         this.camera = camera;
     }
-
-
 
 
     public void sendKey(int key, int scancode, int action, int mods) {
 
 
-        this.key=key;
-        this.scancode=scancode;
-        this.action=action;
-        this.mods=mods;
+        this.key = key;
+        this.scancode = scancode;
+        this.action = action;
+        this.mods = mods;
 
-        if(key == GLFW_KEY_UP){
-            camera.translate(0,0,0.1f);
+        if (key == GLFW_KEY_UP) {
+            camera.translate(0, 0, 0.1f);
         } else if (key == GLFW_KEY_LEFT) {
             camera.rotate(1f, 0, 0);
         }
 
 
-
     }
 
 
-
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
         World world = new World(0, 0, 800, 600);
         InputCallbackTest key = new InputCallbackTest(world.getCamera());
         world.registerInputCallback(key);
         ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, MeshBuilder.generateBlock(1, 1, 1));
         cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
-        world.getCamera().setPosition(0,0,3);
+        world.getCamera().setPosition(0, 0, 3);
 
         world.launch();
-        world.waitFortermination();
+        world.waitTermination();
 
     }
 

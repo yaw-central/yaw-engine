@@ -1,5 +1,6 @@
 package yaw;
 
+import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.HitBox;
@@ -10,7 +11,6 @@ import yaw.engine.light.DirectionalLight;
 import yaw.engine.meshs.Mesh;
 import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.skybox.Skybox;
-import org.joml.Vector3f;
 
 /**
  * Test class for Hit boxes: rotations, colllision, multi-bounding-box hitboxes
@@ -20,8 +20,8 @@ public class TestHitBox implements UpdateCallback {
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
     private long prevDeltaRefreshMillis = 0;
-    private ItemGroup cube_1_hitbox ;
-    private ItemGroup cube_2_hitbox ;
+    private ItemGroup cube_1_hitbox;
+    private ItemGroup cube_2_hitbox;
     private float speed = 10;
 
     public TestHitBox(ItemGroup cubes_1, ItemGroup cubes_2) {
@@ -30,7 +30,7 @@ public class TestHitBox implements UpdateCallback {
     }
 
     public ItemGroup getItem(int n) {
-        if(n==1) return cube_1_hitbox;
+        if (n == 1) return cube_1_hitbox;
         return cube_2_hitbox;
     }
 
@@ -48,7 +48,7 @@ public class TestHitBox implements UpdateCallback {
         long currentMillis = System.currentTimeMillis();
         if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
             double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
+            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) + " s (" + nbUpdates + ")");
             nbUpdates = 0;
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
@@ -59,13 +59,13 @@ public class TestHitBox implements UpdateCallback {
         //cube_2_hitbox.rotate(0f, 1f, 0f);
 
         //Collision Test, this is testing the collision between each hitbox of each item for the example, this will not be the same for accurate tests
-        cube_2_hitbox.translate(-0.01f,0,0);
-        HitBox hb_1_1 =  cube_1_hitbox.fetchHitBox("hitbox 1");
-        HitBox hb_1_2 =  cube_1_hitbox.fetchHitBox("hitbox 2");
-        HitBox hb_2_1 =  cube_2_hitbox.fetchHitBox("hitbox 1");
-        HitBox hb_2_2 =  cube_2_hitbox.fetchHitBox("hitbox 2");
-        if(hb_1_1.collidesWith(hb_2_1) || hb_1_1.collidesWith(hb_2_2) ||
-                hb_1_2.collidesWith(hb_2_1) || hb_1_2.collidesWith(hb_2_2)){
+        cube_2_hitbox.translate(-0.01f, 0, 0);
+        HitBox hb_1_1 = cube_1_hitbox.fetchHitBox("hitbox 1");
+        HitBox hb_1_2 = cube_1_hitbox.fetchHitBox("hitbox 2");
+        HitBox hb_2_1 = cube_2_hitbox.fetchHitBox("hitbox 1");
+        HitBox hb_2_2 = cube_2_hitbox.fetchHitBox("hitbox 2");
+        if (hb_1_1.collidesWith(hb_2_1) || hb_1_1.collidesWith(hb_2_2) ||
+                hb_1_2.collidesWith(hb_2_1) || hb_1_2.collidesWith(hb_2_2)) {
             System.out.println("There is a collision");
             try {
                 Thread.sleep(3000);
@@ -78,7 +78,7 @@ public class TestHitBox implements UpdateCallback {
     }
 
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         //This part can be activated if you want some information about the debug
         /*Configuration.DEBUG.set(true);
         Configuration.DEBUG_FUNCTIONS.set(true);
@@ -100,29 +100,25 @@ public class TestHitBox implements UpdateCallback {
         c2.rotate(-3, 2, 0);*/
 
 
-
-
-
         //Creation of the First group
         ItemGroup gr1 = new ItemGroup("gr1");
         ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
-        gr1.add("item",c1);
-        HitBox i = world.createHitBox("c1 first bounding box",0.f,0.f, 0.25f,1f,1.0f, 1.0f, 0.5f);
+        gr1.add("item", c1);
+        HitBox i = world.createHitBox("c1 first bounding box", 0.f, 0.f, 0.25f, 1f, 1.0f, 1.0f, 0.5f);
         gr1.add("hitbox 1", i);
-        HitBox i2 = world.createHitBox("c1 second bounding box",0.f,0.f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
+        HitBox i2 = world.createHitBox("c1 second bounding box", 0.f, 0.f, -0.25f, 1f, 1.0f, 1.0f, 0.5f);
         gr1.add("hitbox 2", i2);
-
 
 
         //Creation of the second group
         ItemGroup gr2 = new ItemGroup("gr2");
         ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
-        gr2.add("item",c2);
-        HitBox j = world.createHitBox("c1 first bounding box",0.0f, 0.0f, 2.25f,1f, 1.0f, 1.0f, 0.5f);
+        gr2.add("item", c2);
+        HitBox j = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, 2.25f, 1f, 1.0f, 1.0f, 0.5f);
         gr2.add("hitbox 1", j);
-        HitBox j2 = world.createHitBox("c1 second bounding box",0.0f, 0.0f, 1.72f,1f, 1.0f, 1.0f, 0.5f);
+        HitBox j2 = world.createHitBox("c1 second bounding box", 0.0f, 0.0f, 1.72f, 1f, 1.0f, 1.0f, 0.5f);
         gr2.add("hitbox 2", j2);
-        gr2.translate(3,0,0);
+        gr2.translate(3, 0, 0);
 
         //System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));
         //System.out.println("Collision ?: " + Collision.isCollision(c1, c2));
@@ -134,19 +130,19 @@ public class TestHitBox implements UpdateCallback {
         //world.sc.add(GroundGenerator.generate(400,400,-2,new Material(new Vector3f(1,1,1))));
 
         /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
-        world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0,0,0)));
+        world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0, 0, 0)));
 
 
         TestHitBox mBb = new TestHitBox(gr1, gr2);
 
-        gr1.rotateXYZ(0,45,0);
-        world.getCamera().translate(0,0,7);
+        gr1.rotateXYZ(0, 45, 0);
+        world.getCamera().translate(0, 0, 7);
 
         world.registerUpdateCallback(mBb);
 
 
         world.launch();
-        world.waitFortermination();
+        world.waitTermination();
 
     }
 

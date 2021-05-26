@@ -1,9 +1,8 @@
 package yaw.engine.collision;
 
-import yaw.engine.items.HitBox;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import yaw.engine.items.ItemObject;
+import yaw.engine.items.HitBox;
 
 import java.util.ArrayList;
 

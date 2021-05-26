@@ -9,14 +9,14 @@ import yaw.engine.meshs.MeshBuilder;
 import yaw.engine.meshs.Texture;
 
 /**
- *  Camera view from the ground
+ * Camera view from the ground
  */
 public class TestGroundCamera implements UpdateCallback {
     private int nbUpdates = 0;
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
     private long prevDeltaRefreshMillis = 0;
-    private ItemObject cube ;
+    private ItemObject cube;
     private float speed = 10;
 
     public TestGroundCamera() {
@@ -37,12 +37,11 @@ public class TestGroundCamera implements UpdateCallback {
         long currentMillis = System.currentTimeMillis();
         if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
             double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
+            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) + " s (" + nbUpdates + ")");
             nbUpdates = 0;
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
         }
-
 
 
     }
@@ -54,7 +53,7 @@ public class TestGroundCamera implements UpdateCallback {
 
         for (int i = 0; i < 10; i++) {
             ItemObject item = world.createItemObject(i + "", 0.f, 0.f, 0.f, 1, MeshBuilder.generateBlock(1, 1, 1));
-            item.translate(i,i,i);
+            item.translate(i, i, i);
 
             if (i % 3 == 0)
                 item.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
@@ -64,13 +63,13 @@ public class TestGroundCamera implements UpdateCallback {
                 item.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
         }
         world.getCamera().translate(0.f, -10, 0);
-        world.getCamera().rotate(90,0,0);
+        world.getCamera().rotate(90, 0, 0);
         TestGroundCamera rCube = new TestGroundCamera();
 
         //world.registerUpdateCallback(rCube);
 
         world.launch();
-        world.waitFortermination();
+        world.waitTermination();
 
     }
 

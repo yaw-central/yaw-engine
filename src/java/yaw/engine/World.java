@@ -1,33 +1,35 @@
 package yaw.engine;
 
+import loader.v1.Model;
 import org.joml.Quaternionf;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
-import yaw.engine.items.*;
+import yaw.engine.items.HitBox;
+import yaw.engine.items.ItemGroup;
+import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
-import yaw.engine.meshs.*;
+import yaw.engine.meshs.Material;
+import yaw.engine.meshs.Mesh;
+import yaw.engine.meshs.Texture;
 import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import yaw.engine.skybox.Skybox;
-import yaw.engine.InputCallback;
-import org.joml.Vector3f;
 
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  * This is the facade of the engine, most Clojure calls are
  * made on an instance of this object. The stateful part
  * is delegated to the underlying MainLoop.
- *
  */
-public class World  {
+public class World {
+
+    // ========== Attributes ==========
+
     private MainLoop mainLoop;
     private Thread mloopThread = null;
     private boolean isRunning = false;
+
+    // ========== Constructors ==========
 
     /**
      * Initializes the elements to create the window
@@ -59,13 +61,17 @@ public class World  {
     }
 
     public void launch() {
-        if(isRunning) {
+        if (isRunning) {
             throw new Error("World is already running (multiple calls to launch() method)");
         }
         isRunning = true;
         mloopThread = new Thread(mainLoop);
         mloopThread.start();
     }
+
+
+    // ========== Methods ==========
+
 
     /**
      * Input of critical section, allows to protect the resource share loop.
@@ -75,39 +81,36 @@ public class World  {
         mainLoop.close();
     }
 
-    public void waitFortermination() {
+    public void waitTermination() {
         try {
             mloopThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
-     * Create an item with the specified parameters and add it to the  world
+     * Create an item with the specified parameters and add it to the world
      *
-     * @param id        id
-     * @param x         x coordinate
-     * @param y         y coordinate
-     * @param z         z coordinate
-     * @param pScale    scale
-     * @param pMesh     mesh
+     * @param id     id
+     * @param x      x coordinate
+     * @param y      y coordinate
+     * @param z      z coordinate
+     * @param pScale scale
+     * @param pMesh  mesh
      * @return the item
      */
     public ItemObject createItemObject(String id, float x, float y, float z, float pScale, Mesh pMesh) {
-        ItemObject lItem = new ItemObject(id, new Vector3f(x, y, z)
-                , new Quaternionf(), pScale, pMesh);
-
+        ItemObject lItem = new ItemObject(id, new Vector3f(x, y, z), new Quaternionf(), pScale, pMesh);
         mainLoop.addToScene(lItem);
         return lItem;
     }
 
     /**
      * Create a mesh with the specified parameters
-     * MeshOld won't be load into the grahpic cards unless you bind it to an item
+     * MeshOld won't be load into the graphic cards unless you bind it to an item
      *
-     * @param pVertices    vetices
+     * @param pVertices    vertices
      * @param pTextCoords  texture coordonates
      * @param pNormals     normals
      * @param pIndices     indices
@@ -122,10 +125,11 @@ public class World  {
         }
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
         Material lMaterial = new Material(lMaterialColor);
-        //Texture part
+
+        // Texture part
         if (pTextureName != null && !pTextureName.isEmpty()) {
             Texture lTexture = mainLoop.fetchTexture(pTextureName);
-            if (lTexture == null) {
+            if (lTexture == null) { // ?????
                 lTexture = new Texture(pTextureName);
             } else {
                 System.err.println("[Warning] Texture not found: " + pTextureName);
@@ -140,11 +144,11 @@ public class World  {
 
     /**
      * Create a mesh with the specified parameters
-     * MeshOld won't be load into the grahpic cards unless you bind it to an item
+     * MeshOld won't be load into the graphic cards unless you bind it to an item
      *
-     * @param pVertices    vetices
-     * @param pNormals     normals
-     * @param pIndices     indices
+     * @param pVertices vertices
+     * @param pNormals  normals
+     * @param pIndices  indices
      * @return the mesh
      */
     public Mesh createMesh(float[] pVertices, float[] pNormals, int[] pIndices, float[] rgb) {
@@ -160,33 +164,30 @@ public class World  {
     }
 
 
-
     /**
      * Create a bounding box with the specified parameters and add it to the  world
      *
-     * @param id        id
-     * @param x         x coordinate
-     * @param y         y coordinate
-     * @param z         z coordinate
-     * @param pScale    scale
+     * @param id     id
+     * @param x      x coordinate
+     * @param y      y coordinate
+     * @param z      z coordinate
+     * @param pScale scale
      * @return BoundingBox
      */
-    public HitBox createHitBox(String id, float x, float y, float z, float pScale, float xLength, float yLength, float zLength){
+    public HitBox createHitBox(String id, float x, float y, float z, float pScale, float xLength, float yLength, float zLength) {
         HitBox hb = new HitBox(id, new Vector3f(x, y, z), new Quaternionf(), pScale, xLength, yLength, zLength);
         mainLoop.addToScene(hb);
         return hb;
-
     }
+
 
     /**
-     * Remove the specified item from the world
+     * Detects the collision between two hitboxes
      *
-     * @param pItem the item
+     * @param hb1 the first hitbox
+     * @param hb2 the second hitbox
+     * @return true if they are in collision, false otherwise
      */
-    public void removeItem(ItemObject pItem) {
-        mainLoop.removeFromScene(pItem);
-    }
-
     public boolean isInCollision(HitBox hb1, HitBox hb2) {
         return hb1.collidesWith(hb2);
     }
@@ -199,17 +200,31 @@ public class World  {
         mainLoop.registerInputCallback(callback);
     }
 
-    //3D click
+    // 3D click
     public void registerMouseCallback(Mouse3DClickCallBack callback) {
         mainLoop.registerMouse3DClickCallBack(callback);
     }
 
+    // ========== Getters ==========
 
+    public Camera getCamera() {
+        return mainLoop.getCamera();
+    }
 
+    public Vector<Camera> getCamerasList() {
+        return mainLoop.getCamerasList();
+    }
 
-    /**
-     * Gets an empty camera list
-     */
+    public SceneLight getSceneLight() {
+        return mainLoop.getSceneLight();
+    }
+
+    public Skybox getSkybox() {
+        return mainLoop.getSkybox();
+    }
+
+    // ========== Setters ==========
+
     public void clearCameras() {
         mainLoop.clearCameras();
     }
@@ -224,32 +239,14 @@ public class World  {
         mainLoop.addCamera(pIndex, pCamera);
     }
 
-    public Camera getCamera() {
-        return mainLoop.getCamera();
-    }
-
     public void setCamera(Camera pCamera) {
         mainLoop.setCamera(pCamera);
     }
 
-    public Vector<Camera> getCamerasList() {
-        return mainLoop.getCamerasList();
-    }
-
-    /**
-     * Create a group of item
-     *
-     * @return group of item
-     */
     public ItemGroup createGroup(String id) {
         return mainLoop.createGroup(id);
     }
 
-    /**
-     * Remove a group of item from the world
-     *
-     * @param pGroup the specified group
-     */
     public void removeGroup(ItemGroup pGroup) {
         mainLoop.removeGroup(pGroup);
     }
@@ -258,19 +255,23 @@ public class World  {
         return mainLoop.getItemGroupArrayList();
     }
 
-    public SceneLight getSceneLight() {
-        return mainLoop.getSceneLight();
+    public void setSkybox(Skybox pSkybox) {
+        mainLoop.setSkybox(pSkybox);
+    }
+
+    public void removeItem(ItemObject pItem) {
+        mainLoop.removeFromScene(pItem);
     }
 
     /**
-     * Create a skybox with all its parameters and replace the current skybox
+     * Sets the skybox by creating a new one from parameters values
      *
-     * @param pWidth  width
-     * @param pLength length
-     * @param pHeight height
-     * @param pR      r
-     * @param pG      g
-     * @param pB      b
+     * @param pWidth  the new skybox's width
+     * @param pLength the new skybox's length
+     * @param pHeight the new skybox's height
+     * @param pR      the new skybox's red intensity
+     * @param pG      the new skybox's green intensity
+     * @param pB      the new skybox's blue intensity
      */
     public void setSkybox(float pWidth, float pLength, float pHeight, float pR, float pG, float pB) {
         Skybox lSkybox = new Skybox(pWidth, pLength, pHeight, new Vector3f(pR, pG, pB));
@@ -281,19 +282,28 @@ public class World  {
         mainLoop.removeSkybox();
     }
 
-    public Skybox getSkybox() {
-        return mainLoop.getSkybox();
-    }
+    public ItemObject addModel(String id, float x, float y, float z, float pScale, Model m) {
+        float[] vertices = new float[m.getVertices().size() * 3];
+        float[] normals = new float[m.getNormals().size() * 3];
+        float[] rgb = {75, 75, 75};
 
-    /**
-     * Allows to change the skybox by the new Skybox passed in arguments.
-     * If a skybox already exists, it's added to the list of mSkyboxToBeRemoved
-     *
-     * @param pSkybox skybox
-     */
-    public void setSkybox(Skybox pSkybox) {
-        mainLoop.setSkybox(pSkybox);
-    }
+        for (int i = 0; i < m.getVertices().size(); i++) {
+            Vector3f current = m.getVertices().get(i);
+            vertices[i*3] = current.x;
+            vertices[i*3 + 1] = current.y;
+            vertices[i*3 + 2] = current.z;
+        }
 
+        for (int i = 0; i < m.getNormals().size(); i++) {
+            Vector3f current = m.getNormals().get(i);
+            normals[i*3] = current.x;
+            normals[i*3 + 1] = current.y;
+            normals[i*3 + 2] = current.z;
+        }
+        Mesh mesh = createMesh(vertices, normals, m.getpIndices(), rgb);
+        ItemObject res = createItemObject(id, x, y, z, pScale, mesh);
+        return res;
+
+    }
 }
 

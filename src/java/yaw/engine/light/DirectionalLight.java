@@ -15,9 +15,9 @@ public class DirectionalLight extends AmbientLight {
      *
      * @param direction direction
      */
-    public DirectionalLight(Vector3f direction){
-	super(0);
-	this.mDirection = direction;
+    public DirectionalLight(Vector3f direction) {
+        super(0);
+        this.mDirection = direction;
     }
 
     /**
@@ -25,9 +25,9 @@ public class DirectionalLight extends AmbientLight {
      *
      * @param source source
      */
-    public DirectionalLight(DirectionalLight source){
-	super(source.getColor(),source.getIntensity());
-        mDirection=source.mDirection;
+    public DirectionalLight(DirectionalLight source) {
+        super(source.getColor(), source.getIntensity());
+        mDirection = source.mDirection;
     }
 
     /**
@@ -37,46 +37,46 @@ public class DirectionalLight extends AmbientLight {
      * @param intensity intensity
      * @param direction direction
      */
-    public DirectionalLight(Vector3f color, float intensity,Vector3f direction){
-	super(color, intensity);
-	this.mDirection = direction;
+    public DirectionalLight(Vector3f color, float intensity, Vector3f direction) {
+        super(color, intensity);
+        this.mDirection = direction;
     }
 
     /**
      * Constructor with the specified color (cx,cy,cz), intensity and direction (dx,dy,dz),
      *
-     * @param red           Red value
-     * @param green         Green value
-     * @param blue          Blue value
-     * @param intensity     intensity
-     * @param dx            Direction x
-     * @param dy            Direction y
-     * @param dz            Direction z
+     * @param red       Red value
+     * @param green     Green value
+     * @param blue      Blue value
+     * @param intensity intensity
+     * @param dx        Direction x
+     * @param dy        Direction y
+     * @param dz        Direction z
      */
-    public DirectionalLight(float red, float green, float blue, float intensity, float dx, float dy, float dz){
-	super(red, green, blue, intensity);
-	this.mDirection = new Vector3f(dx, dy, dz);
+    public DirectionalLight(float red, float green, float blue, float intensity, float dx, float dy, float dz) {
+        super(red, green, blue, intensity);
+        this.mDirection = new Vector3f(dx, dy, dz);
     }
-	
+
     //Default: vertical white light
-    public DirectionalLight(){
-	super(0);
-        mDirection = new Vector3f(0f,-1f,0f);
+    public DirectionalLight() {
+        super(0);
+        mDirection = new Vector3f(0f, -1f, 0f);
     }
 
     /**
      * getter and setters
      */
     public Vector3f getDirection() {
-	return mDirection;
+        return mDirection;
     }
 
     public void setDirection(Vector3f direction) {
-	this.mDirection = direction;
+        this.mDirection = direction;
     }
-	
-    public void setDirection(float x,float y,float z){
-	this.mDirection=new Vector3f(x,y,z);
+
+    public void setDirection(float x, float y, float z) {
+        this.mDirection = new Vector3f(x, y, z);
     }
 
 }
