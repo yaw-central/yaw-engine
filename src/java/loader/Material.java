@@ -1,4 +1,4 @@
-package loader.v2;
+package loader;
 
 /**
  * The Material of a face describes the properties of this surface like its reflectivity, transparency...

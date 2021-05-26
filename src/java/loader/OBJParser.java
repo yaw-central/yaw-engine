@@ -1,22 +1,18 @@
-package loader.v2;
+package loader;
 
 import java.io.*;
 
 /**
- * The OBJParser can parse OBJ files
+ * The OBJParser can parse OBJ files and put the data into its OBJLoader attribute.
  */
 public class OBJParser {
 
     // ========== Attributes ==========
 
 
-    /**
-     * Its OBJ loader
-     */
+    /** Its OBJ loader */
     private OBJLoader objloader;
-    /**
-     * The OBJ File
-     */
+    /** The OBJ File */
     private File objFile = null;
 
 
@@ -40,7 +36,7 @@ public class OBJParser {
 
 
     /**
-     * Parses the given file
+     * Parses the given file and adds the data into objLoader attribute
      */
     private void parseObjFile(String objFilename) throws IOException {
         int cpt = 0;
@@ -270,13 +266,13 @@ public class OBJParser {
     }
 
     private void processNewMtl(String line) {
-        line = line.substring("newmtl".length()).trim(); // removing the keyword
-        objloader.newMaterial(line); // add the parsing result to the objloader
+        line = line.substring("newmtl".length()).trim();    // removing the keyword
+        objloader.newMaterial(line);    // add the parsing result to the objloader
     }
 
     private void processReflectivity(String fieldName, String line) {
         int type = 0;
-        if (fieldName.equals("Kd")) { // get reflectivity's type in function of the keyword
+        if (fieldName.equals("Kd")) {   // get reflectivity's type in function of the keyword
             type = 1;
         } else if (fieldName.equals("Ks")) {
             type = 2;
@@ -333,22 +329,22 @@ public class OBJParser {
             halo = true;
             line = line.substring("-halo".length()).trim();
         }
-        objloader.setD(halo, Float.parseFloat(line)); // add the result to the objloader
+        objloader.setD(halo, Float.parseFloat(line));   // add the result to the objloader
     }
 
     private void processNs(String line) {
-        line = line.substring("Ns".length()).trim();// parse the keyword
-        objloader.setNs(Float.parseFloat(line));// add the result to the objloader
+        line = line.substring("Ns".length()).trim();    // parse the keyword
+        objloader.setNs(Float.parseFloat(line));    // add the result to the objloader
     }
 
     private void processSharpness(String line) {
-        line = line.substring("sharpness".length()).trim();// parse the keyword
-        objloader.setSharpness(Float.parseFloat(line));// add the result to the objloader
+        line = line.substring("sharpness".length()).trim(); // parse the keyword
+        objloader.setSharpness(Float.parseFloat(line)); // add the result to the objloader
     }
 
     private void processNi(String line) {
-        line = line.substring("Ni".length()).trim();// parse the keyword
-        objloader.setNi(Float.parseFloat(line));// add the result to the objloader
+        line = line.substring("Ni".length()).trim();    // parse the keyword
+        objloader.setNi(Float.parseFloat(line));    // add the result to the objloader
     }
 
     private void processMapDecalDispBump(String fieldname, String line) {
@@ -377,46 +373,45 @@ public class OBJParser {
                 break;
         }
 
-        objloader.setMapDecalDispBump(type, line.substring(fieldname.length()).trim()); // add the type to the objloader
+        objloader.setMapDecalDispBump(type, line.substring(fieldname.length()).trim()); // Add the type to the objloader
     }
 
     private void processRefl(String line) {
         String filename = null;
 
         int type = -1;
-        line = line.substring("refl".length()).trim(); //parse the line
+        line = line.substring("refl".length()).trim();  // Parse the line
         if (line.startsWith("-type")) {
             line = line.substring("-type".length()).trim();
-            if (line.startsWith("sphere")) { // if line start with sphere then update the type and the filename
+            if (line.startsWith("sphere")) {    // If line start with sphere then update the type and the filename
                 type = 0;
                 filename = line.substring("sphere".length()).trim();
-            } else if (line.startsWith("cube_top")) {// if line start with cube_top then update the type and the filename
+            } else if (line.startsWith("cube_top")) {   // If line start with cube_top then update the type and the filename
                 type = 0;
                 filename = line.substring("cube_top".length()).trim();
-            } else if (line.startsWith("cube_bottom")) {// if line start with cube_bottom then update the type and the filename
+            } else if (line.startsWith("cube_bottom")) {    // If line start with cube_bottom then update the type and the filename
                 type = 2;
                 filename = line.substring("cube_bottom".length()).trim();
-            } else if (line.startsWith("cube_front")) {// if line start with cube_front then update the type and the filename
+            } else if (line.startsWith("cube_front")) { // If line start with cube_front then update the type and the filename
                 type = 3;
                 filename = line.substring("cube_front".length()).trim();
-            } else if (line.startsWith("cube_back")) {// if line start with cube_back then update the type and the filename
+            } else if (line.startsWith("cube_back")) {  // If line start with cube_back then update the type and the filename
                 type = 4;
                 filename = line.substring("cube_back".length()).trim();
-            } else if (line.startsWith("cube_left")) {// if line start with cube_left then update the type and the filename
+            } else if (line.startsWith("cube_left")) {  // If line start with cube_left then update the type and the filename
                 type = 5;
                 filename = line.substring("cube_left".length()).trim();
-            } else if (line.startsWith("cube_right")) {// if line start with cube_right then update the type and the filename
+            } else if (line.startsWith("cube_right")) { // If line start with cube_right then update the type and the filename
                 type = 6;
                 filename = line.substring("cube_right".length()).trim();
-            } else { // else : unknown material
+            } else {    // Else : unknown material
                 System.out.println("unknown material refl -type, line = " + line);
                 return;
             }
         } else {
             filename = line;
         }
-
-        objloader.setRefl(type, filename); // add the type to the objloader
+        objloader.setRefl(type, filename); // Add the type to the objloader
     }
 
 }

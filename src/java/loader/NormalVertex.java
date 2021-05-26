@@ -1,4 +1,4 @@
-package loader.v2;
+package loader;
 
 /**
  * A NormalVertex represents a face information and is composed of a simple 3D vertex.

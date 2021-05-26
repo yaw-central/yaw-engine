@@ -1,4 +1,4 @@
-package loader.v2;
+package loader;
 
 /**
  * Describes the reflectivity of a material
@@ -26,9 +26,7 @@ public class Reflectivity {
     // ========== Setters ==========
 
 
-    public void setRGB(boolean RGB) {
-        isRGB = RGB;
-    }
+    public void setRGB(boolean RGB) { isRGB = RGB; }
 
     public void setXYZ(boolean XYZ) {
         isXYZ = XYZ;

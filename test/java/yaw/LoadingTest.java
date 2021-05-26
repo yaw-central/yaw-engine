@@ -1,9 +1,9 @@
 package yaw;
 
-import loader.v2.Face;
-import loader.v2.FaceVertex;
-import loader.v2.OBJLoader;
-import loader.v2.OBJParser;
+import loader.Face;
+import loader.FaceVertex;
+import loader.OBJLoader;
+import loader.OBJParser;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.meshs.Mesh;
@@ -20,15 +20,15 @@ import java.util.*;
 public class LoadingTest {
     public static void main(String[] args) {
 
-        // path to the OBJ file
+        // Path to the OBJ file
         String filename = "src/java/ressources/objfiles/mickey.obj";
 
         try {
-//            instantiate the objloader and the obj
+            // Instantiate the objloader and the obj
             OBJLoader objLoader = new OBJLoader();
             OBJParser obj = new OBJParser(objLoader, filename);
 
-//            instantiate the world
+            // Instantiate the world
             World world = new World(0, 0, 800, 600);
             world.getCamera().setPosition(0, 0, 6);
 
@@ -52,12 +52,12 @@ public class LoadingTest {
                 // Initialize the missing normal vertices from the new triangles
                 objLoader.calcMissingVertexNormals(triangleList);
 
-//                if no triangle face in the list then go to the next list
+                // If no triangle face in the list then go to the next list
                 if (triangleList.size() <= 0) continue;
 
                 // -----------------------------------------------
 
-//                instantiate a map for the FaceVertexs in the triangle list and adding the into the map with an index
+                // Instantiate a map for the FaceVertexs in the triangle list and adding the into the map with an index
                 Map<FaceVertex, Integer> indexMap = new HashMap<>();
                 int nextVertexIndex = 0;
                 ArrayList<FaceVertex> faceVertexList = new ArrayList<>();
@@ -70,13 +70,13 @@ public class LoadingTest {
                     }
                 }
 
-//                create lists instead of arrays because we don't know the size in advance
+                // Create lists instead of arrays because we don't know the size in advance
                 List<Float> verticesG, verticesN, verticesT;
                 verticesG = new ArrayList<>();
                 verticesN = new ArrayList<>();
                 verticesT = new ArrayList<>();
 
-//                process each FaceVertex of the faceVertexList and add the geometric, normal and texture verticies into their respective list
+                // Process each FaceVertex of the faceVertexList and add the geometric, normal and texture verticies into their respective list
                 for (FaceVertex vertex : faceVertexList) {
                     verticesG.add(vertex.geometric.getX());
                     verticesG.add(vertex.geometric.getY());
@@ -99,7 +99,7 @@ public class LoadingTest {
                     }
                 }
 
-//                update mesh's arrays by adding the new list at the end of the current corresponding array
+                // Update mesh's arrays by adding the new list at the end of the current corresponding array
                 int old_size = arrayG.length;
                 arrayG = Arrays.copyOf(arrayG, old_size + verticesG.size());
                 for (int i = old_size; i < arrayG.length; i++) {
@@ -136,13 +136,14 @@ public class LoadingTest {
 
             }
 
-            //create a random color for the object
+            // Create a random color for the object
             float[] rgb = {(float) Math.random(), (float) Math.random(), (float) Math.random()};
             Mesh mesh = world.createMesh(arrayG, arrayN, arrayIndices, rgb);
+
             // You may have to change the object's scale or coordinates to see it. Here Mickey needs a 0.03f scale
             ItemObject object = world.createItemObject("test", 0f, 0f, -10f, 0.03f, mesh);
 
-            //start the world
+            // Start the world
             world.launch();
             world.waitTermination();
 

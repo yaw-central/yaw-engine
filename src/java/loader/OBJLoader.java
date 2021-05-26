@@ -1,4 +1,4 @@
-package loader.v2;
+package loader;
 
 import java.util.*;
 
@@ -12,108 +12,58 @@ public class OBJLoader {
     // ========== Attributes ==========
 
 
-    /**
-     * OBJ file name
-     */
+    /** OBJ file name */
     private String objFileName = null;
-    /**
-     * Object name
-     */
+    /** Object name */
     private String objectName = null;
-    /**
-     * List of all the OBJ's geometric vertices
-     */
+    /** List of all the OBJ's geometric vertices */
     private List<GeometricVertex> verticesG = new ArrayList<>();
-    /**
-     * List of all the OBJ's texture vertices
-     */
+    /** List of all the OBJ's texture vertices */
     private ArrayList<TextureVertex> verticesT = new ArrayList<>();
-    /**
-     * List of all the OBJ's normal vertices
-     */
+    /** List of all the OBJ's normal vertices */
     private ArrayList<NormalVertex> verticesN = new ArrayList<>();
-    /**
-     * List of all faces
-     */
+    /** List of all faces */
     private List<Face> faces = new ArrayList<>();
-    /**
-     * List of all the face vertices
-     */
+    /** List of all the face vertices */
     private List<FaceVertex> faceVertexList = new ArrayList<>();
-    /**
-     * Map of all the face vertices keyed with their string representation
-     */
+    /** Map of all the face vertices keyed with their string representation */
     private Map<String, FaceVertex> faceVertexMap = new HashMap<>();
-    /**
-     * Map of the name of the group associated with its faces list
-     */
+    /** Map of the name of the group associated with its faces list */
     private Map<String, ArrayList<Face>> groups = new HashMap<>();
-    /**
-     * Current working group
-     */
+    /** Current working group */
     private List<String> currentGroups = new ArrayList<>();
-    /**
-     * Current working face list groups
-     */
+    /** Current working face list groups */
     private List<ArrayList<Face>> currentGroupFaceLists = new ArrayList<>();
-    /**
-     * List of indices
-     */
+    /** List of indices */
     private List<Integer> pIndices = new ArrayList<>();
 
-    /**
-     * Current material
-     */
+    /** Current material */
     private Material currentMaterial = null;
-    /**
-     * Current map
-     */
+    /** Current map */
     private Material currentMap = null;
-    /**
-     * Map of a name associated with its material
-     */
+    /** Map of a name associated with its material */
     private Map<String, Material> materialLib = new HashMap<>();
-    /**
-     * Current material under parsing
-     */
+    /** Current material under parsing */
     private Material currentMaterialBeingParsed = null;
-    /**
-     * Map of a name associated with its map
-     */
+    /** Map of a name associated with its map */
     private Map<String, Material> mapLib = new HashMap<>();
-    /**
-     * Current map under parsing
-     */
+    /** Current map under parsing */
     private Material currentMapBeingParsed = null;
-    /**
-     * Map describing the smoothing groups, with a group number associated with a list of faces
-     */
+    /** Map describing the smoothing groups, with a group number associated with a list of faces */
     private Map<Integer, ArrayList<Face>> smoothingGroups = new HashMap<Integer, ArrayList<Face>>();
-    /**
-     * Current smoothing group number
-     */
+    /** Current smoothing group number */
     private int currentSmoothingGroupNumber = 0;
-    /**
-     * Current smoothing group (list of faces)
-     */
+    /** Current smoothing group (list of faces) */
     private ArrayList<Face> currentSmoothingGroup = null;
 
     // Debug statistics
-    /**
-     * Number a triangle faces
-     */
+    /** Number a triangle faces */
     private int faceTriCount = 0;
-    /**
-     * Number of quadrilateral faces
-     */
+    /** Number of quadrilateral faces */
     private int faceQuadCount = 0;
-    /**
-     * Number of polygonal faces of 5+ vertices
-     */
+    /** Number of polygonal faces of 5+ vertices */
     private int facePolyCount = 0;
-    /**
-     * Number of errors encountered during face parsing (faces without at least a geometric vertex on one of its vertices)
-     */
+    /** Number of errors encountered during face parsing (faces without at least a geometric vertex on one of its vertices) */
     private int faceErrorCount = 0;
 
 
@@ -168,60 +118,60 @@ public class OBJLoader {
      * @param vertexIndices The list of the vertices indices
      */
     public void addFace(int[] vertexIndices) {
-//        create Face object + set material + map
+        // Create Face object + set material + map
         Face f = new Face();
         f.setMaterial(currentMaterial);
         f.setMap(currentMap);
-//        initiate a counter
+        // Initiate a counter
         int cpt = 0;
 
-//        while loop to check every elements of vertexIndices
+        // While loop to check every element of vertexIndices
         while (cpt < vertexIndices.length) {
-//            create a FaceVertex to add to a Face
+            // Create a FaceVertex to add to a Face
             FaceVertex fv = new FaceVertex();
 
-//            initiate the currentVertexIndex
+            // Initialize the currentVertexIndex
             int currentVertexIndex;
             currentVertexIndex = vertexIndices[cpt++];
 
-//            if currentVertexIndex < 0 then currentVertexIndex += verticesG.size() to have a valid value
+            // If currentVertexIndex < 0 then currentVertexIndex += verticesG.size() to have a valid value
             if (currentVertexIndex < 0)
                 currentVertexIndex += verticesG.size();
-//            set the facevertex's geometric vertex
+            // Set the facevertex's geometric vertex
             if (((currentVertexIndex - 1) >= 0) && ((currentVertexIndex - 1) < verticesG.size()))
                 fv.geometric = verticesG.get(currentVertexIndex - 1);
             else
                 System.out.println("ERROR -- Vertex index out of range");
             // --------------------------
-//            update currentVertexIndex
+            // Update currentVertexIndex
             currentVertexIndex = vertexIndices[cpt++];
-            //            check currentVertexIndex value
+            // Check currentVertexIndex value
             if (currentVertexIndex != Integer.MIN_VALUE) {
-                //            if currentVertexIndex < 0 then currentVertexIndex += verticesT.size() to have a valid value
+                // If currentVertexIndex < 0 then currentVertexIndex += verticesT.size() to have a valid value
                 if (currentVertexIndex < 0)
                     currentVertexIndex += verticesT.size();
-//            set the facevertex's texture vertex
+                // Set the facevertex's texture vertex
                 if ((currentVertexIndex - 1 >= 0) && (currentVertexIndex - 1 < verticesT.size()))
                     fv.texture = verticesT.get(currentVertexIndex - 1);
                 else
                     System.out.println("ERROR -- Vertex index out of range");
             }
             // --------------------------
-            //            update currentVertexIndex
+            // Update currentVertexIndex
             currentVertexIndex = vertexIndices[cpt++];
-            //            check currentVertexIndex value
+            // Check currentVertexIndex value
             if (currentVertexIndex != Integer.MIN_VALUE) {
-                //            if currentVertexIndex < 0 then currentVertexIndex += verticesN.size() to have a valid value
+                // If currentVertexIndex < 0 then currentVertexIndex += verticesN.size() to have a valid value
                 if (currentVertexIndex < 0)
                     currentVertexIndex += verticesN.size();
-//            set the facevertex's normal vertex
+                // Set the facevertex's normal vertex
                 if ((currentVertexIndex - 1 >= 0) && ((currentVertexIndex - 1) < verticesN.size()))
                     fv.normal = verticesN.get(currentVertexIndex - 1);
                 else
                     System.out.println("ERROR -- Vertex index out of range");
             }
             // --------------------------
-//            if the faceVertex doesn't have a geometric vertex the face is no valid
+            // If the faceVertex doesn't have a geometric vertex the face is no valid
             if (fv.geometric == null) {
                 System.out.println("ERROR -- cannot add vertex to face without vertex -- ignoring face");
                 faceErrorCount++;
@@ -258,7 +208,6 @@ public class OBJLoader {
 
     /**
      * Puts a new material as the current parsed material.
-     *
      * @param name
      */
     public void newMaterial(String name) {
@@ -266,7 +215,10 @@ public class OBJLoader {
         materialLib.put(name, currentMaterialBeingParsed);
     }
 
-//    sort les faces by their material
+    /**
+     * Sort the faces by their material.
+     * @return The sorted array containing the faces arrays
+     */
     public ArrayList<ArrayList<Face>> createFaceListsByMaterial() {
         ArrayList<ArrayList<Face>> facesByTextureList = new ArrayList<>();
         Material currentMaterial = null;
@@ -301,7 +253,7 @@ public class OBJLoader {
             if (vertices.size() == 3) {         // No need to split a triangle
                 triangleList.add(face);
             } else if (vertices.size() == 4) {  // Quadrilateral faces need to be split
-//                split a quadrilateral face into two triangle faces
+                // Split a quadrilateral face into two triangle faces
                 FaceVertex v1 = vertices.get(0);
                 FaceVertex v2 = vertices.get(1);
                 FaceVertex v3 = vertices.get(2);
@@ -328,7 +280,6 @@ public class OBJLoader {
 
     /**
      * Calculates a default value for the faces that have no vertex normal
-     *
      * @param triangleList The list of triangle faces
      */
     public void calcMissingVertexNormals(ArrayList<Face> triangleList) {
@@ -351,15 +302,15 @@ public class OBJLoader {
     }
 
     public void addPoints(int[] values) {
-        //TODO
+        // TODO
     }
 
     public void addLine(int[] values) {
-        //TODO
+        // TODO
     }
 
     public void addMapLib(String[] names) {
-        //TODO
+        // TODO
     }
 
     /**
@@ -370,8 +321,7 @@ public class OBJLoader {
     }
 
     /**
-     * Informs the user that the parsing is done.
-     *
+     * Informs the user (with a print) that the parsing is done.
      * @param filename
      */
     public void doneParsingObj(String filename) {

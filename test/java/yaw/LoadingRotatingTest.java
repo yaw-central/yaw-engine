@@ -1,9 +1,9 @@
 package yaw;
 
-import loader.v2.Face;
-import loader.v2.FaceVertex;
-import loader.v2.OBJLoader;
-import loader.v2.OBJParser;
+import loader.Face;
+import loader.FaceVertex;
+import loader.OBJLoader;
+import loader.OBJParser;
 import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
@@ -60,20 +60,20 @@ public class LoadingRotatingTest implements UpdateCallback {
 
     public static void main(String[] args) {
 
-        // path to the OBJ file
+        // Path to the OBJ file
         String filename = "src/java/ressources/objfiles/tree.obj";
 
         try {
-            //            instantiate the objloader and the obj
+            // Instantiate the objloader and the obj
             OBJLoader objLoader = new OBJLoader();
             OBJParser obj = new OBJParser(objLoader, filename);
 
-            //            instantiate the world
+            // Instantiate the world
             World world = new World(0, 0, 800, 600);
             world.getCamera().setPosition(0, 1, 0);
             world.getCamera().rotate(0, 10, 0);
 
-//            create a cube from an old existing methode to compare the result
+            // Create a cube from an old existing methode to compare the result
             Mesh tmpcube = MeshBuilder.generateBlock(1, 1, 1);
             ItemObject cube = world.createItemObject("cube", -5f, 0f, -5f, 1.0f, tmpcube);
             cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
@@ -83,13 +83,13 @@ public class LoadingRotatingTest implements UpdateCallback {
             // Grouping faces lists by their material
             ArrayList<ArrayList<Face>> facesByTextureList = objLoader.createFaceListsByMaterial();
 
-            // instantiate arrays for the mesh's object
+            // Instantiate arrays for the mesh's object
             float[] arrayG = new float[0];
             float[] arrayN = new float[0];
             float[] arrayT = new float[0];
             int[] arrayIndices = new int[0];
 
-            // Parcours des faces pour appliquer la texture
+            // Iterating on all faces groups to apply textures
             for (ArrayList<Face> faceList : facesByTextureList) {
                 if (faceList.isEmpty()) continue;
 
@@ -98,11 +98,11 @@ public class LoadingRotatingTest implements UpdateCallback {
                 // Initialize the missing normal vertices from the new triangles
                 objLoader.calcMissingVertexNormals(triangleList);
 
-                //                if no triangle face in the list then go to the next list
+                // If no triangle face in the list then go to the next list
                 if (triangleList.size() <= 0) continue;
 
                 // -----------------------------------------------
-//                instantiate a map for the FaceVertexs in the triangle list and adding the into the map with an index
+                // Instantiate a map for the FaceVertexs in the triangle list and adding the into the map with an index
                 Map<FaceVertex, Integer> indexMap = new HashMap<>();
                 int nextVertexIndex = 0;
                 ArrayList<FaceVertex> faceVertexList = new ArrayList<>();
@@ -114,13 +114,13 @@ public class LoadingRotatingTest implements UpdateCallback {
                         }
                     }
                 }
-//                create lists instead of arrays because we don't know the size in advance
+                // Create lists instead of arrays because we don't know the size in advance
                 List<Float> verticesG, verticesN, verticesT;
                 verticesG = new ArrayList<>();
                 verticesN = new ArrayList<>();
                 verticesT = new ArrayList<>();
 
-//                process each FaceVertex of the faceVertexList and add the geometric, normal and texture verticies into their respective list
+                // Process each FaceVertex of the faceVertexList and add the geometric, normal and texture verticies into their respective list
                 for (FaceVertex vertex : faceVertexList) {
                     verticesG.add(vertex.geometric.getX());
                     verticesG.add(vertex.geometric.getY());
@@ -143,7 +143,7 @@ public class LoadingRotatingTest implements UpdateCallback {
                     }
                 }
 
-//                update mesh's arrays by adding the new list at the end of the current corresponding array
+                // Update mesh's arrays by adding the new list at the end of the current corresponding array
                 int old_size = arrayG.length;
                 arrayG = Arrays.copyOf(arrayG, old_size + verticesG.size());
                 for (int i = old_size; i < arrayG.length; i++) {
@@ -180,23 +180,23 @@ public class LoadingRotatingTest implements UpdateCallback {
 
 
             }
-            // color of the object
+            // Color of the object
             float[] rgb = {0.75f, 0.75f, 0.75f};
             Mesh mesh = world.createMesh(arrayG, arrayN, arrayIndices, rgb);
 
             // You may have to change the object's scale or coordinates to see it. Here Mickey needs a 0.03f scale
             ItemObject prism = world.createItemObject("test", 0f, 0f, -15f, 0.5f, mesh);
-            // set reotation of initial position of the object
+            // Set reotation of initial position of the object
             prism.rotateY(30f);
             prism.rotateX(30f);
             prism.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
 
-            // create the rotation of the object
+            // Create the rotation of the object
             LoadingRotatingTest loadRotatingTest = new LoadingRotatingTest(prism);
 
-            // launch the rotation of the object
+            // Launch the rotation of the object
             world.registerUpdateCallback(loadRotatingTest);
-            //start the world
+            // Start the world
             world.launch();
             world.waitTermination();
 

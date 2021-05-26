@@ -1,4 +1,4 @@
-package loader.v2;
+package loader;
 
 /**
  * A TextureVertex represents a face information and is composed of two coordinates.
