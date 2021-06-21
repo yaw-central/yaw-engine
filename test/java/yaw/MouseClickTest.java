@@ -4,7 +4,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL;
-import yaw.InputCallbackTest;
 import yaw.engine.Mouse3DClickCallBack;
 import yaw.engine.RayCaster;
 import yaw.engine.Window;
@@ -82,8 +81,8 @@ public class MouseClickTest implements Mouse3DClickCallBack {
         World world = new World(0, 0, 800, 600);
 
 
-        HitBox h = world.createHitBox("cube", 5f, 0f, -25f, 4f, 1, 1, 1);
-        HitBox h2 = world.createHitBox("cube2", -5f, 0f, -25f, 4f, 1, 1, 1);
+        HitBox h = world.createHitBox("cube", 5f, 0f, -25f, 4f, 1, 1, 1, true);
+        HitBox h2 = world.createHitBox("cube2", -5f, 0f, -25f, 4f, 1, 1, 1, true);
         MouseClickTest key = new MouseClickTest(world.getCamera(), h,h2, world);
         world.registerMouseCallback(key);
         //ItemObject cube = world.createHitBox("cube", 0f, 0f, -2f, 1.0f, MeshBuilder.generateBlock(1, 1, 1));

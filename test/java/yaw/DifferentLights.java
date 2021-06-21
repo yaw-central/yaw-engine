@@ -63,7 +63,7 @@ public class DifferentLights implements UpdateCallback {
         //world.getSceneLight().setSun(new DirectionalLight());
 
         ItemObject cube = world.createItemObject("cube", 0f, 0f, -5f, 1.0f, cubem);
-        cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+        cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         //cube.rotate(0,45,0);
         DifferentLights rCube = new DifferentLights(cube);
 

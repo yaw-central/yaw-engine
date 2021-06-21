@@ -57,11 +57,11 @@ public class TestGroundCamera implements UpdateCallback {
             item.translate(i,i,i);
 
             if (i % 3 == 0)
-                item.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/resources/grassblock.png"));
             else if (i % 3 == 1)
-                item.getMesh().getMaterial().setTexture(new Texture("/ressources/sand.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/resources/sand.png"));
             else
-                item.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         }
         world.getCamera().translate(0.f, -10, 0);
         world.getCamera().rotate(90,0,0);

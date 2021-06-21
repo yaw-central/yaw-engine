@@ -3,7 +3,8 @@
                        InputCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
-  (:require [yaw.mesh]))
+  (:require [yaw.mesh]
+            [yaw.loader]))
   ;;(gen-class)
 
 (def empty-item-map
@@ -75,7 +76,7 @@
   "Create an item in the `world` with the  specified id, position, mesh"
   [world & {:keys [vertices text-coord normals faces weight rgb texture-name]
             :or   {texture-name ""
-                   rgb          [1 1 1]
+                   rgb          [0 0 1]
                    weight       1
                    vertices     {:v0 [-1 1 1] :v1 [-1 -1 1] :v2 [1 -1 1] :v3 [1 1 1]
                                  :v4 [-1 1 -1] :v5 [1 1 -1] :v6 [-1 -1 -1] :v7 [1 -1 -1]}
@@ -105,6 +106,22 @@
                (int-array (flat-map faces))
                (int weight) (float-array rgb) texture-name))
 
+  (defn createObjMesh
+      [world objFilename]
+      (let [model (yaw.loader/load-model objFilename)
+            texture-name (if (clojure.string/blank? (:texture-name model))
+                            ""
+                            (str "/resources/" (:texture-name model)))]
+          (.createMesh world
+                     (float-array (flatten (:vertices model)))
+                     (float-array (flat-map (:text_coord model)))
+                     (float-array (flat-map (:normals model)))
+                     (int-array (flat-map (:faces model)))
+                     (int 0) (float-array (first (:rgb model))) texture-name)))
+
+
+;;this function should not be used in yaw-react if you create meshes via the OBJ loader
+;; (because these meshes do not contain a geometry with tris and vertices)
 (defn create-simple-mesh!
   "Create an item in the `world` from the specified mesh object"
   [world & {:keys [geometry rgb]
@@ -127,6 +144,30 @@
                       mesh     nil}}]         ;;error here
   (.createItemObject world id (position 0) (position 1) (position 2) scale (or mesh
                                                                                (create-mesh! world))))
+
+(defn load-item!
+  "Load an item (in a .obj file) in the `world` 
+   with the position, weight ans scale of the mesh"
+  [world file & {:keys [position weight scale]
+                 :or {position [0 0 -5]
+                      weight 1
+                      scale 1}}]
+  (let [model (yaw.loader/load-model file)
+        mesh (.createMesh world
+                          (float-array (flat-map (into (sorted-map) (get model :vertices))))
+                          (float-array (flat-map (into (sorted-map) (get model :text_coord))))
+                          (float-array (flat-map (into (sorted-map) (get model :normals))))
+                          (int-array (flat-map (into (sorted-map) (get model :faces))))
+                          (int weight)
+                          (float-array (get model :rbg))
+                          (get model :texture-name))]
+    (.createItemObject world (str (gensym "item-")) (position 0) (position 1) (position 2) scale mesh)))
+                  
+
+;(create-mesh! world (get model :vertices) (get model :text_coord) (get model :normals)
+;                               (get model :faces) weight (get model :rbg) (cast String (get model :texture-name))))))
+;=> ERROR: Execution error (IllegalArgumentException) at yaw.world/create-mesh! (world.clj:75). No value supplied for key: Material
+
 
 (defn remove-item!
   "Remove the specified `item` from the `world`"
@@ -271,15 +312,17 @@
 (defn create-hitbox!
   "Create a hitbox in the `world` with the
   specified id, position, length, scale"
-  [world id & {:keys [position length scale]
+  [world id & {:keys [position length scale is-visible]
                :or   {position [0 0 -2]
                       length   [1 1 1]
-                      scale 1}}]
+                      scale 1
+                      is-visible true}}]
   (.createHitBox world
                  (str id)
                  (get position 0) (get position 1) (get position 2)
                  scale
-                 (get length 0) (get length 1) (get length 2)))
+                 (get length 0) (get length 1) (get length 2)
+                 is-visible))
 
 (defn check-collision!
   "Check if 2 hitboxes are in collision in the `world`"
