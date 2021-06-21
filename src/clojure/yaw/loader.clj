@@ -1,4 +1,5 @@
 (ns yaw.loader
+  "A loader for (simple) OBJ/MTL 3D mesh files"
   (:require [clojure.java.io :as io]
             [clojure.string :as s]))
 
@@ -72,7 +73,7 @@
 
 ; In the obj file only the name of the mtl is
 ; written but not the full path 
-(defn- getMtlPath
+(defn- get-mtl-path
   "Get the right mtl path file according to the file .obj"
   [model file]
   (let [path (s/split (get model :filename) #"/")]
@@ -81,7 +82,7 @@
       file)))
 
 (declare split-line)
-(defn- getColors
+(defn- get-colors
   "Get informations about colors of a mtl file"
   [model filter]
   (loop [l filter, mod model]
@@ -93,13 +94,13 @@
 (defn- handle-mtllib
   "Acces to mtllib in order to get rgb"
   [model mtllib]
-  (let [mtl (getMtlPath model mtllib)
+  (let [mtl (get-mtl-path model mtllib)
         lines (with-open [r (io/reader mtl)] (vec (line-seq r)))
         colors (filter #(re-matches #"Kd.*" %) lines)
         textures (filter #(re-matches #"map_Kd.*" %) lines)]
     (if (seq textures)
-      (handle-usemtl (getColors model colors) (second (split-line (first textures))))
-      (getColors model colors))))
+      (handle-usemtl (get-colors model colors) (second (split-line (first textures))))
+      (get-colors model colors))))
 
 
 
@@ -142,7 +143,7 @@
 
 ; Check if there is a information that can be 
 ; handle by our functions 
-(defn- isValid?
+(defn- is-valid?
   "Check if the line is what we want"
   [[kw & data]]
   (contains? handlers kw))
@@ -156,7 +157,7 @@
 ; (so we use repeat) 
 ;  * normals is the normals of the model that will be change
 ;  * n is the sequence 
-(defn- transNormal
+(defn- trans-normals
   "Transform :normals of the model into :normals of a mesh"
   [normals n]
   (loop [ks (keys normals), res {}, nb n]
@@ -164,18 +165,18 @@
       (recur (rest ks) (assoc res (first ks) (into [] (reduce concat (repeat (first nb) (get normals (first ks)))))) (rest nb))
       res)))
 
-(defn- addVt
+(defn- add-vt
   "Add coordinates texttures to the structure (maps)"
   [tc res vt keyw acc]
   (if (seq vt)
     (if (contains? acc (first vt))
-      (addVt tc res (rest vt) keyw acc)
-      (addVt tc (assoc res keyw (into [] (concat (get res keyw) (get tc (first vt)))))
+      (add-vt tc res (rest vt) keyw acc)
+      (add-vt tc (assoc res keyw (into [] (concat (get res keyw) (get tc (first vt)))))
              (rest vt) keyw (conj acc (first vt))))
     [res acc]))
 
 
-(defn- getVn
+(defn- get-vn
   "Get normals of a face"
   [f]
   (into [] (map #(first (rest (rest %))) f)))
@@ -184,17 +185,17 @@
 ;  * mapFaces : information about faces
 ;  * textures : information about textures
 ; Return couple of the new faces and textures
-(defn- transFnT
+(defn- trans-faces-and-textures
   "Transform :faces and :text_coord of the model into a mesh"
-  ([mapFaces textures] (transFnT textures (vals mapFaces) {} {} {}))
+  ([mapFaces textures] (trans-faces-and-textures textures (vals mapFaces) {} {} {}))
   ([tc list res coord acc]
    (if (seq list)
      (let [face (first list)
            v (map #(dec %) (map #(first %) face)) ;Get nodes of a face
-           f (first (getVn face)) ;Get number of the face
+           f (first (get-vn face)) ;Get number of the face
            vt (map #(first (rest %)) face)
-           [coord2 acc2] (addVt tc coord v f (get acc f #{}))]
-       (transFnT tc (rest list) (assoc res f (into [] (concat v (get res f)))) ;Add indices of a face
+           [coord2 acc2] (add-vt tc coord v f (get acc f #{}))]
+       (trans-faces-and-textures tc (rest list) (assoc res f (into [] (concat v (get res f)))) ;Add indices of a face
                  coord2 (assoc acc f acc2)))
      [res coord])))
 
@@ -203,7 +204,7 @@
 ;  * vs : list of all vertices 
 ;  * n : number of vertices without duplicate
 ; Return couple of the new vertices and faces
-(defn- modifVertices
+(defn- modif-verticies
   [f vs n]
   (loop [face f, resV [], resF [], acc {}, cpt n]
     (if (seq face)
@@ -217,21 +218,21 @@
 ;  * f : vector of vertice of all faces
 ;  * vs : list of all vertices 
 ; Return couple of the new vertices and faces
-(defn- transVertices
+(defn- trans-verticies
   "Transforme Vertices and Face according to the update"
   ([f vs]
    (loop [size (map #(count (set %)) (vals (into (sorted-map) f))), k (keys (into (sorted-map) f)), resV [], resF {}, n 0]
      (if (and (seq k) (seq size))
-       (let [[v face] (modifVertices (get f (first k)) vs n)]
+       (let [[v face] (modif-verticies (get f (first k)) vs n)]
          (recur (rest size) (rest k) (conj resV v) (assoc resF (first k) face) (+ n (first size))))
        [resV, resF]))))
 
-(defn transformModel
+(defn trans-model
   "Transform model of loader into a correct mesh"
   [model]
-  (let [[f t] (transFnT (get model :faces) (get model :text_coord))
-        n (transNormal (get model :normals) (map #(count (set %)) (vals (into (sorted-map) f))))
-        [v f2] (transVertices f (get model :vertices))]
+  (let [[f t] (trans-faces-and-textures (get model :faces) (get model :text_coord))
+        n (trans-normals (get model :normals) (map #(count (set %)) (vals (into (sorted-map) f))))
+        [v f2] (trans-verticies f (get model :vertices))]
     (-> model
         (assoc :faces f2)
         (assoc :vertices v)
@@ -251,10 +252,10 @@
                                 (map s/trim)
                                 (remove empty?)
                                 (map split-line)
-                                (filter isValid?))
+                                (filter is-valid?))
                           update-model
                           mymodel
                           (line-seq r)))]
-    (transformModel item)))
+    (trans-model item)))
 
 

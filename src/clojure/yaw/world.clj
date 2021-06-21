@@ -14,7 +14,7 @@ framework: Yaw-reactive.
                        InputCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
-  (:require [yaw.utils :as u]
+  (:require [yaw.util :as u]
             [yaw.mesh]
             [yaw.loader]))
 
@@ -102,10 +102,10 @@ framework: Yaw-reactive.
                                  :bottom [0.5 0 1 0 0.5 0.5 1 0.5]}}}]
 
   (.createMesh world
-               (float-array (flat-map vertices))
-               (float-array (flat-map text-coord))
-               (float-array (flat-map normals))
-               (int-array (flat-map faces))
+               (float-array (u/flat-map vertices))
+               (float-array (u/flat-map text-coord))
+               (float-array (u/flat-map normals))
+               (int-array (u/flat-map faces))
                (int weight) (float-array rgb) texture-name))
 
   (defn createObjMesh
@@ -116,9 +116,9 @@ framework: Yaw-reactive.
                             (str "/resources/" (:texture-name model)))]
           (.createMesh world
                      (float-array (flatten (:vertices model)))
-                     (float-array (flat-map (:text_coord model)))
-                     (float-array (flat-map (:normals model)))
-                     (int-array (flat-map (:faces model)))
+                     (float-array (u/flat-map (:text_coord model)))
+                     (float-array (u/flat-map (:normals model)))
+                     (int-array (u/flat-map (:faces model)))
                      (int 0) (float-array (first (:rgb model))) texture-name)))
 
 
@@ -156,10 +156,10 @@ framework: Yaw-reactive.
                       scale 1}}]
   (let [model (yaw.loader/load-model file)
         mesh (.createMesh world
-                          (float-array (flat-map (into (sorted-map) (get model :vertices))))
-                          (float-array (flat-map (into (sorted-map) (get model :text_coord))))
-                          (float-array (flat-map (into (sorted-map) (get model :normals))))
-                          (int-array (flat-map (into (sorted-map) (get model :faces))))
+                          (float-array (u/flat-map (into (sorted-map) (get model :vertices))))
+                          (float-array (u/flat-map (into (sorted-map) (get model :text_coord))))
+                          (float-array (u/flat-map (into (sorted-map) (get model :normals))))
+                          (int-array (u/flat-map (into (sorted-map) (get model :faces))))
                           (int weight)
                           (float-array (get model :rbg))
                           (get model :texture-name))]
