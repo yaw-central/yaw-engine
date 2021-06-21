@@ -1,24 +1,38 @@
 (ns yaw.world
+  "This is the main Clojure wrapper for the 3D engine.
+
+  Most of the functions in this namespace have side-effects,
+ providing only a think wrapper for the corresponding functionalities
+implemented in Java/LLWJGL.
+
+  As such, using this namespace directly provides a very imperative,
+ and non-idiomatic, way of doing things.  It is better to use more
+functional (e.g. FRP) approaches, such as using the companion
+framework: Yaw-reactive.
+"
   (:import (yaw.engine World
                        InputCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
-  (:require [yaw.mesh]
+  (:require [yaw.utils :as u]
+            [yaw.mesh]
             [yaw.loader]))
-  ;;(gen-class)
-
-(def empty-item-map
-  {:cameras {}
-   :lights {:ambient nil :sun nil :points {} :spots {}}
-   :groups {}
-   :items {}})
 
 ;;UTILS------------------------------------------------------------------
-(defn flat-map "flatten 'map'" [m]
-  (flatten (conj (vals m))))
 
 (defn start-universe!
-  "Start an empty yaw universe."
+  "Start an empty yaw *universe*, i.e. a 3D world view.
+  
+  Options include:
+  
+  :width <size>    => the width of the view window (in pixels)
+  :height <size>   => the height of the view window (in pixels)
+  :x <pos>         => the x position of the window (in pixels, 0 is leftmost)
+  :y <pos>         => the y position of the window (in pixels, 0 is topmost)
+  :vsync <bool>    => wether vertical synchronization should be enabled (true/false)
+  
+  The universe is the direct connection with the OpenGL state-machine,
+  and should be interacted with with greate care."
   [& {:keys [width height x y vsync]
       :or   {x      0
              y      0
@@ -27,19 +41,7 @@
              vsync true}}]
   (let [world (World. x y width height vsync)]
     (.launch world)
-    (atom {:world world
-           :meshes {:mesh/box (yaw.mesh/box-geometry)
-                    :mesh/cone (yaw.mesh/cone-geometry)
-                    :mesh/pyramid (yaw.mesh/pyramid-geometry)
-                    :mesh/cuboid (yaw.mesh/cuboid-geometry)}
-           :data empty-item-map
-           :items {}
-           :components {}})))
-
-;; (defn register-mesh!
-;;   "Given a universe, a keyword id, and mesh data, associates the id to the data in the universe atom"
-;;   [univ id mesh]
-;;   (swap! univ assoc-in [:meshes id] mesh))
+    (atom {:world world})))
 
 ;;CALLBACKS---------------------------------------------------------------
 
