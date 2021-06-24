@@ -59,7 +59,7 @@ public class RotatingCube implements UpdateCallback {
 		World world = new World(0, 0, 800, 600);
 		
 		ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, cubem);
-		cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+		cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
 		cube.translate(2f,0f, -5f);
 
 		RotatingCube rCube = new RotatingCube(cube);

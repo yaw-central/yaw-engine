@@ -452,7 +452,7 @@ public class MeshBuilder {
      * @param zLength zLength
      * @return BoundingBoxMesh
      */
-    public static Mesh generateBoundingBox(float xLength, float yLength, float zLength) {
+    public static Mesh generateBoundingBox(float xLength, float yLength, float zLength, Boolean isVisible) {
         float x = xLength / 2f;
         float y = yLength / 2f;
         float z = zLength / 2f;
@@ -482,8 +482,7 @@ public class MeshBuilder {
                 8, 9, 9, 10, 10, 11, 11, 8};
 
         Mesh lMesh = new Mesh(vertices, textCoord, normals, indices);
-        //we set the new strategy
-        lMesh.setDrawingStrategy(new BoundingBoxDrawingStrategy());
+        lMesh.setDrawingStrategy(new BoundingBoxDrawingStrategy(isVisible));
         Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;

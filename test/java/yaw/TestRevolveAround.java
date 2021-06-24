@@ -60,7 +60,7 @@ public class TestRevolveAround implements UpdateCallback {
         World world = new World(0, 0, 800, 600);
         world.getCamera().setPosition(0,0,6);
         ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, cubem);
-        cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+        cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         //cube.setPosition(new Vector3f(0f,3f,0f));
         TestRevolveAround rCube = new TestRevolveAround(cube);
 

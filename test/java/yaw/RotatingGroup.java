@@ -69,11 +69,11 @@ public class RotatingGroup implements UpdateCallback {
 
 
         ItemObject cube = world.createItemObject("cube", -2.5f, 0f, -8f, 1.0f, cubem);
-        cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+        cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         ItemObject cube2 = world.createItemObject("cube2", 2.5f, 0f, -8f, 1.0f, cubem2);
-        cube2.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+        cube2.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         ItemObject cube3 = world.createItemObject("cube3", 0f, 0f, -8f, 1.0f, cubem3);
-        cube2.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+        cube2.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         ItemGroup g = new ItemGroup("g");
         g.add("first",cube);
 

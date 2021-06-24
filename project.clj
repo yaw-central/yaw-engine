@@ -71,14 +71,14 @@
 
 (def all-dependencies
   (into ;; Add your non-LWJGL dependencies here
-   '[[org.clojure/clojure "1.10.1"]
-     [org.joml/joml "1.9.20"]
+   '[[org.clojure/clojure "1.10.3"]
+     [org.joml/joml "1.10.1"]
      [org.l33tlabs.twl/pngdecoder "1.0"]]
    (lwjgl-deps-with-natives)))
 
-(defproject yaw-engine "0.3.0-SNAPSHOT"
-  :description "A simple 3D programming world."
-  :url "https://github.com/fredokun/yaw"
+(defproject yaw-engine "0.4.0-SNAPSHOT"
+  :description "A simple 3D programming world (LWJGL engine)."
+  :url "https://github.com/yaw-central/yaw-engine"
   :license {:name "The MIT License"
             :url  "http://opensource.org/licenses/MIT"}
   :dependencies ~all-dependencies

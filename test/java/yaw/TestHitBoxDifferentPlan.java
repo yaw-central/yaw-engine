@@ -107,9 +107,9 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
         ItemGroup gr1 = new ItemGroup("gr1");
         ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
         gr1.add("item",c1);
-        HitBox i = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, 0.25f,1f, 1.0f, 1.0f, 0.5f);
+        HitBox i = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, 0.25f,1f, 1.0f, 1.0f, 0.5f, true);
         gr1.add("hitbox 1", i);
-        HitBox i2 = world.createHitBox("c1 second bounding box", 0.0f, 0.0f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
+        HitBox i2 = world.createHitBox("c1 second bounding box", 0.0f, 0.0f, -0.25f,1f, 1.0f, 1.0f, 0.5f, true);
         gr1.add("hitbox 2", i2);
 
 
@@ -119,9 +119,9 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
         ItemGroup gr2 = new ItemGroup("gr2");
         ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
         gr2.add("item",c2);
-        HitBox j = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, 0.25f,1f, 1.0f, 1.0f, 0.5f);
+        HitBox j = world.createHitBox("c1 first bounding box", 0.0f, 0.0f, 0.25f,1f, 1.0f, 1.0f, 0.5f, true);
         gr2.add("hitbox 1", j);
-        HitBox j2 = world.createHitBox("c1 second bounding box", 0.0f, 0.0f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
+        HitBox j2 = world.createHitBox("c1 second bounding box", 0.0f, 0.0f, -0.25f,1f, 1.0f, 1.0f, 0.5f, true);
         gr2.add("hitbox 2", j2);
         gr2.translate(0.75f,0,2);
 

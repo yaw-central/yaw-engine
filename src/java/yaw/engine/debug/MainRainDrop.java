@@ -38,11 +38,11 @@ public class MainRainDrop {
             //item.rotate((int) (Math.random() * 90), (int) (Math.random() * 90), (int) (Math.random() * 90));
 
             if (i % 3 == 0)
-                item.getMesh().getMaterial().setTexture(new Texture("/ressources/grassblock.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/resources/grassblock.png"));
             else if (i % 3 == 1)
-                item.getMesh().getMaterial().setTexture(new Texture("/ressources/sand.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/resources/sand.png"));
             else
-                item.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
+                item.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         }
 
 

@@ -100,9 +100,9 @@ public class HitboxRotate implements UpdateCallback {
         //HitBox i = world.createHitBox("c1 first bounding box",f,1f,tabA);
         //i.setPosition(new Vector3f(f[0]+0.f,f[1]+0.f,f[2]+0.25f));
         HitBox i = world.createHitBox("c1 first bounding"
-                , 0.f,0.f,0.25f, 1, 1.0f, 1.0f, 0.5f);
+                , 0.f,0.f,0.25f, 1, 1.0f, 1.0f, 0.5f, true);
         gr1.add("hitbox 1", i);
-        HitBox i2 = world.createHitBox("c1 second bounding box",-0.f, -0.f, -0.25f,1f, 1.0f, 1.0f, 0.5f);
+        HitBox i2 = world.createHitBox("c1 second bounding box",-0.f, -0.f, -0.25f,1f, 1.0f, 1.0f, 0.5f, true);
         gr1.add("hitbox 2", i2);
 
         //System.out.println("Collision ?: " + Collision.isInCollision(c1, c2));

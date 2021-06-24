@@ -39,7 +39,7 @@ public class MainWorld {
 
         ItemGroup g1 = new ItemGroup("g1");
         ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, -2.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
-        HitBox i = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f, 1f, 1.0f, 1.0f, 1.0f);
+        HitBox i = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f, 1f, 1.0f, 1.0f, 1.0f, true);
         g1.add("cube", c1);
         g1.add("hitbox", i);
 
@@ -49,7 +49,7 @@ public class MainWorld {
         ItemGroup g2 = new ItemGroup("g2");
         ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, -2.0f, 1
                 , MeshBuilder.generateHalfBlock(1, 1, 1));
-        HitBox i2 = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f,1f, 1.0f, 1.0f, 1.0f);
+        HitBox i2 = world.createHitBox("c1 first bounding box",0.0f, 0.0f, -2.0f,1f, 1.0f, 1.0f, 1.0f, true);
         g2.add("cube", c2);
         g2.add("hitbox", i2);
 
