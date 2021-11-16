@@ -1,4 +1,5 @@
-(ns yaw.util)
+(ns yaw.util
+  "Miscellaneous utility functions.")
 
 (defn explode
   "Explodes a vector [x y z] tuple into (:x x :y y :z z)"
@@ -33,3 +34,8 @@
   (if (not (coll? b))
     a
     (mapv #(or %1 %2) a b)))
+
+(defn flat-map 
+  "flatten the map `m`" 
+  [m]
+  (flatten (conj (vals m))))
