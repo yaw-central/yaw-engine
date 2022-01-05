@@ -34,7 +34,7 @@ public class TextureTest implements UpdateCallback {
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
         }
-        //cube.rotateXYZ(0.05f, 0.2f, 0.f);
+        cube.rotateXYZ(0.2f, 0.8f, 0.f);
 
 
     }

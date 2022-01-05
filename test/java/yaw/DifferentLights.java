@@ -30,7 +30,6 @@ public class DifferentLights implements UpdateCallback {
         return mesh;
     }
 
-    @Override
     public void update(double deltaTime) {
         nbUpdates++;
         totalDeltaTime += deltaTime;
