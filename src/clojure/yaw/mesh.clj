@@ -18,7 +18,6 @@
       :or {anchor [0 0 0]
            scale [1 1 1]}}]
   (let [v (anchor-fun anchor scale)]
-
     {:vertices {:a (v [1 1 1])
                 :b (v [1 -1 1])
                 :c (v [-1 -1 1])

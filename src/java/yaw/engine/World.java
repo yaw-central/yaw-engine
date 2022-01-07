@@ -1,22 +1,19 @@
 package yaw.engine;
 
 import org.joml.Quaternionf;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
-import yaw.engine.items.*;
+import yaw.engine.items.HitBox;
+import yaw.engine.items.ItemGroup;
+import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
-import yaw.engine.meshs.*;
+import yaw.engine.meshs.Material;
+import yaw.engine.meshs.Mesh;
+import yaw.engine.meshs.Texture;
 import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
 import yaw.engine.skybox.Skybox;
-import yaw.engine.InputCallback;
-import org.joml.Vector3f;
 
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  * This is the facade of the engine, most Clojure calls are

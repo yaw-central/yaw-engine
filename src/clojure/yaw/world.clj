@@ -14,14 +14,17 @@ framework: Yaw-reactive.
                        InputCallback)
            (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
            (yaw.engine.camera Camera))
+  
   (:require [yaw.util :as u]
-            [yaw.mesh]
+            [yaw.geom :as geom]
             [yaw.loader]))
 
-;;UTILS------------------------------------------------------------------
+;;; ==========================================================================
+;;; World management
+;;; ==========================================================================
 
-(defn start-universe!
-  "Start an empty yaw *universe*, i.e. a 3D world view.
+(defn create-world!
+  "Create a 3D world view.
   
   Options include:
   
@@ -29,10 +32,13 @@ framework: Yaw-reactive.
   :height <size>   => the height of the view window (in pixels)
   :x <pos>         => the x position of the window (in pixels, 0 is leftmost)
   :y <pos>         => the y position of the window (in pixels, 0 is topmost)
-  :vsync <bool>    => wether vertical synchronization should be enabled (true/false)
+  :vsync <bool>    => wether vertical synchronization should be enabled (true by default)
   
-  The universe is the direct connection with the OpenGL state-machine,
-  and should be interacted with with greate care."
+  The world is the direct connection with the OpenGL state-machine,
+  and should be interacted with with great care.
+
+  If successful, the world instance is returned.
+  "
   [& {:keys [width height x y vsync]
       :or   {x      0
              y      0
@@ -41,7 +47,81 @@ framework: Yaw-reactive.
              vsync true}}]
   (let [world (World. x y width height vsync)]
     (.launch world)
-    (atom {:world world})))
+    world))
+
+(defn destroy-world!
+  "Terminates the specified [world] and claim all the related resources."
+  [world]
+  (.terminate world))
+
+;;; ==========================================================================
+;;; Mesh management
+;;; ==========================================================================
+
+(defn create-mesh!
+  [world geom material]
+  (let [cgeom (if (= (get geom :format) :yaw.geom/compact)
+                geom
+                (geom/compact-geom geom))]
+    (.createMesh world
+                 (float-array (:verts cgeom))
+                 nil ;; XXX: for now, no texture support
+                 (float-array (:norms cgeom))
+                 (int-array (:tris cgeom))
+                 1 ;; XXX: weight should probably disappear
+                 (float-array (:color material))
+                 "" ;; XXX : for now, no texture support
+                 )))
+
+;;; ==========================================================================
+;;; Items and groups
+;;; ==========================================================================
+
+(defn create-item!
+  "Create an item in the `world` with the
+  specified id, position, mesh"
+  [world id & {:keys [position scale mesh]
+               :or   {position [0 0 2]
+                      scale    1
+                      mesh     nil}}]         ;;error here
+  (.createItemObject world id (position 0) (position 1) (position 2) scale (or mesh
+                                                                               (create-mesh! world))))
+
+(comment
+(defn create-mesh!
+  "Create an item in the `world` with the  specified id, position, mesh"
+  [world & {:keys [vertices text-coord normals faces weight rgb texture-name]
+            :or   {texture-name ""
+                   rgb          [0 0 1]
+                   weight       1
+                   vertices     {:v0 [-1 1 1] :v1 [-1 -1 1] :v2 [1 -1 1] :v3 [1 1 1]
+                                 :v4 [-1 1 -1] :v5 [1 1 -1] :v6 [-1 -1 -1] :v7 [1 -1 -1]}
+                   normals      {:front  [0 0 1 0 0 1 0 0 1 0 0 1]
+                                 :top    [0 1 0 0 1 0 0 1 0 0 1 0]
+                                 :back   [0 0 -1 0 0 -1 0 0 -1 0 0 -1]
+                                 :bottom [0 -1 0 0 -1 0 0 -1 0 0 -1 0]
+                                 :left   [-1 0 0 -1 0 0 -1 0 0 -1 0 0]
+                                 :right  [1 0 0 1 0 0 1 0 0 1 0 0]}
+                   faces        {:front  [0 1 3 3 1 2]
+                                 :top    [4 0 3 5 4 3]
+                                 :back   [7 6 4 7 4 5]
+                                 :bottom [2 1 6 2 6 7]
+                                 :left   [6 1 0 6 0 4]
+                                 :right  [3 2 7 5 3 7]}
+                   text-coord   {:front  [0 0 0 0.5 0.5 0.5 0.5 0]
+                                 :back   [0 0 0.5 0 0 0.5 0.5 0.5]
+                                 :top    [0 0.5 0.5 0.5 0 1 0.5 1]
+                                 :right  [0 0 0 0.5]
+                                 :left   [0.5 0 0.5 0.5]
+                                 :bottom [0.5 0 1 0 0.5 0.5 1 0.5]}}}]
+
+  (.createMesh world
+               (float-array (u/flat-map vertices))
+               (float-array (u/flat-map text-coord))
+               (float-array (u/flat-map normals))
+               (int-array (u/flat-map faces))
+               (int weight) (float-array rgb) texture-name))
+
 
 ;;CALLBACKS---------------------------------------------------------------
 
@@ -73,6 +153,9 @@ framework: Yaw-reactive.
 
 ;; MeshOld Functions------------------------------------------------
 ;; TODO: delete this when `create-simple-mesh` is stable (and we can handle texture)
+
+
+
 
 (defn create-mesh!
   "Create an item in the `world` with the  specified id, position, mesh"
@@ -387,3 +470,4 @@ framework: Yaw-reactive.
   (.translate item x y z))
 
 
+)

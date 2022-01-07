@@ -16,7 +16,6 @@ public class Window {
     /*OpenGL context that is current in the current thread.*/
     public static GLCapabilities caps;
 
-
     /* package */ static long windowHandle;
     private static int width;
     private static int height;
@@ -96,7 +95,7 @@ public class Window {
         glfwSwapInterval(vsync? 1:0);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);/* Specifies the red, green, blue, and alpha values used by glClear to clear the color buffers. */
 
-        /*activate depth comparisons and update the depth buffe*/
+        /*activate depth comparisons and update the depth buffer */
         glEnable(GL_DEPTH_TEST);
 
     }

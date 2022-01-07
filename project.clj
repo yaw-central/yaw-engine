@@ -83,7 +83,7 @@
             :url  "http://opensource.org/licenses/MIT"}
   :dependencies ~all-dependencies
   :jvm-opts ^:replace ~(jvm-opts)
-  :source-paths ["src/clojure"]
+  :source-paths ["src/clojure", "examples"]
   :java-source-paths ["src/java" "test/java"]
   :test-paths ["test/clojure"])
 
