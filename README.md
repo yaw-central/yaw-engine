@@ -2,13 +2,15 @@
 
 **(ultimately) a 3D live-coding experience for Clojurians of all ages**
 
-(for now a dumb imperative (!) Clojure wrapper for LWJGL...)
+(for now a very basic 3D engine based on LLWJGL with a thin and imperative
+Clojure wrapper)
 
 ## Disclaimer
 
 Yaw is *not yet* usable, except for extremely simplistic examples!
 The Java/OpenGL-side of things is a basic engine relatively well-tested.
-The Clojure part is minimalistic for now.
+The Clojure part is minimalistic, a separate projet, yaw-reactive, investigates
+a more idiomatic way to 3D programming in Clojure.
 
 ## Requirements
 
@@ -96,7 +98,18 @@ One can also quickly create a square-based pyramid like so
 (def univ (start-universe!))
 (def world (:world @univ))
 (def block (create-block! world))
-(translate! block :z -1)
+(translate! block :z -2)
 (rotate! block :y 20)
 ```
 
+# How to develop ?
+
+This project being a mixed Java/Clojure project, we actively encourage 
+the use of Intellij Idea together with the Cursive plugins for Clojure
+ development.
+
+For now we use the leiningen tool for build management, at some point we
+will also support the newer Deps.
+
+----
+Copyright (C) 2016-∞ F. Peschanski et al. under the MIT License
