@@ -125,7 +125,52 @@ framework: Yaw-reactive.
   "Orient the camera towards the specified coordinates."
   [camera [x y z]]
   (.setOrientation camera x y z))
-  
+
+
+;;; ==========================================================================
+;;; Light management
+;;; ==========================================================================
+
+(defn ambient-light
+  "Get the ambient light of the specified `world`."
+  [world]
+  (.getAmbientLight (.getSceneLight world)))
+
+(defn intensity!
+  "Change intensity of specified `light` to value `i`
+  (a float between 0 and 1.0"
+  [light i]
+  (.setIntensity light i))
+
+(defn directional-light
+  "Get the directional light of the specified `world`."
+  [world]
+  (.getSun (.getSceneLight world)))
+
+(defn direction!
+  "Change the direction of the specified (directional `light`)
+according to the specified vector `dir` [dx dy dz]"
+  [light dir]
+  (let [[dx dy dz] dir]
+    (.setDirection light dx dy dz)))
+
+(defn point-light!
+  "Configure the `ref`-th point light in the `world` according
+  to the specified `props` map.
+  <TODO>: explain the point-light configuration
+  "
+  [world ref props]
+  (let [color (get props :color [1 1 1])
+        [r g b] color
+        position (get props :position [0 0 0])
+        [px py pz] position
+        intensity (get props :intensity 1.0)
+        attenuation (get props :attenuation [0.3 0.5 0.9])
+        [const lin quad] attenuation]
+    (let [plight (PointLight. r g b px py pz intensity const lin quad)]
+      (.setPointLight (.getSceneLight world) plight ref)
+      plight)))
+
 ;;; =========================
 ;;; Old API below
 
@@ -375,12 +420,6 @@ framework: Yaw-reactive.
 ;;LIGHT------------------------------------------------------------
 (defn lights "Retrieve the lighting settings of the world scene" [world] (.getSceneLight world))
 
-(defn create-ambient-light!
-  [{:keys [color i]
-    :or {color [1 1 1]
-         i 0.3}}]
-  (let [[r g b] color]
-    (AmbientLight. r g b i)))
 
 (defn create-sun-light!
   [{:keys [color i dir]
@@ -391,15 +430,7 @@ framework: Yaw-reactive.
         [dx dy dz] dir]
     (DirectionalLight. r g b i dx dy dz)))
 
-(defn create-point-light!
-  [{{:keys [const lin quad] :or {const 0.3 lin 0.5 quad 0.9}} :att
-    :keys [color i pos]
-    :or {color [1 1 1]
-         i 1
-         pos [0 0 0]}}]
-  (let [[r g b] color
-        [px py pz] pos]
-    (PointLight. r g b px py pz i const lin quad)))
+
 
 (defn create-spot-light!
   [ {{:keys [const lin quad] :or {const 0.3 lin 0.5 quad 0.9}} :att

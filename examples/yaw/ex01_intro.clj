@@ -322,4 +322,100 @@
 (w/camera-orient! cam [-2.5 0 -5])
 ;; XXX: shouldn't it be pointing to the red cube ?
 
+;;{
+;; # Lights
+;;
+;; The cubes in our current scene do not really appear
+;; as 3d objects. The main reason is that all their pixel
+;; have exactly the same color (either "full" blue or red).
+;;
+;; To obtain a (slightly) more realistic view, we must introduce
+;; some (more) light into the scene.
+;;
+;; The Yaw engine supports a variety of different lights:
+;;   - an **ambient light** that correspond to a kind of basis for lighting
+;;   - (at most) a **directional light** that emit a kind of "inifinite" light,
+;;     simulating a kind of a sun (or moon)
+;;   - **point lights** that emit in all directions
+;;   - **spot lights** that emit light directionally, according to a specified cone
+;;
+;; Note: because lighting is compute intensive, the number of point lights and spot lights
+;; is limited to a low number, by default 5 of each  (although this can be changed
+;; after recompiling the engine).
+;;
+;; In this introduction, we will only discuss the first three kinds of lights,
+;; spot lights, more complex,  are explaind in a separate tutorial example.
+;;}
 
+;;{
+;; ## Ambient light
+;;
+;; The ambient light is what we see in our current scene.
+;; We can see that by changing its components.
+;;}
+
+(def amb (w/ambient-light world))
+
+(w/intensity! amb 0.5)
+
+;; A value of 0 makes the scene all dark
+
+(w/intensity! amb 0.0)
+
+;; And of course a value of 1.0 restore the default
+;; (maximal) level.
+
+(w/intensity! amb 1.0)
+
+;;{
+;; ## Directional light
+;;
+;; Each world also possesses a single directional light, simulating
+;; the presence of a sun or moon. This light source is located
+;; at an "infinite" distance and all its rays are considered parallel,
+;; according to a given direction.
+;;
+;;}
+
+(def sun (w/directional-light world))
+
+(w/intensity! sun 1.0)
+
+;;{
+;; To see something, somehow, we must reduce the
+;; intensity of the ambient light.
+;;}
+
+(w/intensity! amb 0.7)
+
+;;{
+;; We can also change the direction of the light/sun
+;; as a vectory [dx dy dz]
+;;}
+
+(w/direction! sun [-0.5 0.5 -2])
+
+;;{
+;; ## Point lights
+;;
+;; A point light, as its name implies, is located at a given coordinates
+;; and emits in all directions.
+;; Let's put a point light a light bit in front of the cubes, and slightly
+;; on the right and above.
+;;
+;;}
+
+(def plight (w/point-light! world 0 {:position [0.5 -1.5 -6]}))
+
+(w/intensity! plight 3.0)
+
+;; To see something it is better to reduce the direction light
+(w/intensity! sun 0.5)
+
+
+;;{
+;;
+;; We have now the basic components of a 3D scene, and this is enough for
+;; an introduction. In the next tutorial we will discover other basic
+;; geometries, and install an *interactive loop* to play with the Yaw engine.
+;;}

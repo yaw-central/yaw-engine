@@ -21,7 +21,7 @@ public class SceneLight {
      * Constructor without parameters, it used to create the maximum of point light and spot light.
      */
     public SceneLight() {
-        removeAmbient();
+        this.mAmbient = new AmbientLight();
         removeSun();
         this.mPointTable = new PointLight[MAX_POINTLIGHT];
         for (int i = 0; i < MAX_POINTLIGHT; i++)
@@ -29,10 +29,6 @@ public class SceneLight {
         this.mSpotTable = new SpotLight[MAX_SPOTLIGHT];
         for (int i = 0; i < MAX_SPOTLIGHT; i++)
             this.mSpotTable[i] = new SpotLight();
-    }
-
-    public void removeAmbient() {
-        this.mAmbient = new AmbientLight();
     }
 
     public void removeSun() {
