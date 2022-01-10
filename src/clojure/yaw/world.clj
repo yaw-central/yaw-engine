@@ -87,6 +87,10 @@ framework: Yaw-reactive.
          scale (get props :scale 1)]
      (.createItemObject world (str id) px py pz scale mesh))))
 
+(defn remove-item!
+  "Remove the specified `item` from the `world`"
+  [world item]
+  (.removeItem world item))
 
 (defn rotate!
   "Applies a rotation to the specified `item`, with
@@ -108,7 +112,20 @@ framework: Yaw-reactive.
                   z 0}}]
   (.translate item x y z))
 
+;;; ==========================================================================
+;;; Camera management
+;;; ==========================================================================
 
+(defn active-camera
+  "Get the currently active camera of the specified `world`."
+  [world]
+  (.getCamera world))
+
+(defn camera-orient!
+  "Orient the camera towards the specified coordinates."
+  [camera [x y z]]
+  (.setOrientation camera x y z))
+  
 ;;; =========================
 ;;; Old API below
 
@@ -280,10 +297,7 @@ framework: Yaw-reactive.
 ;=> ERROR: Execution error (IllegalArgumentException) at yaw.world/create-mesh! (world.clj:75). No value supplied for key: Material
 
 
-(defn remove-item!
-  "Remove the specified `item` from the `world`"
-  [world item]
-  (.removeItem world item))
+
 
 (defn set-item-color!
   "Replaces the material of the item with the specified color"

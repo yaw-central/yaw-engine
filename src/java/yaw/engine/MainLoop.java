@@ -91,6 +91,7 @@ public class MainLoop implements Runnable {
         this.mRenderer = new Renderer();
         this.mCamerasList = new Vector<>();
         this.mCamera = new Camera();
+        mCamerasList.add(mCamera);
         this.mSceneVertex = new SceneVertex();
         this.mSceneLight = new SceneLight();
         this.mItemGroupArrayList = new Vector<>();

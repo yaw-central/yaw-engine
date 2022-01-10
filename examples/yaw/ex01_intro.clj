@@ -249,3 +249,77 @@
 ;; specified values to see what happens.
 ;;
 ;;}
+
+;;{
+;;
+;; Of course, it is possible to remove an item from the world.
+;;
+;;}
+
+(comment
+  (w/remove-item! world cube-1)
+  )
+
+;;{
+;; # Cameras
+;;
+;; What we see in the world (for the moment, a cube) is through the lens
+;; of a **camera**.
+;; The Yaw engine supports multiple cameras but in this introduction
+;; we will only discuss the *default* camera.
+;;
+;; The default Camera is put a the origin of the world, i.e. [0 0 0]
+;; We can fetch the activate camera as follows:
+;;
+;;}
+
+(def cam (w/active-camera world))
+
+;;{
+;; As it is the case for items, we can translate or rotate the camera. 
+;;}
+
+(w/translate! cam :z 1)
+
+;;{
+;;
+;; The camera has been displaced in one unit in the z direction,
+;; which makes the whole scene appear smaller.
+;; To observe this more finally, let's add another cube in the scene.
+;;
+;;}
+
+(def red-cube (w/create-mesh! world cube-geom solid-red))
+
+(def cube-2 (w/create-item! world red-cube {:position [-2.5 0 -5]}))
+
+;;{
+;;
+;; Now let's move the camera further back one unit
+;;
+;;}
+
+(w/translate! cam :z 1)
+
+;;{
+;;
+;; We see that the two cubes "move" (although only the camera actually
+;; moves here.
+;; Rotations are also possible of course.
+;;
+;;}
+
+(w/rotate! cam :y 30 :z 20)
+
+;;{
+;;
+;; We know that the red cube is at `[-2.5 0 -5]`, we can
+;; orient the camera towards given coordinates using the
+;; following function.
+;;
+;;}
+
+(w/camera-orient! cam [-2.5 0 -5])
+;; XXX: shouldn't it be pointing to the red cube ?
+
+

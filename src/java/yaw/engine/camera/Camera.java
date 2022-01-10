@@ -170,7 +170,7 @@ public class Camera {
      * @param y y
      * @param z z
      */
-    public void rotate(float x, float y, float z) {
+    public void rotateXYZ(float x, float y, float z) {
         orientation.add(x, y, z);
     }
 
@@ -228,61 +228,6 @@ public class Camera {
     public void setFieldOfView(float fov) {
         this.fieldOfView = fov;
     }
-
-
-
-    /*
-    Adding ability to move the camera using the Keyboard arrows
-     */
-
-
-    public void move() {
-
-        if(Input.isKeyDown(GLFW_KEY_UP)){
-            this.rotate(1f,0,0);
-            System.out.println(this.getOrientation());}
-        if(Input.isKeyDown(GLFW_KEY_DOWN))
-            this.rotate(-1f,0,0);
-        if(Input.isKeyDown(GLFW_KEY_LEFT))
-            this.rotate(0,1,0);
-        if(Input.isKeyDown(GLFW_KEY_RIGHT))
-            this.rotate(0f,-1f,0);
-        if(Input.isKeyDown(GLFW_KEY_W)){
-            float xO = getOrientation().x;
-            float yO = getOrientation().y;
-            float zO = getOrientation().z;
-
-            float xP = getPosition().x;
-            float yP = getPosition().y;
-            float zP = getPosition().z;
-
-            int signX=1;
-            int signY=1;
-            int signZ=1;
-            if(xO < xP){
-                signX=-1;
-            }
-            if(yO < yP){
-                signX=-1;
-            }
-
-            if(zO < zP){
-                signZ=-1;
-            }
-            this.setOrientation(0,0,45);
-
-        }
-        if(Input.isKeyDown(GLFW_KEY_A))
-            this.translate(-0.1f,0,0);
-        if(Input.isKeyDown(GLFW_KEY_S))
-            this.translate(0,0,0.1f);
-        if(Input.isKeyDown(GLFW_KEY_D))
-            this.translate(0.1f,0,0);
-        if(Input.isKeyDown(GLFW_KEY_BACKSPACE)){
-            this.setPosition(0,0,5);
-            this.setOrientation(0,0,0);
-        }
-
-    }
+    
 
 }
