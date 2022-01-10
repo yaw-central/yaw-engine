@@ -79,13 +79,13 @@ framework: Yaw-reactive.
 
 (defn create-item!
   "Create an item in the `world` with the
-  specified id, position, mesh"
-  [world id & {:keys [position scale mesh]
-               :or   {position [0 0 2]
-                      scale    1
-                      mesh     nil}}]         ;;error here
-  (.createItemObject world id (position 0) (position 1) (position 2) scale (or mesh
-                                                                               (create-mesh! world))))
+  specified `id` (optional),  `mesh` and `properties` (
+   a map with e.g. `:position` vector, etc.}"
+  ([world mesh props] (create-item! world (gensym "item-") mesh props))
+  ([world id mesh props]
+   (let [[px py pz] (get props :position [0 0 0])
+         scale (get props :scale 1)]
+     (.createItemObject world (str id) px py pz scale mesh))))
 
 (comment
 (defn create-mesh!

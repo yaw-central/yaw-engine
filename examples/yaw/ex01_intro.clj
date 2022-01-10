@@ -208,6 +208,7 @@
 ;;
 ;;}
 
-(def blue-cube-1 
+(def cube-1 (w/create-item! world blue-cube {:position [0 0 -5]}))
+
 
 
