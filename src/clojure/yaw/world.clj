@@ -87,6 +87,32 @@ framework: Yaw-reactive.
          scale (get props :scale 1)]
      (.createItemObject world (str id) px py pz scale mesh))))
 
+
+(defn rotate!
+  "Applies a rotation to the specified `item`, with
+  rotation angles expressed through keyword arguments
+  `:x`, `:y` and `:z`"
+  [item & {:keys [x y z]
+           :or   {x 0
+                  y 0
+                  z 0}}]
+  (.rotateXYZ item x y z))
+
+(defn translate!
+  "Applies a translation to the specified `item`, with
+  translation vector expressed through keyword arguments
+  `:x`, `:y` and `:z`"
+  [item & {:keys [x y z]
+           :or   {x 0
+                  y 0
+                  z 0}}]
+  (.translate item x y z))
+
+
+;;; =========================
+;;; Old API below
+
+
 (comment
 (defn create-mesh!
   "Create an item in the `world` with the  specified id, position, mesh"
@@ -457,17 +483,6 @@ framework: Yaw-reactive.
   (.removeGroup world group))
 
 ;; Item/camera Manipulation ------------------------------------------------
-(defn rotate! [item & {:keys [x y z]
-                       :or   {x 0
-                              y 0
-                              z 0}}]
-  (.rotateXYZ item x y z))
-
-(defn translate! [item & {:keys [x y z]
-                          :or   {x 0
-                                 y 0
-                                 z 0}}]
-  (.translate item x y z))
 
 
 )

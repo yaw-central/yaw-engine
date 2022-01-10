@@ -107,7 +107,7 @@
                            :d [-1  1  1]
                            :e [ 1  1 -1]
                            :f [ 1 -1 -1]
-                           :g [-1  1 -1]
+                           :g [-1 -1 -1]
                            :h [-1  1 -1]
                            }
                 :triangles {:t1 [:a :c :b]
@@ -210,5 +210,42 @@
 
 (def cube-1 (w/create-item! world blue-cube {:position [0 0 -5]}))
 
+;;{
+;; The call to this function is of the form:
+;;
+;;     (create-item! <world> <mesh> <props>)
+;;
+;; with `<props>` a map of properties, in particular the property
+;; `:location` taking a 3-dimensional vector. In the example,
+;; the blue cube is put at the origin of the `world` and translated
+;; in the z coordinate (the depth) at 5 units.
+;; (if we do not do that, then the world window will be entirely blue,
+;; because the default camera is already at the origin).
+;;
+;;}
 
+;;{
+;; It is possible to apply transformations to items, using
+;; e.g. the following functions;
+;;}
 
+(w/rotate! cube-1 :y 20)
+
+;;{
+;;
+;; for rotation we can specify the rotation angle (in degrees) for
+;; the three axes (`:x`, `:y`, `:z`), defaulting to 0
+;;
+;;}
+
+(w/translate! cube-1 :z -1)
+
+;;{
+;;
+;; for translation what we specify the translation along each axis
+;; (also defaulting to 0)
+;;
+;; Do not hesitate to call these functions multiple times, changing the
+;; specified values to see what happens.
+;;
+;;}
