@@ -229,7 +229,7 @@
 ;; e.g. the following functions;
 ;;}
 
-(w/rotate! cube-1 :y 20)
+(w/rotate! cube-1 :y 30)
 
 ;;{
 ;;
@@ -292,6 +292,11 @@
 (def red-cube (w/create-mesh! world cube-geom solid-red))
 
 (def cube-2 (w/create-item! world red-cube {:position [-2.5 0 -5]}))
+
+(def green-cube (w/create-mesh! world cube-geom solid-green))
+
+(def cube-3 (w/create-item! world green-cube {:position [3 0 -6]}))
+
 
 ;;{
 ;;
@@ -407,11 +412,16 @@
 
 (def plight (w/point-light! world 0 {:position [0.5 -1.5 -6]}))
 
+;; Intensity can be beyond 1.0   (XXX: ?)
 (w/intensity! plight 3.0)
 
 ;; To see something it is better to reduce the direction light
 (w/intensity! sun 0.5)
 
+;; Let's finalize our 3D scene...
+(w/rotate! cube-3 :z 30)
+(w/rotate! cube-2 :y 30)
+(w/rotate! cube-1 :x 30)
 
 ;;{
 ;;
@@ -419,3 +429,4 @@
 ;; an introduction. In the next tutorial we will discover other basic
 ;; geometries, and install an *interactive loop* to play with the Yaw engine.
 ;;}
+
