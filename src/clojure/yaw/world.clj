@@ -171,6 +171,33 @@ according to the specified vector `dir` [dx dy dz]"
       (.setPointLight (.getSceneLight world) plight ref)
       plight)))
 
+
+;;; ==========================================================================
+;;; Callbacks
+;;; ==========================================================================
+
+(defn register-update-callback!
+  "Registers the function `cb` as a frame update callback for the
+  specified `world`.
+  
+  The `cb` function takes a single parameter, the `delta-time` in
+  millisecond (a double floating point number) the time difference
+  between the current and the previous update.  
+
+  Note that there is at most one frame update callback registered,
+   more complex mechanism (e.g. event systems) must be built on the
+  clojure side using this single entry point."
+  [world cb]
+  (.registerUpdateCallback world
+   (proxy [yaw.engine.UpdateCallback] []
+       (update [delta-time]
+               (cb delta-time)))))
+
+(defn unregister-update-callback!
+  "Unregister the frame update callback for the specified `world`."
+  [world]
+  (.registerUpdateCallback world nil))
+
 ;;; =========================
 ;;; Old API below
 

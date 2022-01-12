@@ -1,7 +1,9 @@
 (ns yaw.ex01-intro
-  "A short introduction to the Yaw 3D engine and
-  its basic functionalities.
-  (see the comments)"
+  "This is part 1 of the tutorial series demonstrating
+  the basic functionalities of the Yaw engine.
+
+  This first example gives a concise introduction to most basic
+   features of the engine, and produces a simple, static 3D scene."
 
   (:require
     ;;; The main user-facing namespace is `yaw.world`
