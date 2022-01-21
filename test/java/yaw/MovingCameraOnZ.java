@@ -81,7 +81,7 @@ public class MovingCameraOnZ implements UpdateCallback {
         }
 
         world.getCamera().translate(-15, 15, -10); // placing camera to have a side vue of the world
-        world.getCamera().rotate(-45,-90,0); //rotate the camera to see the center of the world
+        world.getCamera().rotateXYZ(-45,-90,0); //rotate the camera to see the center of the world
         MovingCameraOnZ movingCamera = new MovingCameraOnZ(world.getCamera());
 
 

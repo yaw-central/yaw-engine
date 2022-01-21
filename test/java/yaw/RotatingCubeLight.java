@@ -56,7 +56,7 @@ public class RotatingCubeLight implements UpdateCallback {
 
         World world = new World(0, 0, 800, 600);
         world.getCamera().setPosition(0,5,5);
-        world.getCamera().rotate(-45,0,0);
+        world.getCamera().rotateXYZ(-45,0,0);
 
         //world.getSceneLight().getSpotTable()[0] = new SpotLight(0, 255, 0, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -5, 10f);
         world.getSceneLight().getSpotTable()[1] = new SpotLight(0, 255, 0, 0f, -0.3f,-3f, 1, 0, 0.75f, 0, 0, -5, -5, 3);

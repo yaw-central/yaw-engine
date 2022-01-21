@@ -231,7 +231,7 @@
 ;; e.g. the following functions;
 ;;}
 
-(w/rotate! cube-1 :y 30)
+(w/rotate! cube-1 :z 40)
 
 ;;{
 ;;
@@ -316,7 +316,7 @@
 ;;
 ;;}
 
-(w/rotate! cam :y 30 :z 20)
+(w/rotate! cam :y -30 :z -20)
 
 ;;{
 ;;

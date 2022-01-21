@@ -54,7 +54,7 @@ public class DifferentLights implements UpdateCallback {
 
         World world = new World(0, 0, 800, 600);
         world.getCamera().setPosition(0,1,0);
-        world.getCamera().rotate(0,10,0);
+        world.getCamera().rotateXYZ(0,10,0);
 
         //world.getSceneLight().getSpotTable()[0] = new SpotLight(0, 255, 0, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -5, 10f);
         world.getSceneLight().getSpotTable()[1] = new SpotLight(0, 255, 0, 0.2f, 0f,0f, 1, 0, 0.75f, 0, 0, 0, -5, 3);

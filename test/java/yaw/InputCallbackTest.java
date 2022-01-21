@@ -36,7 +36,7 @@ public class InputCallbackTest implements InputCallback {
         if(key == GLFW_KEY_UP){
             camera.translate(0,0,0.1f);
         } else if (key == GLFW_KEY_LEFT) {
-            camera.rotate(1f, 0, 0);
+            camera.rotateXYZ(1f, 0, 0);
         }
 
 

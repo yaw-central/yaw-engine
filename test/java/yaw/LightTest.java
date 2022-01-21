@@ -27,7 +27,7 @@ public class LightTest {
 
 
         world.getCamera().translate(-5, 0, 0);
-        world.getCamera().rotate(0,90,0);
+        world.getCamera().rotateXYZ(0,90,0);
 
 
         /* Creating Light for Our World
@@ -65,7 +65,7 @@ public class LightTest {
             float z = world.getCamera().getPosition().z;
             float tmp = (float)Math.toRadians((double)angle);
             world.getCamera().setPosition((float)(5*Math.cos(tmp)),world.getCamera().getPosition().y, (float)(5*Math.sin(tmp)));
-            world.getCamera().rotate(0,-1f,0);
+            world.getCamera().rotateXYZ(0,-1f,0);
             Thread.sleep(25); /* Allows to see the block (cube) move at constant rate. */
         }
     }

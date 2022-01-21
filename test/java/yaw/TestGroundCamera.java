@@ -64,7 +64,7 @@ public class TestGroundCamera implements UpdateCallback {
                 item.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         }
         world.getCamera().translate(0.f, -10, 0);
-        world.getCamera().rotate(90,0,0);
+        world.getCamera().rotateXYZ(90,0,0);
         TestGroundCamera rCube = new TestGroundCamera();
 
         //world.registerUpdateCallback(rCube);
