@@ -3,7 +3,9 @@
 const int MAX_POINT_LIGHTS = 5;
 const int MAX_SPOT_LIGHTS = 5;
 
+
 in vec2 outTexCoord;
+
 in vec3 vNorm;
 in vec3 vPos;
 
@@ -125,6 +127,7 @@ vec4 calcBasecolor(Material pMaterial, vec2 text_coord)
 
 void main()
 {
+
     vec4 basecolor = calcBasecolor(material, outTexCoord);
 
     vec4 totalLight = vec4(ambientLight, 1.0);
@@ -138,6 +141,8 @@ void main()
         }
     }
 
+
+
     for (int i=0; i<MAX_SPOT_LIGHTS; i++)
     {
         if ( spotLights[i].pl.intensity > 0 )
@@ -146,4 +151,5 @@ void main()
         }
     }
     fragColor = vec4((basecolor * totalLight).xyz,1);
+
 }

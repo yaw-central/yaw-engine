@@ -191,6 +191,16 @@ public class Camera {
      *
      * @return viewMatrix
      */
+    public Matrix4f setupViewMatrixNew() {
+        Matrix4f viewMatrix = new Matrix4f().identity();
+        viewMatrix.translate(position);
+        viewMatrix.rotate((float) Math.toRadians(orientation.x), new Vector3f(1, 0, 0));
+        viewMatrix.rotate((float) Math.toRadians(orientation.y), new Vector3f(0, 1, 0));
+        viewMatrix.rotate((float) Math.toRadians(orientation.z), new Vector3f(0, 0, 1));
+        return viewMatrix.invert();
+
+    }
+
     public Matrix4f setupViewMatrix() {
         Matrix4f viewMatrix = new Matrix4f().identity();
         //viewMatrix.rotateX((float) Math.toRadians(-orientation.x)).rotateY((float) Math.toRadians(-orientation.y)).rotateZ((float) Math.toRadians(-orientation.z));
@@ -217,8 +227,18 @@ public class Camera {
         return zNear;
     }
 
+    public void setzNear(float zNear) {
+        this.zNear = zNear;
+        updateCameraMat();
+    }
+
     public float getzFar() {
         return zFar;
+    }
+
+    public void setzFar(float zFar) {
+        this.zFar = zFar;
+        updateCameraMat();
     }
 
     public float getFieldOfView() {
@@ -227,6 +247,7 @@ public class Camera {
 
     public void setFieldOfView(float fov) {
         this.fieldOfView = fov;
+        updateCameraMat();
     }
 
 
