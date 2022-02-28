@@ -152,8 +152,9 @@ public class Mesh {
         pShaderProgram.setUniform("material", mMaterial);
         for (ItemObject lItem : pItems) {
             //can be moved to Item class
-            Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
-            pShaderProgram.setUniform("modelViewMatrix", modelViewMat);
+            //Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
+
+            pShaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
             if (mDrawingStrategy != null) {
                 //delegate the drawing
                 mDrawingStrategy.drawMesh(this);
@@ -212,6 +213,9 @@ public class Mesh {
 
     public void initRender() {
 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
         Texture texture = mMaterial != null ? mMaterial.getTexture() : null;
         if (texture != null) {
             //load the texture if needed
@@ -241,7 +245,7 @@ public class Mesh {
         glDisableVertexAttribArray(2);
         glBindVertexArray(0);
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+        //glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     public float[] getVertices() {

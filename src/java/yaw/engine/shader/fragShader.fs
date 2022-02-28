@@ -8,6 +8,7 @@ in vec2 outTexCoord;
 
 in vec3 vNorm;
 in vec3 vPos;
+in vec4 vDirectionalShadowSpace;
 
 out vec4 fragColor;
 
@@ -52,7 +53,24 @@ uniform Material material;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform DirectionalLight directionalLight;
+uniform sampler2D shadowMapSampler;
 uniform vec3 camera_pos;
+
+float calcShadow(vec4 lightSpace)
+{
+    // perform perspective divide
+    vec3 projCoords = lightSpace.xyz / lightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(shadowMapSampler, projCoords.xy).r;
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+
+    return shadow;
+}
 
 vec4 calcLightcolor(vec3 light_color, float light_intensity, vec3 position, vec3 to_light_dir, vec3 normal)
 {
@@ -109,8 +127,10 @@ vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal)
 
 vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
 {
-    return calcLightcolor(light.color, light.intensity, position, normalize(-light.direction), normal);
+    float shadow = calcShadow(vDirectionalShadowSpace);
+    return (shadow) * calcLightcolor(light.color, light.intensity, position, normalize(-light.direction), normal);
 }
+
 vec4 calcBasecolor(Material pMaterial, vec2 text_coord)
 {
     vec4 basecolor;

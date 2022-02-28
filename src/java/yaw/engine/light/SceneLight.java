@@ -1,5 +1,6 @@
 package yaw.engine.light;
 
+import yaw.engine.SceneVertex;
 import yaw.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -43,13 +44,18 @@ public class SceneLight {
         this.mSpotTable[pos] = spot;
     }
 
+
+
+    public void renderShadowMap(SceneVertex pSceneVertex) {
+        mSun.renderShadowMap(pSceneVertex);
+    }
+
     /**
      * Set to the render the different light
      *
      * @param sh         shaderProgram
      * @param viewMatrix viewMatrix
      */
-
     public void render(ShaderProgram sh, Matrix4f viewMatrix) {
         sh.setUniform("ambientLight", mAmbient);
         sh.setUniform("specularPower", mSpecularPower);
@@ -98,6 +104,8 @@ public class SceneLight {
         dir.mul(viewMatrix);
         currDirLight.mDirection = new Vector3f(dir.x, dir.y, dir.z);
         sh.setUniform("directionalLight", currDirLight);
+
+        mSun.bindShadowMap(sh);
     }
 
     /**
@@ -163,4 +171,5 @@ public class SceneLight {
     public void setAmbient(AmbientLight ambient) {
         this.mAmbient = ambient;
     }
+
 }
