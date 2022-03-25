@@ -104,6 +104,7 @@ public class Renderer {
         glDepthFunc(GL_GREATER);       /* Specify the value used for depth buffer comparisons. */
         glClearDepth(pCamera.getzFar() * -1); /* GlClearDepth specifies the depth value used by glClear to clear the depth buffer.
                                                    The values ​​specified by glClearDepth are set to range [0.1].*/
+
         glDisable(GL_BLEND);
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);

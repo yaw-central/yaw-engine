@@ -48,7 +48,7 @@ public class ShadowMap {
     }
 
     public ShadowMap() {
-        this(1024, 1024);
+        this(2048, 2048);
     }
 
     public void init() throws Exception {
@@ -71,8 +71,10 @@ public class ShadowMap {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, (FloatBuffer) null);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        float borderColor[] = { 0,0,0,0 };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
@@ -97,6 +99,7 @@ public class ShadowMap {
         glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glClear(GL_DEPTH_BUFFER_BIT);
+        //glCullFace(GL_FRONT);
 
         mShaderProgram.bind();
 

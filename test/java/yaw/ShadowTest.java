@@ -28,7 +28,7 @@ public class ShadowTest implements UpdateCallback {
         world.getCamera().setPosition(0,6,5);
         world.getCamera().rotateXYZ(-45, 0,0);
 
-        world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(0,-1,0)));
+        world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
         world.getSceneLight().getSun().setShadowMap(new ShadowMap());
         world.getSceneLight().getAmbientLight().setIntensity(0.3f);
 
