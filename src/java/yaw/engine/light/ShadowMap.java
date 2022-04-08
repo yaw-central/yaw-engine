@@ -99,12 +99,12 @@ public class ShadowMap {
         glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glClear(GL_DEPTH_BUFFER_BIT);
-        //glCullFace(GL_FRONT);
+        glCullFace(GL_FRONT);
 
         mShaderProgram.bind();
 
         projection = new Matrix4f().identity().ortho(-10f, 10f, -10, 10, -10, 10);
-        view = new Matrix4f().identity().lookAt(light.mDirection, new Vector3f(0, 0, 0.00001f), new Vector3f(0,1,0));
+        view = new Matrix4f().identity().lookAt(new Vector3f(0, 0, 0.00001f), light.mDirection, new Vector3f(0,1,0));
 
         /* Set the camera to render. */
         mShaderProgram.setUniform("projectionMatrix", projection);

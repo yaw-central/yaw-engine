@@ -71,10 +71,8 @@ float calcShadow(vec4 lightSpace)
 
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMapSampler, 0);
-    for(int x = -1; x <= 1; ++x)
-    {
-        for(int y = -1; y <= 1; ++y)
-        {
+    for(int x = -1; x <= 1; ++x) {
+        for(int y = -1; y <= 1; ++y) {
             float pcfDepth = texture(shadowMapSampler, projCoords.xy + vec2(x, y) * texelSize).r;
             shadow += currentDepth > pcfDepth ? 1.0 : 0.0;
         }
@@ -140,7 +138,7 @@ vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal)
 vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
 {
     float shadow = calcShadow(vDirectionalShadowSpace);
-    return (shadow) * calcLightcolor(light.color, light.intensity, position, normalize(-light.direction), normal);
+    return (1.0 - shadow) * calcLightcolor(light.color, light.intensity, position, normalize(-light.direction), normal);
 }
 
 vec4 calcBasecolor(Material pMaterial, vec2 text_coord)

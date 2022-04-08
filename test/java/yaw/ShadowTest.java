@@ -25,6 +25,7 @@ public class ShadowTest implements UpdateCallback {
     public ShadowTest() {
 
         world = new World(0, 0, 800, 600);
+        //world.getCamera().lookAt(new Vector3f(2,6,5), new Vector3f(0,2,0), new Vector3f(0,1,0));
         world.getCamera().setPosition(0,6,5);
         world.getCamera().rotateXYZ(-45, 0,0);
 

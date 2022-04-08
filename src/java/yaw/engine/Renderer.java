@@ -89,9 +89,9 @@ public class Renderer {
         mShaderProgram.bind();
 
         /* Set the camera to render. */
-        mShaderProgram.setUniform("projectionMatrix", pCamera.getCameraMat());
+        mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
         mShaderProgram.setUniform("texture_sampler", 0);
-        mShaderProgram.setUniform("camera_pos", pCamera.position);
+        mShaderProgram.setUniform("camera_pos", pCamera.getPosition());
         Matrix4f viewMat = pCamera.setupViewMatrix();
         mShaderProgram.setUniform("viewMatrix", viewMat);
 
@@ -101,8 +101,8 @@ public class Renderer {
 
         glDepthMask(true);        /* Enable or disable writing to the depth buffer. */
         glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_GREATER);       /* Specify the value used for depth buffer comparisons. */
-        glClearDepth(pCamera.getzFar() * -1); /* GlClearDepth specifies the depth value used by glClear to clear the depth buffer.
+        glDepthFunc(GL_LESS);       /* Specify the value used for depth buffer comparisons. */
+        glClearDepth(1); /* GlClearDepth specifies the depth value used by glClear to clear the depth buffer.
                                                    The values ​​specified by glClearDepth are set to range [0.1].*/
 
         glDisable(GL_BLEND);
