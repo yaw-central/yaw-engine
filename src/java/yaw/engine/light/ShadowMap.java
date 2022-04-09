@@ -3,6 +3,7 @@ package yaw.engine.light;
 import clojure.core.Vec;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import yaw.engine.SceneVertex;
 import yaw.engine.meshs.Material;
 import yaw.engine.shader.ShaderProgram;
@@ -36,6 +37,18 @@ public class ShadowMap {
     private int framebuffer;
 
     private int depthMap;
+
+    /**
+     * Coverage settings for shadow map
+     */
+    private Vector3f center = new Vector3f();
+    private float left = -10;
+    private float right = 10;
+    private float bottom = -10;
+    private float top = 10;
+    private float zNear = -10;
+    private float zFar = 10;
+
 
     private Matrix4f projection;
     private Matrix4f view;
@@ -103,8 +116,8 @@ public class ShadowMap {
 
         mShaderProgram.bind();
 
-        projection = new Matrix4f().identity().ortho(-10f, 10f, -10, 10, -10, 10);
-        view = new Matrix4f().identity().lookAt(new Vector3f(0, 0, 0.00001f), light.mDirection, new Vector3f(0,1,0));
+        projection = new Matrix4f().identity().ortho(left, right, bottom, top, zNear, zFar);
+        view = new Matrix4f().identity().lookAt(center, light.mDirection, new Vector3f(0,1,0));
 
         /* Set the camera to render. */
         mShaderProgram.setUniform("projectionMatrix", projection);
@@ -129,7 +142,67 @@ public class ShadowMap {
 
     public void cleanUp() {
 
+        glDeleteProgram(mShaderProgram.getId());
+
+        glDeleteFramebuffers(framebuffer);
+
+        glDeleteTextures(depthMap);
+
     }
 
+    public Vector3f getCenter() {
+        return center;
+    }
 
+    public void setCenter(Vector3f center) {
+        this.center = center;
+    }
+
+    public float getLeft() {
+        return left;
+    }
+
+    public void setLeft(float left) {
+        this.left = left;
+    }
+
+    public float getRight() {
+        return right;
+    }
+
+    public void setRight(float right) {
+        this.right = right;
+    }
+
+    public float getBottom() {
+        return bottom;
+    }
+
+    public void setBottom(float bottom) {
+        this.bottom = bottom;
+    }
+
+    public float getTop() {
+        return top;
+    }
+
+    public void setTop(float top) {
+        this.top = top;
+    }
+
+    public float getzNear() {
+        return zNear;
+    }
+
+    public void setzNear(float zNear) {
+        this.zNear = zNear;
+    }
+
+    public float getzFar() {
+        return zFar;
+    }
+
+    public void setzFar(float zFar) {
+        this.zFar = zFar;
+    }
 }
