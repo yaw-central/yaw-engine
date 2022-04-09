@@ -123,7 +123,7 @@ public class ShadowMap {
         mShaderProgram.setUniform("projectionMatrix", projection);
         mShaderProgram.setUniform("viewMatrix", view);
 
-        pSceneVertex.draw(mShaderProgram, new Matrix4f().identity());
+        pSceneVertex.draw(mShaderProgram);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

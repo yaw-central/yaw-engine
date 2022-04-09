@@ -120,7 +120,7 @@ public class Renderer {
 
 
         /* Rendering of the object. */
-        pSceneVertex.draw(mShaderProgram, new Matrix4f().identity());
+        pSceneVertex.draw(mShaderProgram);
         /* Cleans all services. */
         mShaderProgram.unbind();
         if (pSkybox != null) {

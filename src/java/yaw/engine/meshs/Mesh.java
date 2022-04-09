@@ -141,9 +141,8 @@ public class Mesh {
      *
      * @param pItems         item
      * @param pShaderProgram shaderProgram
-     * @param pViewMatrix    viewMatrix
      */
-    public void render(List<ItemObject> pItems, ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
+    public void render(List<ItemObject> pItems, ShaderProgram pShaderProgram) {
 
         //initRender
         initRender();
