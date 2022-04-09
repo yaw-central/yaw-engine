@@ -141,7 +141,7 @@ public class Skybox {
 
         shaderProg.setUniform("projectionMatrix", cam.getProjectionMat());
 
-        Matrix4f mat = new Matrix4f(cam.setupViewMatrix());
+        Matrix4f mat = new Matrix4f(cam.getViewMat());
         // we do not want translation to be applied to the sky box. so we fixed the value to 0
         mat.m30(0);
         mat.m31(0);

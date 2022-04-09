@@ -38,7 +38,7 @@ public class RayCaster {
 
         Matrix4f inv_projection = projection.invert();
 
-        Matrix4f view = c.setupViewMatrix();
+        Matrix4f view = c.getViewMat();
 
 
         Vector4f eyeC=new Vector4f();

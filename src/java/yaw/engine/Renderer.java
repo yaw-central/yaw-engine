@@ -73,7 +73,7 @@ public class Renderer {
 
         //Preparation of the camera
         if (isResized || pSceneVertex.isItemAdded()) {
-            pCamera.updateCameraMat();
+            pCamera.updateProjectionMat();
         }
 
         //Debug
@@ -92,7 +92,7 @@ public class Renderer {
         mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
         mShaderProgram.setUniform("texture_sampler", 0);
         mShaderProgram.setUniform("camera_pos", pCamera.getPosition());
-        Matrix4f viewMat = pCamera.setupViewMatrix();
+        Matrix4f viewMat = pCamera.getViewMat();
         mShaderProgram.setUniform("viewMatrix", viewMat);
 
         /* Enable the option needed to render.*/

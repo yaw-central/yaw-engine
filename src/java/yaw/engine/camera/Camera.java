@@ -1,6 +1,5 @@
 package yaw.engine.camera;
 
-import org.joml.Quaternionf;
 import yaw.engine.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -12,9 +11,8 @@ import org.joml.Vector3f;
  */
 public class Camera {
 
-    private Vector3f position; /* Position of the camera (the camera is represented by a point in space). */
-    private Quaternionf orientation;/* Sets the position of the point fixed by the camera. */
-    private Matrix4f perspectiveMat;
+    private Matrix4f projectionMat;
+    private Matrix4f cameraMat;
     /* Angle of the field of view
        A small angle gives a zoom effect.
        Like a zoom on a pair of binoculars.. */
@@ -38,10 +36,9 @@ public class Camera {
         this.fieldOfView = fieldOfView;
         this.zFar = zFar;
         this.zNear = zNear;
-        this.position = new Vector3f(0f, 0f, 0f);
-        this.orientation = new Quaternionf().identity();
+        cameraMat = new Matrix4f().identity();
 
-        updateCameraMat();
+        updateProjectionMat();
     }
 
     public Camera(float zNear, float zFar) {
@@ -52,9 +49,44 @@ public class Camera {
         this(0.01f, 1000f);
     }
 
-
+    /**
+     * Get the Matrix that transforms from camera space to screenspace
+     *
+     * @return projection matrix
+     */
     public Matrix4f getProjectionMat() {
-        return perspectiveMat;
+        return projectionMat;
+    }
+
+    /**
+     * Updates the projection matrix of the scene.
+     */
+    public void updateProjectionMat() {
+        projectionMat = new Matrix4f().perspective(fieldOfView, (float) Window.aspectRatio(), zNear, zFar);
+    }
+
+
+    /**
+     * Get the Matrix that transforms the camera space into world space
+     *
+     * @return camera matrix
+     */
+    public Matrix4f getCameraMat() {
+        return cameraMat;
+    }
+
+    /**
+     * Generate the Matrix that transforms from world space to camera space
+     *
+     * @return view matrix
+     */
+    public Matrix4f getViewMat() {
+        return new Matrix4f(cameraMat).invert();
+    }
+
+
+    public Vector3f getPosition() {
+        return cameraMat.getTranslation(new Vector3f());
     }
 
     /**
@@ -65,101 +97,68 @@ public class Camera {
      * @param z coordinate Z of the camera
      */
     public void setPosition(float x, float y, float z) {
-        this.position.x = x;
-        this.position.y = y;
-        this.position.z = z;
-    }
-
-    public Vector3f getPosition() {
-        return position;
+        setPosition(new Vector3f(x, y, z));
     }
 
     public void setPosition(Vector3f pos) {
-        this.position = pos;
+        translate(pos.sub(getPosition()));
     }
 
     /**
-     * Changes the orientation of the camera.
-     *
-     * @param x coordinate X of the camera
-     * @param y coordinate Y of the camera
-     * @param z coordinate Z of the camera
-     */
-    public void setOrientation(float x, float y, float z) {
-        this.orientation.rotationXYZ((float) Math.toRadians(x), (float) Math.toRadians(y), (float) Math.toRadians(z));
-    }
-
-    public Quaternionf getOrientation() {
-        return orientation;
-    }
-
-    public void setOrientation(Quaternionf pos) {
-        this.orientation = pos;
-    }
-
-    /**
-     * Allows to change the place of our object and therefore to make it navigate in our 3D scene.
-     *
-     * @param x x
-     * @param y y
-     * @param z z
-     */
-    public void rotateXYZ(float x, float y, float z) {
-        orientation.rotateXYZ((float) Math.toRadians(x), (float) Math.toRadians(y), (float) Math.toRadians(z));
-    }
-
-    /**
-     * Changes the size of the object to adjust the 3D scene.
+     * Adds vector to the position of the camera.
      *
      * @param x x
      * @param y y
      * @param z z
      */
     public void translate(float x, float y, float z) {
-        position.add(x, y, z);
+        translate(new Vector3f(x, y, z));
+    }
+
+    public void translate(Vector3f t) {
+        cameraMat.translate(t);
     }
 
 
+    /**
+     * Changes the camera to look at a target from a position
+     *
+     * @param eye position of the camera
+     * @param target position to look at
+     * @param up the direction of the cameras up vector
+     */
     public void lookAt(Vector3f eye, Vector3f target, Vector3f up) {
 
-        System.out.println(new Vector3f(target).sub(eye));
-
-        orientation.lookAlong(new Vector3f(target).sub(eye), up);
-
-        eye.get(position);
+        cameraMat.lookAt(eye, target, up).invert();
 
     }
 
+
+    public Vector3f getRotation() {
+        return cameraMat.getEulerAnglesXYZ(new Vector3f());
+    }
+
+    public void setRotation(float x, float y, float z) {
+        cameraMat.setRotationXYZ(x, y, z);
+    }
+
+    public void setRotation(Vector3f rot) {
+        setRotation(rot.x, rot.y, rot.z);
+    }
+
     /**
-     * Generate the Matrix for the camera position
+     * Rotates the camera along the x y and z axes
      *
-     * @return viewMatrix
+     * @param x x
+     * @param y y
+     * @param z z
      */
-    public Matrix4f setupViewMatrix() {
-        Matrix4f viewMatrix = new Matrix4f().identity();
-        viewMatrix.translate(position);
-        viewMatrix.rotate(orientation);
-        return viewMatrix.invert();
+    public void rotateXYZ(float x, float y, float z) {
+        cameraMat.rotateXYZ((float) Math.toRadians(x), (float) Math.toRadians(y), (float) Math.toRadians(z));
     }
 
-    /*
-    public Matrix4f setupViewMatrix() {
-        Matrix4f viewMatrix = new Matrix4f().identity();
-        //viewMatrix.rotateX((float) Math.toRadians(-orientation.x)).rotateY((float) Math.toRadians(-orientation.y)).rotateZ((float) Math.toRadians(-orientation.z));
-        viewMatrix.rotate((float) Math.toRadians(-orientation.x), new Vector3f(1, 0, 0));
-        viewMatrix.rotate((float) Math.toRadians(-orientation.y), new Vector3f(0, 1, 0));
-        viewMatrix.rotate((float) Math.toRadians(-orientation.z), new Vector3f(0, 0, 1));
-        Vector3f negativeCameraPos = new Vector3f(-position.x, -position.y, -position.z);
-        viewMatrix.translate(negativeCameraPos);
-        return viewMatrix;
-    }
-    */
-
-    /**
-     * Updates the perspective of the scene.
-     */
-    public void updateCameraMat() {
-        perspectiveMat = new Matrix4f().perspective(fieldOfView, (float) Window.aspectRatio(), zNear, zFar);
+    public void rotateXYZ(Vector3f rot) {
+        rotateXYZ(rot.x, rot.y, rot.z);
     }
 
 
@@ -169,7 +168,7 @@ public class Camera {
 
     public void setzNear(float zNear) {
         this.zNear = zNear;
-        updateCameraMat();
+        updateProjectionMat();
     }
 
     public float getzFar() {
@@ -178,7 +177,7 @@ public class Camera {
 
     public void setzFar(float zFar) {
         this.zFar = zFar;
-        updateCameraMat();
+        updateProjectionMat();
     }
 
     public float getFieldOfView() {
@@ -187,7 +186,7 @@ public class Camera {
 
     public void setFieldOfView(float fov) {
         this.fieldOfView = fov;
-        updateCameraMat();
+        updateProjectionMat();
     }
 
 
