@@ -1,6 +1,8 @@
 package yaw.engine.light;
 
 import org.joml.Vector3f;
+import yaw.engine.SceneVertex;
+import yaw.engine.shader.ShaderProgram;
 
 /**
  * all the objects in the 3D the space are hit by parallel ray lights coming from a specific direction.
@@ -9,6 +11,8 @@ import org.joml.Vector3f;
 
 public class DirectionalLight extends AmbientLight {
     public Vector3f mDirection;
+
+    private ShadowMap mShadowMap;
 
     /**
      * Constructor with the parameters direction and the intensity = 0.
@@ -64,6 +68,18 @@ public class DirectionalLight extends AmbientLight {
         mDirection = new Vector3f(0f,-1f,0f);
     }
 
+    public void renderShadowMap(SceneVertex pSceneVertex) {
+        if (mShadowMap != null) {
+            mShadowMap.render(pSceneVertex, this);
+        }
+    }
+
+    public void bindShadowMap(ShaderProgram shaderProgram) {
+        if (mShadowMap != null) {
+            mShadowMap.bind(shaderProgram);
+        }
+    }
+
     /**
      * getter and setters
      */
@@ -77,6 +93,14 @@ public class DirectionalLight extends AmbientLight {
 	
     public void setDirection(float x,float y,float z){
 	this.mDirection=new Vector3f(x,y,z);
+    }
+
+    public void setShadowMap(ShadowMap shadowMap) {
+        this.mShadowMap = shadowMap;
+    }
+
+    public ShadowMap getShadowMap() {
+        return this.mShadowMap;
     }
 
 }

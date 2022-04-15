@@ -30,10 +30,13 @@ public class Renderer {
 
         /* Binds the code and checks that everything has been done correctly. */
         mShaderProgram.link();
-        /* Initialization of the camera's uniform. */
+
         mShaderProgram.createUniform("projectionMatrix");
-        /* Initialization of the mesh's uniform. */
-        mShaderProgram.createUniform("modelViewMatrix");
+        mShaderProgram.createUniform("viewMatrix");
+        mShaderProgram.createUniform("modelMatrix");
+
+        /* Initialization of the shadow map matrix uniform. */
+        mShaderProgram.createUniform("directionalShadowMatrix");
 
         /* Create uniform for material. */
         mShaderProgram.createMaterialUniform("material");
@@ -45,6 +48,7 @@ public class Renderer {
         mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
         mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
         mShaderProgram.createDirectionalLightUniform("directionalLight");
+        mShaderProgram.createUniform("shadowMapSampler");
     }
 
     /**
@@ -66,24 +70,30 @@ public class Renderer {
      * @param pSkybox      skybox
      */
     public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox) {
-        mShaderProgram.bind();
+
         //Preparation of the camera
         if (isResized || pSceneVertex.isItemAdded()) {
-            pCamera.updateCameraMat();
+            pCamera.updateProjectionMat();
         }
 
         //Debug
-      /*  int err = GL11.GL_NO_ERROR;
+        /*  int err = GL11.GL_NO_ERROR;
         if ((err = GL11.glGetError()) != GL11.GL_NO_ERROR) {
 
             System.out.println(err);
         }*/
 
+        /* Initialization of the window we currently use. */
+        glViewport(0, 0, Window.getWidth(), Window.getHeight());
+
+        mShaderProgram.bind();
+
         /* Set the camera to render. */
-        mShaderProgram.setUniform("projectionMatrix", pCamera.getCameraMat());
+        mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
         mShaderProgram.setUniform("texture_sampler", 0);
-        mShaderProgram.setUniform("camera_pos", pCamera.position);
-        Matrix4f viewMat = pCamera.setupViewMatrix();
+        mShaderProgram.setUniform("camera_pos", pCamera.getPosition());
+        Matrix4f viewMat = pCamera.getViewMat();
+        mShaderProgram.setUniform("viewMatrix", viewMat);
 
         /* Enable the option needed to render.*/
         glEnable(GL_CULL_FACE);
@@ -91,15 +101,16 @@ public class Renderer {
 
         glDepthMask(true);        /* Enable or disable writing to the depth buffer. */
         glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_GREATER);       /* Specify the value used for depth buffer comparisons. */
-        glClearDepth(pCamera.getzFar() * -1); /* GlClearDepth specifies the depth value used by glClear to clear the depth buffer.
+        glDepthFunc(GL_LESS);       /* Specify the value used for depth buffer comparisons. */
+        glClearDepth(1); /* GlClearDepth specifies the depth value used by glClear to clear the depth buffer.
                                                    The values ​​specified by glClearDepth are set to range [0.1].*/
+
         glDisable(GL_BLEND);
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         /* Rendering of the light. */
-        pSceneLight.render(mShaderProgram, viewMat);
+        pSceneLight.render(mShaderProgram, new Matrix4f().identity());
 
         /* Init Objects. */
         pSceneVertex.initMesh();
@@ -109,7 +120,7 @@ public class Renderer {
 
 
         /* Rendering of the object. */
-        pSceneVertex.draw(mShaderProgram, viewMat);
+        pSceneVertex.draw(mShaderProgram);
         /* Cleans all services. */
         mShaderProgram.unbind();
         if (pSkybox != null) {

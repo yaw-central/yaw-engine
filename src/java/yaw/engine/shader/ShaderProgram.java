@@ -407,4 +407,8 @@ public class ShaderProgram {
         setUniform(uniformName + ".cutoff", spotLight.getCutoffAngle());
     }
 
+    public int getId() {
+        return mProgramId;
+    }
+
 }

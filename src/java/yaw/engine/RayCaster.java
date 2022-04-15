@@ -1,7 +1,6 @@
 package yaw.engine;
 
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
@@ -35,11 +34,11 @@ public class RayCaster {
 
         Vector4f ray_clip = new Vector4f(x, y,-1, 1);
 
-        Matrix4f projection = new Matrix4f(c.getCameraMat());
+        Matrix4f projection = new Matrix4f(c.getProjectionMat());
 
         Matrix4f inv_projection = projection.invert();
 
-        Matrix4f view = c.setupViewMatrix();
+        Matrix4f view = c.getViewMat();
 
 
         Vector4f eyeC=new Vector4f();
@@ -71,7 +70,7 @@ public class RayCaster {
         float tmp = RayCaster.distanceHitBoxCamera(h,c);
         v1 = new Vector3f(tmp*v.x,tmp*v.y,tmp*v.z);
         Vector4f V1 = new Vector4f(v1, 1);
-        Vector4f cam = new Vector4f(c.position,1);
+        Vector4f cam = new Vector4f(c.getPosition(),1);
         ArrayList<Vector4f> vertex = HitBox.tabToListVertex(h);
         int[] tabIndexFaces = {0, 1, 2, 3, 1, 2, 6, 5, 0, 3, 7, 4, 1, 5, 4, 0, 2, 3, 7, 6, 4, 5, 6, 7};
 
@@ -95,7 +94,7 @@ public class RayCaster {
     public static float distanceHitBoxCamera(HitBox h, Camera c){
         ArrayList<Vector4f> listVertexboundingBox1 = HitBox.tabToListVertex(h);
         float distance = 0;
-        Vector4f cameraCoords = new Vector4f(c.position, 1);
+        Vector4f cameraCoords = new Vector4f(c.getPosition(), 1);
 
         for(Vector4f v : listVertexboundingBox1){
             float d = cameraCoords.distance(v);
