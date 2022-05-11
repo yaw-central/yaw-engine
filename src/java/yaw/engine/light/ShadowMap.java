@@ -48,6 +48,7 @@ public class ShadowMap {
     private float top = 10;
     private float zNear = -10;
     private float zFar = 10;
+    private float bias = 0.05f;
 
 
     private Matrix4f projection;
@@ -112,9 +113,11 @@ public class ShadowMap {
         glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glClear(GL_DEPTH_BUFFER_BIT);
-        glCullFace(GL_FRONT);
 
         mShaderProgram.bind();
+
+        glDisable(GL_CULL_FACE); // if geometry isn't always enclosed
+        glCullFace(GL_FRONT);
 
         projection = new Matrix4f().identity().ortho(left, right, bottom, top, zNear, zFar);
         view = new Matrix4f().identity().lookAt(center, light.mDirection, new Vector3f(0,1,0));
@@ -127,6 +130,8 @@ public class ShadowMap {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+        glEnable(GL_CULL_FACE);
+
     }
 
     public void bind(ShaderProgram shaderProgram) {
@@ -135,6 +140,8 @@ public class ShadowMap {
         shaderProgram.setUniform("directionalShadowMatrix", new Matrix4f(projection).mul(view));
 
         shaderProgram.setUniform("shadowMapSampler", 1);
+        shaderProgram.setUniform("bias", bias);
+
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, depthMap);
 
@@ -204,5 +211,13 @@ public class ShadowMap {
 
     public void setzFar(float zFar) {
         this.zFar = zFar;
+    }
+
+    public float getBias() {
+        return bias;
+    }
+
+    public void setBias(float bias) {
+        this.bias = bias;
     }
 }

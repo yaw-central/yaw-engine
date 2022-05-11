@@ -49,6 +49,7 @@ public class Renderer {
         mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
         mShaderProgram.createDirectionalLightUniform("directionalLight");
         mShaderProgram.createUniform("shadowMapSampler");
+        mShaderProgram.createUniform("bias");
     }
 
     /**

@@ -1,5 +1,6 @@
 package yaw.engine.meshs;
 
+import org.joml.Vector3f;
 import yaw.engine.items.ItemObject;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.util.LoggerYAW;
@@ -63,6 +64,10 @@ public class Mesh {
         this(pVertices, null, pNormals, pIndices, pVertices.length);
     }
 
+    public Mesh(float[] pVertices, int[] pIndices) {
+        this(pVertices, null, null, pIndices, pVertices.length);
+    }
+
     /**
      * Construct a Mesh with the specified  mVertices, mNormals, mIndices , mTextureCoordinate and mWeight
      *
@@ -75,8 +80,8 @@ public class Mesh {
     public Mesh(float[] pVertices, float[] pTextCoords, float[] pNormals, int[] pIndices, int pWeight) {
         this.mMaterial = new Material();
         this.mVertices = pVertices;
-        this.mNormals = pNormals;
         this.mIndices = pIndices;
+        this.mNormals = pNormals == null ? generateNormals() : pNormals;
         this.mWeight = pWeight;
         this.mTextCoords = pTextCoords == null ? new float[1] : pTextCoords;
         this.mOptionalAttributes = new HashMap<>();
@@ -159,6 +164,7 @@ public class Mesh {
                 mDrawingStrategy.drawMesh(this);
             } else {
                 LoggerYAW.getLogger().severe("No drawing strategy has been set for the mesh");
+                throw new RuntimeException("No drawing strategy has been set for the mesh");
             }
 
         }
@@ -245,6 +251,47 @@ public class Mesh {
         glBindVertexArray(0);
 
         //glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    private Vector3f getVec(float[] arr, int i) {
+        return new Vector3f(arr[i], arr[i+1], arr[i+2]);
+    }
+
+    private void setVec(float[] arr, int i, Vector3f vec) {
+        arr[i] = vec.x;
+        arr[i+1] = vec.y;
+        arr[i+2] = vec.z;
+    }
+
+    public float[] generateNormals() {
+        float[] normals = new float[mVertices.length];
+
+        for(int i = 0; i<mIndices.length; i+=3) {
+            var i1 = mIndices[i]*3;
+            var i2 = mIndices[i+1]*3;
+            var i3 = mIndices[i+2]*3;
+
+            var v1 = getVec(mVertices, i1);
+            var v2 = getVec(mVertices, i2);
+            var v3 = getVec(mVertices, i3);
+
+            var n1 = getVec(normals, i1);
+            var n2 = getVec(normals, i2);
+            var n3 = getVec(normals, i3);
+
+            var trinorm = v2.sub(v1).cross(v3.sub(v1)).normalize();
+
+            setVec(normals, i1, n1.add(trinorm));
+            setVec(normals, i2, n2.add(trinorm));
+            setVec(normals, i3, n3.add(trinorm));
+        }
+
+        for(int i = 0; i<normals.length; i+=3) {
+            var n = getVec(normals, i);
+            setVec(normals, i, n.normalize());
+        }
+
+        return normals;
     }
 
     public float[] getVertices() {
