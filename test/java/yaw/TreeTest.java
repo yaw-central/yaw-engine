@@ -1,5 +1,6 @@
 package yaw;
 
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
@@ -23,20 +24,19 @@ public class TreeTest implements UpdateCallback {
     private ItemObject floor;
     private float speed = 10;
 
+    private Vector3f center = new Vector3f(0,0.1f,0);
+
     public TreeTest() {
 
+        LoggerYAW.getInstance().activateConsoleMode();
+
         world = new World(0, 0, 800, 600);
-        world.getCamera().lookAt(new Vector3f(-1,2,3), new Vector3f(0,1f,0), new Vector3f(0,1,0));
+        world.getCamera().lookAt(new Vector3f(-1,2,3).add(center), new Vector3f(0,1f,0).add(center), new Vector3f(0,1,0));
 
         world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
 
         ShadowMap shadow = new ShadowMap();
-        shadow.setCenter(new Vector3f());
-        shadow.setLeft(-10);
-        shadow.setRight(10);
-        shadow.setBottom(-10);
-        shadow.setTop(10);
-        shadow.setBias(0.002f);
+        shadow.setBias(0.0005f);
         world.getSceneLight().getSun().setShadowMap(shadow);
 
         world.getSceneLight().getAmbientLight().setIntensity(0.3f);
@@ -45,8 +45,9 @@ public class TreeTest implements UpdateCallback {
 
         Mesh floorm = MeshBuilder.generateBlock(10, 0.1f, 10);
 
-        tree = world.createItemObject("tree", 0, 0, 0, 1.0f, treem);
-        floor = world.createItemObject("floor", 0, 0, 0, 1.0f, floorm);
+        tree = world.createItemObject("tree", center.x, center.y, center.z, 1.0f, treem);
+        floor = world.createItemObject("floor", center.x, center.y, center.z, 1.0f, floorm);
+        floor.setCastShadows(false);
 
         world.registerUpdateCallback(this);
 
@@ -62,6 +63,7 @@ public class TreeTest implements UpdateCallback {
     public void update(double deltaTime) {
 
         world.getCamera().getCameraMat().rotateLocalY((float) (deltaTime));
+        //world.getCamera().getCameraMat().rotateAround(new Quaternionf().rotationY((float) (deltaTime)), center.x, center.y, center.z);
 
     }
 

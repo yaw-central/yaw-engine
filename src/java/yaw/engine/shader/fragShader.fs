@@ -63,6 +63,8 @@ float calcShadow(vec4 lightSpace, vec3 to_light_dir, vec3 normal)
     projCoords = projCoords * 0.5 + 0.5;
     float currentDepth = projCoords.z;
 
+    if(currentDepth > 1.0) currentDepth = 0.0;
+
     float cosTheta = clamp(dot(normal, to_light_dir), 0, 1);
     float rbias = bias*tan(acos(cosTheta));
     rbias = clamp(rbias, 0,0.01);

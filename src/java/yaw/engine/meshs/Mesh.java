@@ -253,11 +253,11 @@ public class Mesh {
         //glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    private Vector3f getVec(float[] arr, int i) {
+    public static Vector3f getVec(float[] arr, int i) {
         return new Vector3f(arr[i], arr[i+1], arr[i+2]);
     }
 
-    private void setVec(float[] arr, int i, Vector3f vec) {
+    public static void setVec(float[] arr, int i, Vector3f vec) {
         arr[i] = vec.x;
         arr[i+1] = vec.y;
         arr[i+2] = vec.z;

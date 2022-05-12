@@ -141,4 +141,9 @@ public class SceneVertex {
     public boolean isItemAdded() {
         return itemAdded;
     }
+
+    public HashMap<Mesh, List<ItemObject>> getMeshMap() {
+        return mMeshMap;
+    }
+
 }
