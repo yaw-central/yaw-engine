@@ -24,7 +24,7 @@ public class TreeTest implements UpdateCallback {
     private ItemObject floor;
     private float speed = 10;
 
-    private Vector3f center = new Vector3f(0,0.1f,0);
+    private Vector3f center = new Vector3f(0,0,0);
 
     public TreeTest() {
 

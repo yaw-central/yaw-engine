@@ -197,7 +197,7 @@ public class ShadowMap {
                     top = Math.max(top, light_space.y);
                 }
                 zNear = Math.min(zNear, -light_space.z);
-                zFar = Math.max(zFar, light_space.z);
+                zFar = Math.max(zFar, -light_space.z);
             }
         }
 
