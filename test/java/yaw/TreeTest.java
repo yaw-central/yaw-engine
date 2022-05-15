@@ -63,11 +63,10 @@ public class TreeTest implements UpdateCallback {
     public void update(double deltaTime) {
 
         world.getCamera().getCameraMat().rotateLocalY((float) (deltaTime));
-        //world.getCamera().getCameraMat().rotateAround(new Quaternionf().rotationY((float) (deltaTime)), center.x, center.y, center.z);
 
     }
 
-    public void set_3d(float[] b, int index, float x, float y, float z) {
+    public static void set_3d(float[] b, int index, float x, float y, float z) {
         b[index*3] = x;
         b[index*3+1] = y;
         b[index*3+2] = z;
@@ -77,32 +76,7 @@ public class TreeTest implements UpdateCallback {
         public void cone(float bh, float r, int n);
     }
 
-    public Mesh generateTreeMesh() {
-        /*
-        let is = bigarray_create Bigarray.int8_unsigned ((5+8+9+10)*3) in
-        let vs = bigarray_create Bigarray.float32 ((1+5+8+9+10)*3) in
-
-        let s = 0.5 in
-        let h = -2.0 in
-
-        set_3d vs 0 0.0 0.0 h;
-
-        let cone ii vi bh r n =
-            for i = 0 to (n-1) do
-                let angle = Float.pi*.2. /. (float_of_int n) *. (float_of_int i) in
-                set_3d vs (vi+i) (r*.s*.(cos angle)) (r*.s*.(sin angle)) bh;
-                is.{ii+i*3+0} <- vi + i;
-                is.{ii+i*3+1} <- vi + ((i+1) mod n);
-                is.{ii+i*3+2} <- 0
-            done;
-            (ii + n * 3, vi + n)
-        in
-
-        let (ii, vi) = cone 0 1 0.0 0.3 5 in
-        let (ii, vi) = cone ii vi (h/.4.) 1.0 10 in
-        let (ii, vi) = cone ii vi (h/.2.2) 0.9 9 in
-        let (ii, vi) = cone ii vi (h/.1.6) 0.8 8 in
-        */
+    public static Mesh generateTreeMesh() {
 
         var vs = new float[(1+5+8+9+10)*3];
         var is = new int[(5+8+9+10)*3];
