@@ -158,16 +158,19 @@ vec4 calcBasecolor(Material pMaterial, vec2 text_coord)
 void main()
 {
 
+    vec3 normal = vNorm;
+    //vec3 normal = normalize(cross(dFdx(vPos), dFdy(vPos)));
+
     vec4 basecolor = calcBasecolor(material, outTexCoord);
 
     vec4 totalLight = vec4(ambientLight, 1.0);
-    totalLight += calcDirectionalLight(directionalLight, vPos, vNorm);
+    totalLight += calcDirectionalLight(directionalLight, vPos, normal);
 
     for (int i=0; i<MAX_POINT_LIGHTS; i++)
     {
         if ( pointLights[i].intensity > 0 )
         {
-            totalLight += calcPointLight(pointLights[i], vPos, vNorm);
+            totalLight += calcPointLight(pointLights[i], vPos, normal);
         }
     }
 
@@ -177,7 +180,7 @@ void main()
     {
         if ( spotLights[i].pl.intensity > 0 )
         {
-            totalLight += calcSpotLight(spotLights[i], vPos, vNorm);
+            totalLight += calcSpotLight(spotLights[i], vPos, normal);
         }
     }
     fragColor = vec4((basecolor * totalLight).xyz,1);

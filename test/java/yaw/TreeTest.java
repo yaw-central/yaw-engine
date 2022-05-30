@@ -41,7 +41,7 @@ public class TreeTest implements UpdateCallback {
 
         world.getSceneLight().getAmbientLight().setIntensity(0.3f);
 
-        Mesh treem = generateTreeMesh();
+        Mesh treem = generateTreeMesh(5, 2, 0.5);
 
         Mesh floorm = MeshBuilder.generateBlock(10, 0.1f, 10);
 
@@ -76,40 +76,64 @@ public class TreeTest implements UpdateCallback {
         public void cone(float bh, float r, int n);
     }
 
-    public static Mesh generateTreeMesh() {
+    public static Mesh generateTreeMesh(int layers, float size, double rand) {
 
-        var vs = new float[(1+5+8+9+10)*3];
-        var is = new int[(5+8+9+10)*3];
+        var is = new int[100000];
+        var vs = new float[100000];
 
         var ii = new Object(){ int v = 0; };
         var vi = new Object(){ int v = 0; };
 
-        final var s = 0.5f;
-        final var h = 2.0f;
-
-        set_3d(vs, vi.v++, 0, h, 0);
+        final var s = size/4.f;
+        final var h = size;
 
         ConeOperator cone = (float bh, float r, int n) -> {
+
+            int top = vi.v;
+            float height = Math.min(h, bh + h*0.3f);
+            if(bh == 0) height = h;
+            set_3d(vs, vi.v++, 0, height, 0);
+
             for(int i = 0; i<n; i++) {
                 double angle = Math.PI*2 * i / n;
-                set_3d(vs, vi.v+i, (float) (r*s*Math.cos(angle)), bh, (float) (r*s*Math.sin(angle)));
+                double pair = i%2*2.0-1.0;
+                float x = (float) (r*s*Math.cos(angle)*(1 + (Math.random()*2-1)*0.1f*rand*pair));
+                float y = (float) (bh + Math.random()*0.05f*rand*pair);
+                float z = (float) (r*s*Math.sin(angle)*(1 + (Math.random()*2-1)*0.1f*rand*pair));
+                set_3d(vs, vi.v+i, x, y, z);
                 is[ii.v+i*3+1] = vi.v+i;
-                is[ii.v+i*3+0] = vi.v+((i+1) % n);
-                is[ii.v+i*3+2] = 0;
+                is[ii.v+i*3] = vi.v+((i+1) % n);
+                is[ii.v+i*3+2] = top;
             }
             ii.v += n*3;
             vi.v += n;
         };
 
-        cone.cone(0f, 0.3f, 5);
-        cone.cone(h/4, 1.0f, 10);
-        cone.cone(h/2.2f, 0.9f, 9);
-        cone.cone(h/1.6f, 0.8f, 8);
 
-        Mesh treem = new Mesh(vs, is);
+        cone.cone(0f, 0.3f, 20);
+        float bh = h*0.90f;
+        float r = 0.3f;
+        for(int i = 0; i<layers; i++) {
+            bh -= h/layers*0.6f + (Math.random()*2-1)*0.1f*rand;
+            r += size/layers*0.4f + (Math.random()*2-1)*0.1f*rand;
+            int n = (int) Math.floor((Math.random()*2-1)*10*rand + 20);
+            cone.cone(bh, r, n);
+        }
+
+
+        System.out.println(ii.v + " " + vi.v*3);
+
+        var nis = new int[ii.v];
+        var nvs = new float[vi.v*3];
+
+        System.arraycopy(is, 0, nis, 0, nis.length);
+        System.arraycopy(vs, 0, nvs, 0, nvs.length);
+
+        Mesh treem = new Mesh(nvs, nis);
         treem.setDrawingStrategy(new DefaultDrawingStrategy());
         var mat = new Material(new Vector3f(0,1,0), 0.1f);
         treem.setMaterial(mat);
+
 
         return treem;
     }
