@@ -16,7 +16,7 @@ public class ItemObject extends Item {
     /** The transformation matrix to world coordinates */
     private Matrix4f worldMatrix;
 
-
+    private boolean castShadows = true;
 
     public ItemObject(String id, Vector3f position, Quaternionf orientation, float scale, Mesh mesh){
         super(id, position, orientation, scale);
@@ -175,9 +175,11 @@ public class ItemObject extends Item {
     }
 
 
+    public boolean doesCastShadows() {
+        return castShadows;
+    }
 
-
-
-
-
+    public void setCastShadows(boolean castShadows) {
+        this.castShadows = castShadows;
+    }
 }
