@@ -3,7 +3,7 @@
 ;; per-os jvm-opts code cribbed from Overtone
 (def JVM-OPTS
   {:common   []
-   :macosx   ["-XstartOnFirstThread" "-Djava.awt.headless=true"]
+   :macosx   ["-XstartOnFirstThread"]
    :linux    []
    :windows  []})
 
@@ -16,7 +16,7 @@
 (def LWJGL_NS "org.lwjgl")
 
 ;; Edit this to change the version.
-(def LWJGL_VERSION "3.3.0")
+(def LWJGL_VERSION "3.3.1")
 
 ;; Edit this to add/remove packages.
 (def LWJGL_MODULES ["lwjgl"
@@ -58,6 +58,10 @@
 (def no-natives? #{"lwjgl-egl" "lwjgl-jawt" "lwjgl-odbc"
                    "lwjgl-opencl" "lwjgl-vulkan"})
 
+;; These have no natives for mac M1/M2
+(def no-natives-macos-arm64?
+  #{"lwjgl-openvr" "lwjgl-sse" "lwjgl-tootle"})
+
 (defn lwjgl-deps-with-natives []
   (apply concat
          (for [m LWJGL_MODULES]
@@ -65,18 +69,22 @@
              (into [prefix]
                    (if (no-natives? m)
                      []
-                     (for [p LWJGL_PLATFORMS]
+                     (for [p (if (no-natives-macos-arm64? m)
+                               LWJGL_PLATFORMS
+                               (conj LWJGL_PLATFORMS "macos-arm64"))]
                        (into prefix [:classifier (str "natives-" p)
                                      :native-prefix ""]))))))))
 
 (def all-dependencies
   (into ;; Add your non-LWJGL dependencies here
-   '[[org.clojure/clojure "1.10.3"]
-     [org.joml/joml "1.10.3"]
+   '[[org.clojure/clojure "1.11.1"]
+     [org.joml/joml "1.10.5"]
      [org.l33tlabs.twl/pngdecoder "1.0"]]
-   (lwjgl-deps-with-natives)))
+   (let [spec (lwjgl-deps-with-natives)]
+     ;;(print spec)
+     spec)))
 
-(defproject yaw-engine "0.5.0-SNAPSHOT"
+(defproject yaw-engine "0.6.0-SNAPSHOT"
   :description "A simple 3D programming world (LWJGL engine)."
   :url "https://github.com/yaw-central/yaw-engine"
   :license {:name "The MIT License"
