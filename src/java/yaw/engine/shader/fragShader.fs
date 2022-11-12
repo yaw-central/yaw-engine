@@ -3,9 +3,12 @@
 const int MAX_POINT_LIGHTS = 5;
 const int MAX_SPOT_LIGHTS = 5;
 
+
 in vec2 outTexCoord;
+
 in vec3 vNorm;
 in vec3 vPos;
+in vec4 vDirectionalShadowSpace;
 
 out vec4 fragColor;
 
@@ -50,7 +53,34 @@ uniform Material material;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform DirectionalLight directionalLight;
+uniform sampler2D shadowMapSampler;
+uniform float bias;
 uniform vec3 camera_pos;
+
+float calcShadow(vec4 lightSpace, vec3 to_light_dir, vec3 normal)
+{
+    vec3 projCoords = lightSpace.xyz / lightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float currentDepth = projCoords.z;
+
+    if(currentDepth > 1.0) currentDepth = 0.0;
+
+    float cosTheta = clamp(dot(normal, to_light_dir), 0, 1);
+    float rbias = bias*tan(acos(cosTheta));
+    rbias = clamp(rbias, 0,0.01);
+
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMapSampler, 0);
+    for(int x = -1; x <= 1; ++x) {
+        for(int y = -1; y <= 1; ++y) {
+            float pcfDepth = texture(shadowMapSampler, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth-rbias > pcfDepth ? 1.0 : 0.0;
+        }
+    }
+    shadow /= 9.0;
+
+    return shadow;
+}
 
 vec4 calcLightcolor(vec3 light_color, float light_intensity, vec3 position, vec3 to_light_dir, vec3 normal)
 {
@@ -107,8 +137,10 @@ vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal)
 
 vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal)
 {
-    return calcLightcolor(light.color, light.intensity, position, normalize(-light.direction), normal);
+    float shadow = calcShadow(vDirectionalShadowSpace, normalize(-light.direction), normal);
+    return (1.0 - shadow) * calcLightcolor(light.color, light.intensity, position, normalize(-light.direction), normal);
 }
+
 vec4 calcBasecolor(Material pMaterial, vec2 text_coord)
 {
     vec4 basecolor;
@@ -125,25 +157,32 @@ vec4 calcBasecolor(Material pMaterial, vec2 text_coord)
 
 void main()
 {
+
+    vec3 normal = vNorm;
+    //vec3 normal = normalize(cross(dFdx(vPos), dFdy(vPos)));
+
     vec4 basecolor = calcBasecolor(material, outTexCoord);
 
     vec4 totalLight = vec4(ambientLight, 1.0);
-    totalLight += calcDirectionalLight(directionalLight, vPos, vNorm);
+    totalLight += calcDirectionalLight(directionalLight, vPos, normal);
 
     for (int i=0; i<MAX_POINT_LIGHTS; i++)
     {
         if ( pointLights[i].intensity > 0 )
         {
-            totalLight += calcPointLight(pointLights[i], vPos, vNorm);
+            totalLight += calcPointLight(pointLights[i], vPos, normal);
         }
     }
+
+
 
     for (int i=0; i<MAX_SPOT_LIGHTS; i++)
     {
         if ( spotLights[i].pl.intensity > 0 )
         {
-            totalLight += calcSpotLight(spotLights[i], vPos, vNorm);
+            totalLight += calcSpotLight(spotLights[i], vPos, normal);
         }
     }
     fragColor = vec4((basecolor * totalLight).xyz,1);
+
 }

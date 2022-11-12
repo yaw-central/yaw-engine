@@ -175,6 +175,7 @@ public class LoggerYAW extends PrintStream {
             mLogDir.mkdir();
         }
         LogManager.getLogManager().reset();
+        //activateConsoleMode();
     }
 
     /**

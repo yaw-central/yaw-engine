@@ -99,17 +99,16 @@ public class SceneVertex {
      * otherwise clean then remove mesh which has an empty list of items
      *
      * @param pShaderProgram Shader program that will render
-     * @param pViewMatrix    the View Matrix
      */
 
-    public void draw(ShaderProgram pShaderProgram, Matrix4f pViewMatrix) {
+    public void draw(ShaderProgram pShaderProgram) {
         List<Mesh> lRmListe = new ArrayList<>();
         for (Mesh lMesh : mMeshMap.keySet()) {
             List<ItemObject> lItems = mMeshMap.get(lMesh);
             if (lItems.isEmpty()) {
                 lRmListe.add(lMesh);
             } else {
-                lMesh.render(lItems, pShaderProgram, pViewMatrix);
+                lMesh.render(lItems, pShaderProgram);
             }
         }
         /*Clean then remove*/
@@ -142,4 +141,9 @@ public class SceneVertex {
     public boolean isItemAdded() {
         return itemAdded;
     }
+
+    public HashMap<Mesh, List<ItemObject>> getMeshMap() {
+        return mMeshMap;
+    }
+
 }

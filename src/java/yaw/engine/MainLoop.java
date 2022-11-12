@@ -262,8 +262,6 @@ public class MainLoop implements Runnable {
     // FrameRate: VARIABLE
     private void loop() throws InterruptedException {
         double dt = 0.01; // Update Rate: 1 ~= 2 fps | 0.001 ~= 1000 fps
-        /* Initialization of the window we currently use. */
-        glViewport(initX, initY, initWidth, initHeight);
         double beforeTime = glfwGetTime();
         double lag = 0d;
         while (!Window.windowShouldClose() && mLoop) { /* Check if the window has not been closed. */
@@ -299,7 +297,7 @@ public class MainLoop implements Runnable {
            /*  Input of critical section, allows to protect the creation of our logic of Game .
                1 Maximum thread in Synchronize -> mutual exclusion.*/
             synchronized (mSceneVertex) {
-                //Update the world
+                mSceneLight.renderShadowMap(mSceneVertex);
                 mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
             }
 
