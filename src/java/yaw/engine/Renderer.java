@@ -56,7 +56,9 @@ public class Renderer {
      * The Shader Program is deallocated
      */
     public void cleanUp() {
-        mShaderProgram.cleanup();
+        if (mShaderProgram != null) {
+            mShaderProgram.cleanup();
+        }
     }
 
     /**
