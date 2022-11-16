@@ -267,19 +267,19 @@ public class Mesh {
         float[] normals = new float[mVertices.length];
 
         for(int i = 0; i<mIndices.length; i+=3) {
-            var i1 = mIndices[i]*3;
-            var i2 = mIndices[i+1]*3;
-            var i3 = mIndices[i+2]*3;
+            int i1 = mIndices[i]*3;
+            int i2 = mIndices[i+1]*3;
+            int i3 = mIndices[i+2]*3;
 
-            var v1 = getVec(mVertices, i1);
-            var v2 = getVec(mVertices, i2);
-            var v3 = getVec(mVertices, i3);
+            Vector3f v1 = getVec(mVertices, i1);
+            Vector3f v2 = getVec(mVertices, i2);
+            Vector3f v3 = getVec(mVertices, i3);
 
-            var n1 = getVec(normals, i1);
-            var n2 = getVec(normals, i2);
-            var n3 = getVec(normals, i3);
+            Vector3f n1 = getVec(normals, i1);
+            Vector3f n2 = getVec(normals, i2);
+            Vector3f n3 = getVec(normals, i3);
 
-            var trinorm = v2.sub(v1).cross(v3.sub(v1)).normalize();
+            Vector3f trinorm = v2.sub(v1).cross(v3.sub(v1)).normalize();
 
             setVec(normals, i1, n1.add(trinorm));
             setVec(normals, i2, n2.add(trinorm));
@@ -287,7 +287,7 @@ public class Mesh {
         }
 
         for(int i = 0; i<normals.length; i+=3) {
-            var n = getVec(normals, i);
+            Vector3f n = getVec(normals, i);
             setVec(normals, i, n.normalize());
         }
 

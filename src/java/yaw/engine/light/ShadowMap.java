@@ -16,6 +16,7 @@ import yaw.engine.shader.shadowVertShader;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL30.*;
 
@@ -135,13 +136,13 @@ public class ShadowMap {
         mShaderProgram.setUniform("projectionMatrix", projection);
         mShaderProgram.setUniform("viewMatrix", view);
 
-        var meshMap = pSceneVertex.getMeshMap();
+        Map<Mesh, List<ItemObject>> meshMap = pSceneVertex.getMeshMap();
 
         for (Mesh lMesh : meshMap.keySet()) {
             List<ItemObject> lItems = meshMap.get(lMesh);
             List<ItemObject> castingItems = new ArrayList<>();
 
-            for(var item : lItems) {
+            for(ItemObject item : lItems) {
                 if(!item.doesCastShadows()) continue;
                 castingItems.add(item);
             }
@@ -181,14 +182,14 @@ public class ShadowMap {
 
         center = new Vector3f();
 
-        var mat = createView(light);
+        Matrix4f mat = createView(light);
 
-        for(var io : pSceneVertex.getItemsList()) {
-            var verts = io.getMesh().getVertices();
+        for(ItemObject io : pSceneVertex.getItemsList()) {
+            float[] verts = io.getMesh().getVertices();
             for(int i = 0; i<verts.length; i+=3) {
-                var v = new Vector4f(verts[i], verts[i+1], verts[i+2], 1);
-                var world_space = io.getWorldMatrix().transform(v);
-                var light_space = mat.transform(world_space);
+                Vector4f v = new Vector4f(verts[i], verts[i+1], verts[i+2], 1);
+                Vector4f world_space = io.getWorldMatrix().transform(v);
+                Vector4f light_space = mat.transform(world_space);
 
                 if(io.doesCastShadows()) {
                     left = Math.min(left, light_space.x);

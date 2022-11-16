@@ -39,19 +39,13 @@ and type (after the `=>` prompt of course):
 (use 'yaw.world)
 ```
 
-An openGL window lives in a `universe` (because we're megalomaniacs!)
+An openGL window lives in a `world` (because we're megalomaniacs!)
 
 ```clojure
-(def univ (start-universe!))
+(def world (create-world!))
 ```
 
 If all goes well a window will open, empty and dark as hell!
-To create a 3D scene we'll need to get a reference to
-the (for now, empty) *world*.
-
-```clojure
-(def world (:world @univ))
-```
 
 Yaw will only use basic 3D objects with simple materials.
 For new there's only a bunch of available objects, and the 

@@ -78,14 +78,14 @@ public class TreeTest implements UpdateCallback {
 
     public static Mesh generateTreeMesh(int layers, float size, double rand) {
 
-        var is = new int[100000];
-        var vs = new float[100000];
+        int[] is = new int[100000];
+        float[] vs = new float[100000];
 
-        var ii = new Object(){ int v = 0; };
-        var vi = new Object(){ int v = 0; };
+        BoxInt ii = new BoxInt(0);
+        BoxInt vi = new BoxInt(0);
 
-        final var s = size/4.f;
-        final var h = size;
+        final float s = size/4.f;
+        final float h = size;
 
         ConeOperator cone = (float bh, float r, int n) -> {
 
@@ -123,15 +123,15 @@ public class TreeTest implements UpdateCallback {
 
         System.out.println(ii.v + " " + vi.v*3);
 
-        var nis = new int[ii.v];
-        var nvs = new float[vi.v*3];
+        int[] nis = new int[ii.v];
+        float[] nvs = new float[vi.v*3];
 
         System.arraycopy(is, 0, nis, 0, nis.length);
         System.arraycopy(vs, 0, nvs, 0, nvs.length);
 
         Mesh treem = new Mesh(nvs, nis);
         treem.setDrawingStrategy(new DefaultDrawingStrategy());
-        var mat = new Material(new Vector3f(0,1,0), 0.1f);
+        Material mat = new Material(new Vector3f(0,1,0), 0.1f);
         treem.setMaterial(mat);
 
 
@@ -146,4 +146,9 @@ public class TreeTest implements UpdateCallback {
 
     }
 
+}
+
+/* package */ class BoxInt {
+    int v;
+    public BoxInt(int v) { this.v = v; }
 }
