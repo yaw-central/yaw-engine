@@ -55,13 +55,33 @@ public class World  {
         this.mainLoop = new MainLoop();
     }
 
-    public void launch() {
+    public void launchAsync() {
         if(isRunning) {
-            throw new Error("World is already running (multiple calls to launch() method)");
+            throw new Error("World is already running (multiple calls to launch...() method)");
         }
         isRunning = true;
         mloopThread = new Thread(mainLoop);
         mloopThread.start();
+    }
+
+    public void launchWithContinuation(Runnable cont) {
+        if(isRunning) {
+            throw new Error("World is already running (multiple calls to launch...() method)");
+        }
+        isRunning = true;
+        mloopThread = Thread.currentThread();
+        Thread contThread = new Thread(cont);
+        contThread.start();
+        mainLoop.run();
+    }
+
+    public void launchSync() {
+        if(isRunning) {
+            throw new Error("World is already running (multiple calls to launch...() method)");
+        }
+        isRunning = true;
+        mloopThread = Thread.currentThread();
+        mainLoop.run();
     }
 
     /**

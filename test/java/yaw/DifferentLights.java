@@ -70,8 +70,7 @@ public class DifferentLights implements UpdateCallback {
 
         //world.registerUpdateCallback(rCube);
 
-        world.launch();
-        world.waitFortermination();
+        world.launchSync();
     }
 
 }

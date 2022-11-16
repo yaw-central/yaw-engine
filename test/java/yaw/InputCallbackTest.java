@@ -54,9 +54,7 @@ public class InputCallbackTest implements InputCallback {
         cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         world.getCamera().setPosition(0,0,3);
 
-        world.launch();
-        world.waitFortermination();
-
+        world.launchSync();
     }
 
 

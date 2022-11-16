@@ -68,8 +68,7 @@ public class TestCeilingCamera implements UpdateCallback {
 
         world.registerUpdateCallback(ceilingCamera);
 
-        world.launch();
-        world.waitFortermination();
+        world.launchSync();
     }
 
 }

@@ -89,9 +89,7 @@ public class MouseClickTest implements Mouse3DClickCallBack {
         //cube.getMesh().getMaterial().setTexture(new Texture("/ressources/diamond.png"));
         world.getCamera().translate(0,0,0);
         //world.getCamera().rotate(0,180,0);
-        world.launch();
-        world.waitFortermination();
-
+        world.launchSync();
     }
 
 }

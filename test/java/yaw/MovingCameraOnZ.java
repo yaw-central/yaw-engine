@@ -87,9 +87,7 @@ public class MovingCameraOnZ implements UpdateCallback {
 
         world.registerUpdateCallback(movingCamera);
 
-
-        world.launch();
-        world.waitFortermination();
+        world.launchSync();
     }
 
 }

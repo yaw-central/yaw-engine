@@ -144,10 +144,7 @@ public class TestHitBox implements UpdateCallback {
 
         world.registerUpdateCallback(mBb);
 
-
-        world.launch();
-        world.waitFortermination();
-
+        world.launchSync();
     }
 
 

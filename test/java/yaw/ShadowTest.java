@@ -50,10 +50,7 @@ public class ShadowTest implements UpdateCallback {
     }
 
     public void run() {
-
-        world.launch();
-        world.waitFortermination();
-
+        world.launchSync();
     }
 
     public void update(double deltaTime) {

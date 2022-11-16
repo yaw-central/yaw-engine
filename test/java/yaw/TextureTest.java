@@ -139,7 +139,7 @@ public class TextureTest implements UpdateCallback {
         TextureTest rGroup = new TextureTest(item);
 
         world.registerUpdateCallback(rGroup);
-        world.launch();
-        world.waitFortermination();
+
+        world.launchSync();
     }
 }

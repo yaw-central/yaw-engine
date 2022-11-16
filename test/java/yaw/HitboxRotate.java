@@ -128,8 +128,7 @@ public class HitboxRotate implements UpdateCallback {
         world.registerUpdateCallback(mBb);
 
 
-        world.launch();
-        world.waitFortermination();
+        world.launchSync();
     }
 
 

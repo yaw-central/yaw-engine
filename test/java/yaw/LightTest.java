@@ -17,7 +17,7 @@ public class LightTest {
 
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
 
-        world.launch(); /* Launches the thread responsible for the display and our game loop. */
+        world.launchAsync(); /* Launches the thread responsible for the display and our game loop. */
 
         ItemObject c1 = world.createItemObject("1", 0f, 0f, 0f, 1
                 , MeshBuilder.generateBlock(1, 1, 1));

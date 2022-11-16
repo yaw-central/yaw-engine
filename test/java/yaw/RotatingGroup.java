@@ -81,15 +81,9 @@ public class RotatingGroup implements UpdateCallback {
         //g.rotate(0, 45, 0);
 
         RotatingGroup rGroup = new RotatingGroup(g);
-
-
-
-
         world.registerUpdateCallback(rGroup);
 
-
-        world.launch();
-        world.waitFortermination();
+        world.launchSync();
     }
 
 }
