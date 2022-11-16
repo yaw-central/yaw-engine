@@ -177,6 +177,12 @@ public class MainLoop implements Runnable {
     public void run() {
         try {
             this.init();
+        } catch (Exception pE) {
+            pE.printStackTrace();
+           return;
+        }
+
+        try {
             this.loop();
         } catch (Exception pE) {
             pE.printStackTrace();

@@ -64,6 +64,9 @@ public class Window {
           Finally, the last element share, allows to indicate to the new window that its context will possess
           The objects (textures, vertex buffers,... ) of the window pass as argument.*/
         windowHandle = glfwCreateWindow(width, height, "Yet Another World", NULL, NULL);
+        if (windowHandle == 0) {
+            throw new IllegalStateException("Cannot create GLFW window");
+        }
 
         /* This function sets the key callback of the specified window,
            which is called when a key is pressed, repeated or released.*/
