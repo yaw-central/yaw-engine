@@ -41,7 +41,7 @@ public class ForestTest implements UpdateCallback {
         world.getSceneLight().getAmbientLight().setIntensity(0.3f);
 
         Mesh floorm = MeshBuilder.generateBlock(20, 0.1f, 20);
-        var ground = new Material();
+        Material ground = new Material();
         ground.setColor(new Vector3f(0.6078f, 0.4627f, 0.3255f));
         floorm.setMaterial(ground);
 
