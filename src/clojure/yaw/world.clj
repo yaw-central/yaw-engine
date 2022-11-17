@@ -46,7 +46,7 @@ framework: Yaw-reactive.
              height 600
              vsync true}}]
   (let [world (World. x y width height vsync)]
-    (.launch world)
+    (.launchAsync world)
     world))
 
 (defn destroy-world!
@@ -121,10 +121,12 @@ framework: Yaw-reactive.
   [world]
   (.getCamera world))
 
-(defn camera-orient!
+(defn camera-look-at!
   "Orient the camera towards the specified coordinates."
-  [camera [x y z]]
-  (.setOrientation camera x y z))
+  ([camera [x y z] [ux uy uz]]
+   (.lookAt camera x y z ux uy uz))
+  ([camera [x y z]]
+   (.lookAt camera x y z 0 1.0 0)))
 
 
 ;;; ==========================================================================

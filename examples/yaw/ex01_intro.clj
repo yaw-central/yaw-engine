@@ -316,7 +316,10 @@
 ;;
 ;;}
 
-(w/rotate! cam :y -30 :z -20)
+(w/rotate! cam :y -20 :z -10)
+
+(w/rotate! cam :y 20 :z 10)
+
 
 ;;{
 ;;
@@ -326,7 +329,8 @@
 ;;
 ;;}
 
-(w/camera-orient! cam [-2.5 0 -5])
+;; TODO : look-at functionality does not work
+;; (w/camera-look-at! cam [2 0 0])
 ;; XXX: shouldn't it be pointing to the red cube ?
 
 ;;{
@@ -415,7 +419,7 @@
 (def plight (w/point-light! world 0 {:position [0.5 -1.5 -6]}))
 
 ;; Intensity can be beyond 1.0   (XXX: ?)
-(w/intensity! plight 3.0)
+(w/intensity! plight 1.0)
 
 ;; To see something it is better to reduce the direction light
 (w/intensity! sun 0.5)

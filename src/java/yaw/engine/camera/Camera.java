@@ -128,9 +128,30 @@ public class Camera {
      * @param up the direction of the cameras up vector
      */
     public void lookAt(Vector3f eye, Vector3f target, Vector3f up) {
-
         cameraMat.lookAt(eye, target, up).invert();
+    }
 
+    public void lookAt(Vector3f target, Vector3f up) {
+	lookAt(getPosition(), target, up);
+    }
+
+    public void lookAt(float x, float y, float z, float ux, float uy, float uz) {
+	lookAt(new Vector3f(x, y, z), new Vector3f(ux, uy, uz));
+    }
+
+    public void lookAt(Vector3f target) {
+	Vector3f camPos = getPosition();
+	Vector3f camDir = new Vector3f();
+	camPos.sub(target, camDir);
+	camDir.normalize();
+	Vector3f up = new Vector3f(0.0f, 1.0f, 0.0f);
+	Vector3f camRight = up.cross(camDir).normalize();
+	Vector3f camUp = camDir.cross(camRight);
+	lookAt(camPos, target, camUp);
+    }
+
+    public void lookAtTarget(float targetX, float targetY, float targetZ) {
+	lookAt(new Vector3f(targetX, targetY, targetZ));
     }
 
 
