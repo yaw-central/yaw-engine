@@ -200,6 +200,29 @@ according to the specified vector `dir` [dx dy dz]"
   [world]
   (.registerUpdateCallback world nil))
 
+;;{
+;; Register a callback to a given world
+;; When a keyboard inputs is detected, the callback is called
+;; The callback takes a key, a scancode, an action and a mode in its parameters
+;;}
+;; To remove since the way the keyboard is handled has changed
+(defn register-key-callback! 
+  "Register the input callback for low-level keyboard management."
+  [world callback]
+  (let [cb (reify InputCallback
+             (sendKey [this key scancode action mode]
+               ;; (println "key event! key=" key " scancode=" scancode "action=" action "mode=" mode)
+               (callback key scancode action mode)))]
+    ;; (println "[input callback] cb=" cb "world=" world)
+    (.registerInputCallback world cb)))
+
+
+;; TODO
+;; (defn unregister-input-callback!
+;;   "Unregister the current input callback (if any)"
+;;   [world]
+;;   )
+
 ;;; =========================
 ;;; Old API below
 
@@ -242,28 +265,7 @@ according to the specified vector `dir` [dx dy dz]"
 
 ;;CALLBACKS---------------------------------------------------------------
 
-;;{
-;; Register a callback to a given world
-;; When a keyboard inputs is detected, the callback is called
-;; The callback takes a key, a scancode, an action and a mode in its parameters
-;;}
-;; To remove since the way the keyboard is handled has changed
-(defn register-input-callback! 
-  "Register the input callback for low-level keyboard management."
-  [world callback]
-  (let [cb (reify InputCallback
-             (sendKey [this key scancode action mode]
-               ;; (println "key event! key=" key " scancode=" scancode "action=" action "mode=" mode)
-               (callback key scancode action mode)))]
-    ;; (println "[input callback] cb=" cb "world=" world)
-    (.registerInputCallback world cb)))
 
-
-;; TODO
-;; (defn unregister-input-callback!
-;;   "Unregister the current input callback (if any)"
-;;   [world]
-;;   )
 
 ;;Since we completely destroy the old architecture we will migrate the basic method to this module
 ;;README ONLY USE WORLD IT is A FACADE, no DIRECT USE OF MANAGEMENT/BUILDER TOOLS

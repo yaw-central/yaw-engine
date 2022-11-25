@@ -35,10 +35,11 @@ public class KeyInput extends GLFWKeyCallback {
     }
 
     public synchronized void registerInputCallback(InputCallback inputCallback) {
-        if(this.inputCallback != null) {
-            throw new Error("Input callback already registered");
-        }
         this.inputCallback = inputCallback;
+    }
+
+    public synchronized void unregisterInputCallback() {
+        inputCallback = null;
     }
 
     /**
