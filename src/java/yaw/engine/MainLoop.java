@@ -213,14 +213,8 @@ public class MainLoop implements Runnable {
     }
 
     public synchronized void registerInputCallback(InputCallback callback) {
-        if(inputCallback != null) {
-            throw new Error("Input callback already registered");
-        }
         inputCallback = callback;
-
-        if(initialized) {
-            Window.getGLFWKeyCallback().registerInputCallback(callback);
-        }
+        Window.getGLFWKeyCallback().registerInputCallback(callback);
     }
 
     //3D click

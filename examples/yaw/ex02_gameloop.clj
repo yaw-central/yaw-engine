@@ -116,11 +116,10 @@
        ;; + key
        61 (faster!)
        ;; - key
-       54 (slower!)))))
+       54 (slower!)
+       ;; default
+       nil))))
 
-
-
-     
 
 
 
