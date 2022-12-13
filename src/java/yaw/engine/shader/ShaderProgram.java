@@ -4,7 +4,7 @@ import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.PointLight;
 import yaw.engine.light.SpotLight;
-import yaw.engine.meshs.Material;
+import yaw.engine.mesh.Material;
 import yaw.engine.util.LoggerYAW;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

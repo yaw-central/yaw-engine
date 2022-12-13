@@ -1,16 +1,14 @@
 package yaw;
 
-import clojure.core.Vec;
 import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.ShadowMap;
-import yaw.engine.meshs.Material;
-import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.MeshBuilder;
-import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
+import yaw.engine.mesh.Material;
+import yaw.engine.mesh.Mesh;
+import yaw.engine.mesh.MeshBuilder;
 import yaw.engine.util.LoggerYAW;
 
 /**

@@ -1,10 +1,9 @@
-package yaw.engine.meshs;
+package yaw.engine.mesh;
 
 import org.joml.Vector3f;
 import yaw.engine.items.ItemObject;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.util.LoggerYAW;
-import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;

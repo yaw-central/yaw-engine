@@ -3,8 +3,8 @@ package yaw.engine.debug;
 
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
-import yaw.engine.meshs.Texture;
-import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.mesh.Texture;
+import yaw.engine.mesh.MeshBuilder;
 /**
  * The Main Class that launches our game engine.
  */

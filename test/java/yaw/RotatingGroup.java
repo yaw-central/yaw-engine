@@ -5,7 +5,7 @@ import yaw.engine.World;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SpotLight;
-import yaw.engine.meshs.*;
+import yaw.engine.mesh.*;
 
 /**
  * A group of 2 items revolving around another cube, and rotating

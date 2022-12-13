@@ -1,4 +1,4 @@
-package yaw.engine.meshs;
+package yaw.engine.mesh;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 

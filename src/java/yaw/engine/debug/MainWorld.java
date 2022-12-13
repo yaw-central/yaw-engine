@@ -9,7 +9,7 @@ import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.SpotLight;
 import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
-import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.mesh.MeshBuilder;
 
 /**
  * The Main Class that launches our game engine.

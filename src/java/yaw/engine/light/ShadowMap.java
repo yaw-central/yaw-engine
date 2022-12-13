@@ -1,13 +1,12 @@
 package yaw.engine.light;
 
-import clojure.core.Vec;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import yaw.engine.SceneVertex;
 import yaw.engine.items.ItemObject;
-import yaw.engine.meshs.Material;
-import yaw.engine.meshs.Mesh;
+import yaw.engine.mesh.Material;
+import yaw.engine.mesh.Mesh;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.shader.shadowFragShader;
 import yaw.engine.shader.shadowVertShader;

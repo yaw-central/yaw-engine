@@ -4,7 +4,7 @@ import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
-import yaw.engine.meshs.*;
+import yaw.engine.mesh.*;
 
 /**
  * Temporary test to test revolveAround

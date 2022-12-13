@@ -3,12 +3,10 @@ package yaw;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.HitBox;
-import yaw.engine.items.ItemGroup;
-import yaw.engine.items.ItemObject;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
-import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.mesh.Mesh;
+import yaw.engine.mesh.MeshBuilder;
 import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
 

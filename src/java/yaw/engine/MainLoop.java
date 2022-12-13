@@ -1,24 +1,17 @@
 package yaw.engine;
 
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
-import yaw.engine.items.HitBox;
-import yaw.engine.items.Item;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
-import yaw.engine.meshs.Material;
-import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.Texture;
-import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
+import yaw.engine.mesh.Texture;
 import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
-import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  * This the main loop controlled by the World facade.

@@ -6,10 +6,8 @@ import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.ShadowMap;
-import yaw.engine.light.SpotLight;
-import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.MeshBuilder;
-import yaw.engine.meshs.Texture;
+import yaw.engine.mesh.Mesh;
+import yaw.engine.mesh.MeshBuilder;
 
 /**
  * The objective of this exemple is to show the lights behaviour, with mixed color, testing the positionning of different lights

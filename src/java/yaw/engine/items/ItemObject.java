@@ -1,8 +1,7 @@
 package yaw.engine.items;
 
 import org.joml.*;
-import yaw.engine.meshs.Material;
-import yaw.engine.meshs.Mesh;
+import yaw.engine.mesh.Mesh;
 import java.lang.Math;
 
 /**

@@ -5,7 +5,7 @@ import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.SpotLight;
-import yaw.engine.meshs.*;
+import yaw.engine.mesh.*;
 
 /**
  *  Just a rotating cube with light

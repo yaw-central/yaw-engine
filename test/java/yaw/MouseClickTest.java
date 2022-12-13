@@ -1,22 +1,13 @@
 package yaw;
 
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.lwjgl.opengl.GL;
 import yaw.engine.Mouse3DClickCallBack;
 import yaw.engine.RayCaster;
-import yaw.engine.Window;
 import yaw.engine.World;
 import yaw.engine.camera.Camera;
-import yaw.engine.collision.Collision;
 import yaw.engine.items.HitBox;
-import yaw.engine.items.ItemObject;
-import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.MeshBuilder;
-import yaw.engine.meshs.Texture;
-
-import java.util.ArrayList;
+import yaw.engine.mesh.Mesh;
+import yaw.engine.mesh.MeshBuilder;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;

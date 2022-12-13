@@ -1,7 +1,7 @@
-package yaw.engine.meshs.strategy;
+package yaw.engine.mesh.strategy;
 
-import yaw.engine.meshs.MeshDrawingStrategy;
-import yaw.engine.meshs.Mesh;
+import yaw.engine.mesh.MeshDrawingStrategy;
+import yaw.engine.mesh.Mesh;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL32.GL_PROGRAM_POINT_SIZE;

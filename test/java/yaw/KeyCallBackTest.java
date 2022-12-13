@@ -3,8 +3,8 @@ package yaw;
 import yaw.engine.World;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
-import yaw.engine.meshs.MeshBuilder;
-import yaw.engine.meshs.Texture;
+import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.Texture;
 import yaw.engine.InputCallback;
 
 import static org.lwjgl.glfw.GLFW.*;

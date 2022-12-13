@@ -4,7 +4,7 @@ import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.Item;
 import yaw.engine.items.ItemObject;
-import yaw.engine.meshs.Mesh;
+import yaw.engine.mesh.Mesh;
 
 public class TextureTest implements UpdateCallback {
     private int nbUpdates = 0;

@@ -3,11 +3,9 @@ package yaw.engine.items;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.MeshBuilder;
+import yaw.engine.mesh.MeshBuilder;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * HitBox is an ItemObject, but unlike a classical ItemObject we can check if there is a collision with other Hitboxes

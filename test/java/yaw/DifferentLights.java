@@ -4,7 +4,7 @@ import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SpotLight;
-import yaw.engine.meshs.*;
+import yaw.engine.mesh.*;
 
 /**
  * The objective of this exemple is to show the lights behaviour, with mixed color, testing the positionning of different lights
