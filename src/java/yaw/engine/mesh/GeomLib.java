@@ -12,7 +12,7 @@ public class GeomLib {
         List<Vector2f> coords = new ArrayList<>(nbVertices);
 
         float theta = 0;
-        float delta = (float) (Math.PI / nbVertices);
+        float delta = (float) (2 * Math.PI / nbVertices);
         for (int i=0; i<nbVertices; i++) {
             coords.add(new Vector2f(cx + radius * Math.cos(theta),
                                     cy + radius * Math.sin(theta)));
