@@ -6,7 +6,7 @@ import yaw.engine.items.HitBox;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
 
@@ -33,7 +33,7 @@ public class IncludedHitBoxTest implements UpdateCallback {
     }
 
     static Mesh createGroupHb(int n) {
-        Mesh mesh = MeshBuilder.generateBlock(1, 1, 1);
+        Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
         return mesh;
     }
 

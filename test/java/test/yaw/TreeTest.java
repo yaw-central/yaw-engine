@@ -8,7 +8,7 @@ import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.ShadowMap;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 import yaw.engine.util.LoggerYAW;
 
@@ -42,7 +42,7 @@ public class TreeTest implements UpdateCallback {
 
         Mesh treem = generateTreeMesh(5, 2, 0.5);
 
-        Mesh floorm = MeshBuilder.generateBlock(10, 0.1f, 10);
+        Mesh floorm = DeprecatedMeshBuilder.generateBlock(10, 0.1f, 10);
 
         tree = world.createItemObject("tree", center.x, center.y, center.z, 1.0f, treem);
         floor = world.createItemObject("floor", center.x, center.y, center.z, 1.0f, floorm);

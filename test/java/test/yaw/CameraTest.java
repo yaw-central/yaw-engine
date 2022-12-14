@@ -5,7 +5,7 @@ import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SpotLight;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.mesh.Texture;
 
 /**
@@ -20,7 +20,7 @@ public class CameraTest implements UpdateCallback {
 
     public CameraTest() {
 
-        Mesh cubem = MeshBuilder.generateBlock(1, 1, 1);
+        Mesh cubem = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
 
         world = new World(0, 0, 800, 600);
         world.getCamera().setPosition(0,0,5);

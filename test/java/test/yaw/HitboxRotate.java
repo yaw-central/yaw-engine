@@ -9,7 +9,7 @@ import yaw.engine.items.ItemObject;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.skybox.Skybox;
 
 /**
@@ -28,7 +28,7 @@ public class HitboxRotate implements UpdateCallback {
     }
 
     static Mesh createGroupHb(int n) {
-        Mesh mesh = MeshBuilder.generateBlock(1, 1, 1);
+        Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
         return mesh;
     }
 
@@ -95,7 +95,7 @@ public class HitboxRotate implements UpdateCallback {
 
         //Creation of the First group
         ItemGroup gr1 = new ItemGroup("gr1");
-        ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateBlock(1, 1, 1));
+        ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, DeprecatedMeshBuilder.generateBlock(1, 1, 1));
         gr1.add("item",c1);
         //HitBox i = world.createHitBox("c1 first bounding box",f,1f,tabA);
         //i.setPosition(new Vector3f(f[0]+0.f,f[1]+0.f,f[2]+0.25f));

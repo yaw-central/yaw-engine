@@ -7,7 +7,7 @@ import yaw.engine.items.ItemObject;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.ShadowMap;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 
 /**
  * The objective of this exemple is to show the lights behaviour, with mixed color, testing the positionning of different lights
@@ -37,8 +37,8 @@ public class ShadowTest implements UpdateCallback {
 
         world.getSceneLight().getAmbientLight().setIntensity(0.3f);
 
-        Mesh cubem = MeshBuilder.generateBlock(1, 1, 1);
-        Mesh floorm = MeshBuilder.generateBlock(10, 0.1f, 10);
+        Mesh cubem = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
+        Mesh floorm = DeprecatedMeshBuilder.generateBlock(10, 0.1f, 10);
 
         cube = world.createItemObject("cube", 0, 2, 0, 1.0f, cubem);
         floor = world.createItemObject("floor", 0, 0, 0, 1.0f, floorm);

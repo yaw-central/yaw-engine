@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Generic Mesh generator, can create specific mesh just with a map (goal)
  */
-public class MeshBuilder {
+public class DeprecatedMeshBuilder {
     private static final String BLOCK_MESH = "block";
     private static final String GROUND_MESH = "ground";
     private static final String HALF_BLOCK_MESH = "half-block";
@@ -161,7 +161,7 @@ public class MeshBuilder {
                 20, 22, 21, 22, 23, 21};
         Mesh lMesh = new Mesh(vertices, textCoord, normals, indices, 8);
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
-        Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
+        Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
 
@@ -202,7 +202,7 @@ public class MeshBuilder {
         int[] indices = new int[]{0, 1, 2, 1, 3, 2};
         Mesh lMesh = new Mesh(vertices, null, normals, indices);
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
-        Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(width, length, height);
+        Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(width, length, height);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
 
@@ -261,7 +261,7 @@ public class MeshBuilder {
                 15, 16, 17};
         Mesh lMesh = new Mesh(vertices, null, normals, indices, 6);
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
-        Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
+        Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
     }
@@ -323,7 +323,7 @@ public class MeshBuilder {
                 12, 13, 15, 12, 15, 14};
         Mesh lMesh = new Mesh(vertices, null, normals, indices, 5);
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
-        Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
+        Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
     }
@@ -483,7 +483,7 @@ public class MeshBuilder {
 
         Mesh lMesh = new Mesh(vertices, textCoord, normals, indices);
         lMesh.setDrawingStrategy(new BoundingBoxDrawingStrategy(isVisible));
-        Map<String, String> lOptionalAttributes = MeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
+        Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
     }

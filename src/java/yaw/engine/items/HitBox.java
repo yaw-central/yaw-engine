@@ -3,7 +3,7 @@ package yaw.engine.items;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class HitBox extends ItemObject {
      */
     public HitBox(String id, Vector3f position, Quaternionf orientation, float scale
             , float xLength, float yLength, float zLength, Boolean visible) {
-        super(id, position, orientation, scale, MeshBuilder.generateBoundingBox(xLength, yLength, zLength, visible));getMesh().getMaterial().setColor(new Vector3f(0, 255, 0));
+        super(id, position, orientation, scale, DeprecatedMeshBuilder.generateBoundingBox(xLength, yLength, zLength, visible));getMesh().getMaterial().setColor(new Vector3f(0, 255, 0));
     }
 
 

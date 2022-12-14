@@ -8,7 +8,7 @@ import yaw.engine.items.ItemObject;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
 
@@ -35,7 +35,7 @@ public class TestHitBox implements UpdateCallback {
     }
 
     static Mesh createGroupHb(int n) {
-        Mesh mesh = MeshBuilder.generateBlock(1, 1, 1);
+        Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
         return mesh;
     }
 
@@ -105,7 +105,7 @@ public class TestHitBox implements UpdateCallback {
 
         //Creation of the First group
         ItemGroup gr1 = new ItemGroup("gr1");
-        ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
+        ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, DeprecatedMeshBuilder.generateHalfBlock(1, 1, 1));
         gr1.add("item",c1);
         HitBox i = world.createHitBox("c1 first bounding box",0.f,0.f, 0.25f,1f,1.0f, 1.0f, 0.5f, true);
         gr1.add("hitbox 1", i);
@@ -116,7 +116,7 @@ public class TestHitBox implements UpdateCallback {
 
         //Creation of the second group
         ItemGroup gr2 = new ItemGroup("gr2");
-        ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateHalfBlock(1, 1, 1));
+        ItemObject c2 = world.createItemObject("2", 0.0f, 0.0f, 0.0f, 1, DeprecatedMeshBuilder.generateHalfBlock(1, 1, 1));
         gr2.add("item",c2);
         HitBox j = world.createHitBox("c1 first bounding box",0.0f, 0.0f, 2.25f,1f, 1.0f, 1.0f, 0.5f, true);
         gr2.add("hitbox 1", j);

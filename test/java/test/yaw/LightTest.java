@@ -3,7 +3,7 @@ package test.yaw;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SpotLight;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.mesh.Texture;
 import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
@@ -20,7 +20,7 @@ public class LightTest {
         world.launchAsync(); /* Launches the thread responsible for the display and our game loop. */
 
         ItemObject c1 = world.createItemObject("1", 0f, 0f, 0f, 1
-                , MeshBuilder.generateBlock(1, 1, 1));
+                , DeprecatedMeshBuilder.generateBlock(1, 1, 1));
         float[] tab = {0.0f, 0.0f, 0.0f}; // a cube
 
         c1.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));

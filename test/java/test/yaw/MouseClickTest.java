@@ -7,7 +7,7 @@ import yaw.engine.World;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.HitBox;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
@@ -32,7 +32,7 @@ public class MouseClickTest implements Mouse3DClickCallBack {
     }
 
     static Mesh createCube() {
-        Mesh mesh = MeshBuilder.generateBlock(1, 1, 1);
+        Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
         return mesh;
     }
 

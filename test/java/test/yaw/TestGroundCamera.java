@@ -5,7 +5,7 @@ import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.mesh.Texture;
 
 /**
@@ -25,7 +25,7 @@ public class TestGroundCamera implements UpdateCallback {
 
 
     static Mesh createCube() {
-        Mesh mesh = MeshBuilder.generateBlock(1, 1, 1);
+        Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
         return mesh;
     }
 
@@ -53,7 +53,7 @@ public class TestGroundCamera implements UpdateCallback {
         float[] f = new float[]{0.f, 0.f, 0.f};
 
         for (int i = 0; i < 10; i++) {
-            ItemObject item = world.createItemObject(i + "", 0.f, 0.f, 0.f, 1, MeshBuilder.generateBlock(1, 1, 1));
+            ItemObject item = world.createItemObject(i + "", 0.f, 0.f, 0.f, 1, DeprecatedMeshBuilder.generateBlock(1, 1, 1));
             item.translate(i,i,i);
 
             if (i % 3 == 0)

@@ -3,7 +3,7 @@ package test.yaw;
 import yaw.engine.World;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.mesh.Texture;
 import yaw.engine.InputCallback;
 
@@ -50,7 +50,7 @@ public class InputCallbackTest implements InputCallback {
         World world = new World(0, 0, 800, 600);
         InputCallbackTest key = new InputCallbackTest(world.getCamera());
         world.registerInputCallback(key);
-        ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, MeshBuilder.generateBlock(1, 1, 1));
+        ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, DeprecatedMeshBuilder.generateBlock(1, 1, 1));
         cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         world.getCamera().setPosition(0,0,3);
 

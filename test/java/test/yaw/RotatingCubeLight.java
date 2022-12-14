@@ -27,7 +27,7 @@ public class RotatingCubeLight implements UpdateCallback {
     }
 
     static Mesh createCube() {
-        Mesh mesh = MeshBuilder.generateBlock(1, 1, 1);
+        Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
         return mesh;
     }
 

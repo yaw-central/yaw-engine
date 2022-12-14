@@ -4,7 +4,7 @@ package yaw.engine.debug;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Texture;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 /**
  * The Main Class that launches our game engine.
  */
@@ -33,7 +33,7 @@ public class MainRainDrop {
 
         for (int i = 0; i < 7; i++) {
             ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, -2.0f, 1
-                    , MeshBuilder.generateBlock(1, 1, 1));
+                    , DeprecatedMeshBuilder.generateBlock(1, 1, 1));
             item.translate((int) (Math.random() * 5), (int) (Math.random() * 5), (int) (Math.random() * 5));
             //item.rotate((int) (Math.random() * 90), (int) (Math.random() * 90), (int) (Math.random() * 90));
 

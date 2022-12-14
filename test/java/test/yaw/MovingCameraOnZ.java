@@ -28,7 +28,7 @@ public class MovingCameraOnZ implements UpdateCallback {
     }
 
     static Mesh createCube() {
-        Mesh mesh = MeshBuilder.generateBlock(1, 1, 1);
+        Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
         return mesh;
     }
 
@@ -69,7 +69,7 @@ public class MovingCameraOnZ implements UpdateCallback {
 
         for (int i = 0; i < 5; i++) {
 
-            ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateBlock(1, 1, 1));
+            ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, 0.0f, 1, DeprecatedMeshBuilder.generateBlock(1, 1, 1));
             item.translate(i,i,i);
 
             if (i % 3 == 0)

@@ -8,7 +8,7 @@ import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.ShadowMap;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.util.LoggerYAW;
 
 /**
@@ -38,7 +38,7 @@ public class ForestTest implements UpdateCallback {
 
         world.getSceneLight().getAmbientLight().setIntensity(0.3f);
 
-        Mesh floorm = MeshBuilder.generateBlock(20, 0.1f, 20);
+        Mesh floorm = DeprecatedMeshBuilder.generateBlock(20, 0.1f, 20);
         Material ground = new Material();
         ground.setColor(new Vector3f(0.6078f, 0.4627f, 0.3255f));
         floorm.setMaterial(ground);
