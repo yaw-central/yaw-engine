@@ -1,31 +1,27 @@
-package yaw;
+package test.yaw;
+
 
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
-import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
-import yaw.engine.mesh.*;
+import yaw.engine.mesh.Mesh;
+import yaw.engine.mesh.MeshBuilder;
+import yaw.engine.mesh.Texture;
 
 /**
- * A camera moving on Z
+ *  Camera view from the ceiling
  */
-public class MovingCameraOnZ implements UpdateCallback {
+public class TestCeilingCamera implements UpdateCallback {
     private int nbUpdates = 0;
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
     private long prevDeltaRefreshMillis = 0;
-    private Camera camera;
     private float speed = 10;
-    private float z = -10;
-    private boolean inversingmove = false;
 
-    public MovingCameraOnZ(Camera c) {
-        this.camera = c;
+    public TestCeilingCamera() {
+
     }
 
-    public Camera getItem() {
-        return camera;
-    }
 
     static Mesh createCube() {
         Mesh mesh = MeshBuilder.generateBlock(1, 1, 1);
@@ -45,19 +41,7 @@ public class MovingCameraOnZ implements UpdateCallback {
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
         }
-        if(inversingmove){
-            z+=0.1f;
-            camera.translate(0,0,0.1f);
-            if(z>=10){
-                inversingmove = false;
-            }
-        }else{
-            camera.translate(0,0,-0.1f);
-            z-=0.1f;
-            if(z<=-10){
-                inversingmove = true;
-            }
-        }
+
 
 
     }
@@ -67,8 +51,7 @@ public class MovingCameraOnZ implements UpdateCallback {
 
         float[] f = new float[]{0.f, 0.f, 0.f};
 
-        for (int i = 0; i < 5; i++) {
-
+        for (int i = 0; i < 10; i++) {
             ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateBlock(1, 1, 1));
             item.translate(i,i,i);
 
@@ -79,16 +62,13 @@ public class MovingCameraOnZ implements UpdateCallback {
             else
                 item.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         }
+        world.getCamera().translate(0.f, 30, 0);
+        world.getCamera().rotateXYZ(-90,0,0);
+        TestCeilingCamera ceilingCamera = new TestCeilingCamera();
 
-        world.getCamera().translate(-15, 15, -10); // placing camera to have a side vue of the world
-        world.getCamera().rotateXYZ(-45,-90,0); //rotate the camera to see the center of the world
-        MovingCameraOnZ movingCamera = new MovingCameraOnZ(world.getCamera());
-
-
-        world.registerUpdateCallback(movingCamera);
+        world.registerUpdateCallback(ceilingCamera);
 
         world.launchSync();
     }
 
 }
-

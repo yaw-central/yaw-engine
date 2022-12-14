@@ -1,4 +1,4 @@
-package yaw;
+package test.yaw;
 
 
 import yaw.engine.UpdateCallback;
@@ -9,16 +9,17 @@ import yaw.engine.mesh.MeshBuilder;
 import yaw.engine.mesh.Texture;
 
 /**
- *  Camera view from the ceiling
+ *  Camera view from the ground
  */
-public class TestCeilingCamera implements UpdateCallback {
+public class TestGroundCamera implements UpdateCallback {
     private int nbUpdates = 0;
     private double totalDeltaTime = 0.0;
     private static long deltaRefreshMillis = 1000;
     private long prevDeltaRefreshMillis = 0;
+    private ItemObject cube ;
     private float speed = 10;
 
-    public TestCeilingCamera() {
+    public TestGroundCamera() {
 
     }
 
@@ -52,7 +53,7 @@ public class TestCeilingCamera implements UpdateCallback {
         float[] f = new float[]{0.f, 0.f, 0.f};
 
         for (int i = 0; i < 10; i++) {
-            ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, 0.0f, 1, MeshBuilder.generateBlock(1, 1, 1));
+            ItemObject item = world.createItemObject(i + "", 0.f, 0.f, 0.f, 1, MeshBuilder.generateBlock(1, 1, 1));
             item.translate(i,i,i);
 
             if (i % 3 == 0)
@@ -62,11 +63,11 @@ public class TestCeilingCamera implements UpdateCallback {
             else
                 item.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         }
-        world.getCamera().translate(0.f, 30, 0);
-        world.getCamera().rotateXYZ(-90,0,0);
-        TestCeilingCamera ceilingCamera = new TestCeilingCamera();
+        world.getCamera().translate(0.f, -10, 0);
+        world.getCamera().rotateXYZ(90,0,0);
+        TestGroundCamera rCube = new TestGroundCamera();
 
-        world.registerUpdateCallback(ceilingCamera);
+        //world.registerUpdateCallback(rCube);
 
         world.launchSync();
     }

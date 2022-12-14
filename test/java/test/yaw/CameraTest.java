@@ -1,4 +1,4 @@
-package yaw;
+package test.yaw;
 
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;

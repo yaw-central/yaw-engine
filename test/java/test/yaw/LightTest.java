@@ -1,4 +1,4 @@
-package yaw;
+package test.yaw;
 
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;

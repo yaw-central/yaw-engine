@@ -1,4 +1,4 @@
-package yaw;
+package test.yaw;
 
 import org.joml.Vector3f;
 import yaw.engine.Mouse3DClickCallBack;
