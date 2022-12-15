@@ -5,6 +5,7 @@ import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.*;
+import yaw.engine.mesh.builder.Cuboid;
 
 /**
  * Basic example of a cube rotating on y axis
@@ -15,7 +16,7 @@ public class RotatingCube implements UpdateCallback {
 	private static long deltaRefreshMillis = 1000;
 	private long prevDeltaRefreshMillis = 0;
 	private ItemObject cube ;
-	private float speed = 40;
+	private float speed = 5f / 256;
 	
 	public RotatingCube(ItemObject cube) {
 		this.cube = cube;
@@ -26,8 +27,7 @@ public class RotatingCube implements UpdateCallback {
 	}
 	
 	static Mesh createCube() {
-		Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
-		return mesh;
+		return new Cuboid(1).generate();
 	}
 	
 	@Override

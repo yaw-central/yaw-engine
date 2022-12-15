@@ -6,6 +6,7 @@ import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SpotLight;
 import yaw.engine.mesh.*;
+import yaw.engine.mesh.builder.Cuboid;
 
 /**
  * A group of 2 items revolving around another cube, and rotating
@@ -16,7 +17,7 @@ public class RotatingGroup implements UpdateCallback {
     private static long deltaRefreshMillis = 1000;
     private long prevDeltaRefreshMillis = 0;
     private ItemGroup cubes ;
-    private float speed = 10;
+    private float speed = 10f / 256f;
 
     public RotatingGroup(ItemGroup cubes) {
         this.cubes = cubes;
@@ -27,8 +28,7 @@ public class RotatingGroup implements UpdateCallback {
     }
 
     static Mesh createCube() {
-        Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
-        return mesh;
+        return new Cuboid(1).generate();
     }
 
     @Override
@@ -45,9 +45,9 @@ public class RotatingGroup implements UpdateCallback {
             prevDeltaRefreshMillis = currentMillis;
         }
 
-        //cubes.rotate(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
-        cubes.fetchItem("first").rotateXYZ(0f, 1f, 0f);
-        cubes.rotateXYZ(0f, 0f, 1f);
+        cubes.rotateXYZ(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
+        cubes.fetchItem("first").rotateXYZ(0f, 0.1f, 0f);
+        //cubes.rotateXYZ(0f, 0f, 0.1f);
 
         /*for(int i=0; i<cubes.getItems().size();i++){
             cubes.getItems().get(i).rotate(0.0f, -6.283f * speed * (float) deltaTime, 0.0f);

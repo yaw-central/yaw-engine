@@ -6,10 +6,11 @@ import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.mesh.Texture;
 import yaw.engine.InputCallback;
+import yaw.engine.mesh.builder.Cuboid;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class InputCallbackTest implements InputCallback {
+public class KeyCallbackTest implements InputCallback {
     private int key;
     private int scancode;
     private int action;
@@ -18,26 +19,34 @@ public class InputCallbackTest implements InputCallback {
 
 
 
-    public InputCallbackTest(Camera camera){
+    public KeyCallbackTest(Camera camera){
         this.camera = camera;
     }
 
 
-
-
     public void sendKey(int key, int scancode, int action, int mods) {
-
-
         this.key=key;
         this.scancode=scancode;
         this.action=action;
         this.mods=mods;
 
-        if(key == GLFW_KEY_UP){
-            camera.translate(0,0,0.1f);
-        } else if (key == GLFW_KEY_LEFT) {
-            camera.rotateXYZ(1f, 0, 0);
+        switch(key) {
+            case GLFW_KEY_UP:
+                camera.translate(0, -0.1f, 0);
+                break;
+            case GLFW_KEY_DOWN:
+                camera.translate(0, 0.1f, 0);
+                break;
+
+            case GLFW_KEY_LEFT:
+                camera.translate(0.1f, 0, 0);
+                break;
+
+            case GLFW_KEY_RIGHT:
+                camera.translate(-0.1f, 0, 0);
+                break;
         }
+
 
 
 
@@ -48,9 +57,9 @@ public class InputCallbackTest implements InputCallback {
 
     public static void main(String[] args){
         World world = new World(0, 0, 800, 600);
-        InputCallbackTest key = new InputCallbackTest(world.getCamera());
+        KeyCallbackTest key = new KeyCallbackTest(world.getCamera());
         world.registerInputCallback(key);
-        ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, DeprecatedMeshBuilder.generateBlock(1, 1, 1));
+        ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, new Cuboid(1).generate());
         cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         world.getCamera().setPosition(0,0,3);
 

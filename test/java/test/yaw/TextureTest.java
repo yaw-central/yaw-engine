@@ -5,6 +5,8 @@ import yaw.engine.World;
 import yaw.engine.items.Item;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Mesh;
+import yaw.engine.mesh.Texture;
+import yaw.engine.mesh.builder.Cuboid;
 
 public class TextureTest implements UpdateCallback {
     private int nbUpdates = 0;
@@ -34,9 +36,7 @@ public class TextureTest implements UpdateCallback {
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
         }
-        cube.rotateXYZ(0.2f, 0.8f, 0.f);
-
-
+        cube.rotateXYZ(0.2f / 256, 0.8f / 256, 0.01f);
     }
 
     public static void main(String[] args) {
@@ -132,7 +132,10 @@ public class TextureTest implements UpdateCallback {
                 "/resources/dice.png"
         );
 
-        ItemObject item = world.createItemObject("item",0,0,-5,1.25f,m1);
+        Mesh m2 = new Cuboid(1).generate();
+        m2.getMaterial().setTexture(new Texture("/resources/dice.png"));
+
+        ItemObject item = world.createItemObject("item",0,0,-5,1.25f, m1);
 
         item.rotateXYZ(30,40, 0);
 

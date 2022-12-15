@@ -10,6 +10,7 @@ import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.DeprecatedMeshBuilder;
+import yaw.engine.mesh.builder.Cuboid;
 import yaw.engine.skybox.Skybox;
 
 /**
@@ -41,7 +42,7 @@ public class HitboxRotate implements UpdateCallback {
         long currentMillis = System.currentTimeMillis();
         if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
             double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
+            //System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
             nbUpdates = 0;
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
@@ -58,11 +59,11 @@ public class HitboxRotate implements UpdateCallback {
 
         /* working */
         //cube_1_hitbox.rotateX(1f);
-        cube_1_hitbox.rotateY(1f);
+        //cube_1_hitbox.rotateY((float) (Math.toRadians(10) * deltaTime));
         //cube_1_hitbox.rotateZ(2f);
         //cube_1_hitbox.rotateXYZ(1f, 1f, 2f);
         //cube_1_hitbox.rotateZAround(1f, new Vector3f(0f, 0f, 0f));
-        cube_1_hitbox.rotateXYZAround(0f, 0f, 1f, new Vector3f(0f, 0f, 0f));
+        cube_1_hitbox.rotateXYZAround(0f, (float) (Math.toRadians(3) * deltaTime), (float) (Math.toRadians(2) * deltaTime), new Vector3f(0f, 0f, 0f));
         //cube_1_hitbox.rotateAxisAround(1f, new Vector3f(0.5f, 1f, 1f), new Vector3f(1f, 0f, 2.0f));
         //cube_1_hitbox.rotateAxis(1f, new Vector3f(0.5f, 1f, 1f));
 
@@ -95,7 +96,7 @@ public class HitboxRotate implements UpdateCallback {
 
         //Creation of the First group
         ItemGroup gr1 = new ItemGroup("gr1");
-        ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, DeprecatedMeshBuilder.generateBlock(1, 1, 1));
+        ItemObject c1 = world.createItemObject("1", 0.0f, 0.0f, 0.0f, 1, new Cuboid(1).generate());
         gr1.add("item",c1);
         //HitBox i = world.createHitBox("c1 first bounding box",f,1f,tabA);
         //i.setPosition(new Vector3f(f[0]+0.f,f[1]+0.f,f[2]+0.25f));
@@ -123,7 +124,7 @@ public class HitboxRotate implements UpdateCallback {
 
         //gr1.rotateY(45);
         gr1.translate(1f, 0f, 0f);
-        world.getCamera().translate(0,0,10);
+        world.getCamera().translate(0,0,5);
 
         world.registerUpdateCallback(mBb);
 

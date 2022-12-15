@@ -5,6 +5,7 @@ import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.*;
+import yaw.engine.mesh.builder.Cuboid;
 
 /**
  * Temporary test to test revolveAround
@@ -25,10 +26,6 @@ public class TestRevolveAround implements UpdateCallback {
         return cube;
     }
 
-    static Mesh createCube() {
-        Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
-        return mesh;
-    }
 
     @Override
     public void update(double deltaTime) {
@@ -44,8 +41,8 @@ public class TestRevolveAround implements UpdateCallback {
             prevDeltaRefreshMillis = currentMillis;
         }
 
-        cube.rotateXYZAround(0f, 1f, 0f,new Vector3f(0f, 0f, 0f));
-        cube.rotateXYZ(0,1,0);
+        cube.rotateXYZAround(0f, 0.00125f, 0f,new Vector3f(0f, 0f, 0f));
+        //cube.rotateXYZ(0,0.0025f,0);
 
 
 
@@ -55,11 +52,9 @@ public class TestRevolveAround implements UpdateCallback {
     }
 
     public static void main(String[] args) {
-        Mesh cubem = createCube();
-
         World world = new World(0, 0, 800, 600);
         world.getCamera().setPosition(0,0,6);
-        ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, cubem);
+        ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, new Cuboid(1).generate());
         cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         //cube.setPosition(new Vector3f(0f,3f,0f));
         TestRevolveAround rCube = new TestRevolveAround(cube);

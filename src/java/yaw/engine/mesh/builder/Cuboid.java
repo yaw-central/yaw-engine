@@ -70,7 +70,7 @@ public class Cuboid implements MeshBuilder {
                 //Right face
                 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0};
         //mapping for the texture
-        float[] textCoord = new float[]{
+        float[] textCoord2 = new float[]{
                 0.0f, 0.0f,
                 0.0f, 0.5f,
                 0.5f, 0.5f,
@@ -101,6 +101,39 @@ public class Cuboid implements MeshBuilder {
                 0.5f, 0.5f,
                 1.0f, 0.5f,
         };
+
+        float[] textCoord = new float[]{
+                0.5f,0,
+                0.5f,0.25f,
+                0.75f,0.25f,
+                0.75f,0,
+
+                0.25f,0.25f,
+                0.25f,0.5f,
+                0.5f,0.5f,
+                0.5f,0.25f,
+
+                0.5f,0.25f,
+                0.5f,0.5f,
+                0.75f,0.5f,
+                0.75f,0.25f,
+
+                0.75f,0.25f,
+                0.75f,0.5f,
+                1,0.5f,
+                1,0.25f,
+
+                0.5f,0.5f,
+                0.5f,0.75f,
+                0.75f,0.75f,
+                0.75f,0.5f,
+
+                0.5f,0.75f,
+                0.5f,1,
+                0.75f,1,
+                0.75f,0.75f
+        };
+
         //mapping the triangle for each face
         int[] indices = new int[]{
                 //Front face

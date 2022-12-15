@@ -1,10 +1,12 @@
 package test.yaw;
 
+import org.joml.Math;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.*;
+import yaw.engine.mesh.builder.Cuboid;
 
 /**
  * A camera moving on Z
@@ -27,10 +29,6 @@ public class MovingCameraOnZ implements UpdateCallback {
         return camera;
     }
 
-    static Mesh createCube() {
-        Mesh mesh = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
-        return mesh;
-    }
 
     @Override
     public void update(double deltaTime) {
@@ -69,7 +67,7 @@ public class MovingCameraOnZ implements UpdateCallback {
 
         for (int i = 0; i < 5; i++) {
 
-            ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, 0.0f, 1, DeprecatedMeshBuilder.generateBlock(1, 1, 1));
+            ItemObject item = world.createItemObject(i + "", 0.0f, 0.0f, 0.0f, 1, new Cuboid(1).generate());
             item.translate(i,i,i);
 
             if (i % 3 == 0)
@@ -81,7 +79,7 @@ public class MovingCameraOnZ implements UpdateCallback {
         }
 
         world.getCamera().translate(-15, 15, -10); // placing camera to have a side vue of the world
-        world.getCamera().rotateXYZ(-45,-90,0); //rotate the camera to see the center of the world
+        //world.getCamera().rotateXYZ(Math.toRadians(-45),Math.toRadians(-90),Math.toRadians(0)); //rotate the camera to see the center of the world
         MovingCameraOnZ movingCamera = new MovingCameraOnZ(world.getCamera());
 
 

@@ -116,8 +116,7 @@ public class TreeTest implements UpdateCallback {
             cone.cone(bh, r, n);
         }
 
-
-        System.out.println(ii.v + " " + vi.v*3);
+        // System.out.println(ii.v + " " + vi.v*3);
 
         int[] nis = new int[ii.v];
         float[] nvs = new float[vi.v*3];

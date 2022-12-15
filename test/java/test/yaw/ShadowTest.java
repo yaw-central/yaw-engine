@@ -1,5 +1,6 @@
 package test.yaw;
 
+import org.joml.Math;
 import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
@@ -8,9 +9,11 @@ import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.ShadowMap;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.DeprecatedMeshBuilder;
+import yaw.engine.mesh.builder.Cuboid;
+import yaw.engine.mesh.builder.Rectangle;
 
 /**
- * The objective of this exemple is to show the lights behaviour, with mixed color, testing the positionning of different lights
+ * The objective of this example is to show the lights behaviour, with mixed color, testing the positioning of different lights
  */
 public class ShadowTest implements UpdateCallback {
 
@@ -18,7 +21,7 @@ public class ShadowTest implements UpdateCallback {
 
     private ItemObject cube;
     private ItemObject floor;
-    private float speed = 10;
+    private float speed = 0.25f;
 
     public ShadowTest() {
 
@@ -37,11 +40,13 @@ public class ShadowTest implements UpdateCallback {
 
         world.getSceneLight().getAmbientLight().setIntensity(0.3f);
 
-        Mesh cubem = DeprecatedMeshBuilder.generateBlock(1, 1, 1);
-        Mesh floorm = DeprecatedMeshBuilder.generateBlock(10, 0.1f, 10);
+        Mesh cubem = new Cuboid(1).generate();
+        Mesh floorm = new Rectangle(10).generate();
+                // DeprecatedMeshBuilder.generateBlock(10, 0.1f, 10);
 
-        cube = world.createItemObject("cube", 0, 2, 0, 1.0f, cubem);
+        cube = world.createItemObject("cube", 0, 1.3f, 0, 1.0f, cubem);
         floor = world.createItemObject("floor", 0, 0, 0, 1.0f, floorm);
+        floor.rotateX(-90);
 
         world.registerUpdateCallback(this);
 
@@ -52,9 +57,7 @@ public class ShadowTest implements UpdateCallback {
     }
 
     public void update(double deltaTime) {
-
-        cube.rotateXYZ(3.1415925f / 4f * speed * (float) deltaTime, 3.1415925f * speed * (float) deltaTime, 3.1415925f / 2f * speed * (float) deltaTime);
-
+        cube.rotateXYZ(3.1415925f / 4 * speed * (float) deltaTime, 3.1415925f * speed * (float) deltaTime, 3.1415925f / 2f * speed * (float) deltaTime);
     }
 
     public static void main(String[] args) {
