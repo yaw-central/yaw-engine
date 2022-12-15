@@ -1,7 +1,7 @@
 package test.yaw.unittests;
 
 import org.joml.Vector2f;
-import yaw.engine.mesh.GeomLib;
+import yaw.engine.geom.GeomLib;
 
 import java.util.List;
 
