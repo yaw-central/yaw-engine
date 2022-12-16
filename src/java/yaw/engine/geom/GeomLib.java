@@ -25,7 +25,7 @@ public class GeomLib {
         return makeCircleApprox(0, 0, 1.0f, nbVertices);
     }
 
-    public Geometry makeCuboid(float xLength, float yLength, float zLength) {
+    public static Geometry makeCuboid(float xLength, float yLength, float zLength) {
         Geometry cuboid = new Geometry();
         // vertices
         float x = xLength / 2f;
@@ -78,11 +78,11 @@ public class GeomLib {
         return cuboid;
     }
 
-    public Geometry makeCube(float length) {
+    public static Geometry makeCube(float length) {
         return makeCuboid(length, length, length);
     }
 
-    public Geometry makeRectangle(float xLength, float yLength) {
+    public static Geometry makeRectangle(float xLength, float yLength) {
         Geometry rect = new Geometry();
         // vertices
         float x = xLength / 2f;

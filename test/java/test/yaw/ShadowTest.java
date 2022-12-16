@@ -40,7 +40,8 @@ public class ShadowTest implements UpdateCallback {
 
         world.getSceneLight().getAmbientLight().setIntensity(0.3f);
 
-        Mesh cubem = new Cuboid(1).generate();
+//        Mesh cubem = new Cuboid(1).generate();
+        Mesh cubem = MeshExamples.makeDice(1);
         Mesh floorm = new Rectangle(10).generate();
                 // DeprecatedMeshBuilder.generateBlock(10, 0.1f, 10);
 

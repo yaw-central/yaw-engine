@@ -51,7 +51,7 @@ public class Geometry {
             throw new Error("Vertex indices must be triples.");
         }
         for(int i=0; i<vrefs.length; i+=3) {
-            addVertex(vrefs[i], vrefs[i+1], vrefs[i+2]);
+            addTriangle(vrefs[i], vrefs[i+1], vrefs[i+2]);
         }
     }
 

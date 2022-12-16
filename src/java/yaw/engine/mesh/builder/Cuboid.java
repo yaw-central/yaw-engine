@@ -1,5 +1,7 @@
 package yaw.engine.mesh.builder;
 
+import yaw.engine.geom.GeomLib;
+import yaw.engine.geom.Geometry;
 import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
@@ -148,10 +150,10 @@ public class Cuboid implements MeshBuilder {
                 16, 19, 18, 16, 17, 19,
                 //Right face
                 20, 22, 21, 22, 23, 21};
-        Mesh lMesh = new Mesh(vertices, textCoord, normals, indices, 8);
+
+        Geometry geom = GeomLib.makeCuboid(xLength, yLength, zLength);
+        Mesh lMesh = new Mesh(geom.getVertices(), geom.getNormals(), geom.getIndices());
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
-        Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
-        lMesh.putOptionalAttributes(lOptionalAttributes);
         return lMesh;
     }
 }
