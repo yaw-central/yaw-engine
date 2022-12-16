@@ -25,10 +25,7 @@ public class RotatingCube implements UpdateCallback {
 	public ItemObject getItem() {
 		return cube;
 	}
-	
-	static Mesh createCube() {
-		return new Cuboid(1).generate();
-	}
+
 	
 	@Override
 	public void update(double deltaTime) {
@@ -54,12 +51,11 @@ public class RotatingCube implements UpdateCallback {
 	}
 	
 	public static void main(String[] args) {
-		Mesh cubem = createCube();
-		
+
 		World world = new World(0, 0, 800, 600);
-		
+
+		Mesh cubem = MeshExamples.makeDice(1);
 		ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, cubem);
-		cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
 		cube.translate(2f,0f, -5f);
 
 		RotatingCube rCube = new RotatingCube(cube);

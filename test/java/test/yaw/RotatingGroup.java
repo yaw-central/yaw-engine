@@ -1,9 +1,12 @@
 package test.yaw;
 
+import org.joml.Vector3f;
+import yaw.engine.ColorLib;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.PointLight;
 import yaw.engine.light.SpotLight;
 import yaw.engine.mesh.*;
 import yaw.engine.mesh.builder.Cuboid;
@@ -57,23 +60,23 @@ public class RotatingGroup implements UpdateCallback {
     }
 
     public static void main(String[] args) {
-        Mesh cubem = createCube();
-        Mesh cubem2 = createCube();
-        Mesh cubem3 = createCube();
-
-
         World world = new World(0, 0, 800, 600);
 
         world.getCamera().setPosition(0,0,0);
-        world.getSceneLight().setSpotLight(new SpotLight(1, 300, 1, 0, 0, 10, 1f, 0, 0.1f, 0, 0, 0, -.1f, 10f), 1);
+        //world.getSceneLight().setSpotLight(new SpotLight(1, 200, 1, 0, 0, 10, 1f, 0, 0.1f, 0, 0, 0, -.1f, 10f), 1);
 
+        Mesh cubem = MeshLib.makeSolidCube(1, ColorLib.BLUE);
+        Mesh cubem2 = MeshLib.makeSolidCube(1, ColorLib.RED);
+        Mesh cubem3 = MeshLib.makeSolidCube(1, ColorLib.YELLOW);
+
+        world.getSceneLight().setPointLight(new PointLight(ColorLib.YELLOW, new Vector3f(0, 0, -8.0f), 1.0f, 1.0f, 0.09f, 0.032f), 0);
 
         ItemObject cube = world.createItemObject("cube", -2.5f, 0f, -8f, 1.0f, cubem);
-        cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
+        //cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         ItemObject cube2 = world.createItemObject("cube2", 2.5f, 0f, -8f, 1.0f, cubem2);
-        cube2.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
+        //cube2.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         ItemObject cube3 = world.createItemObject("cube3", 0f, 0f, -8f, 1.0f, cubem3);
-        cube2.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
+        //cube2.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));
         ItemGroup g = new ItemGroup("g");
         g.add("first",cube);
 
