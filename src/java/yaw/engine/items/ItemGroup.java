@@ -164,22 +164,20 @@ public class ItemGroup extends Item {
 
     /**
      * Rotation along three axes (Euler angles rotation), around center
-     * @param angleX angle of rotation along axis X (in degrees)
+     * @param angleX angle of rotation along axis X (in radians)
      * @param angleY same for axis Y
      * @param angleZ same for axis Z
      * @param center the center of rotation
      */
     public void rotateXYZAround(float angleX, float angleY, float angleZ, Vector3f center) {
-        AxisAngle4f aaxis = new AxisAngle4f(new Quaternionf().rotationXYZ(toRadians(angleX)
-                , toRadians(angleY)
-                , toRadians(angleZ))).normalize();
+        AxisAngle4f aaxis = new AxisAngle4f(new Quaternionf().rotationXYZ(angleX, angleY, angleZ)).normalize();
         rotateAxisAround(toDegrees(aaxis.angle), new Vector3f(aaxis.x, aaxis.y, aaxis.z), center);
     }
 
 
     /**
      * Rotate along X axis, around center
-     * @param angle of rotation (in degree)
+     * @param angle of rotation (in radians)
      * @param center the center of rotation
      */
     public void rotateXAround(float angle, Vector3f center) {
@@ -188,7 +186,7 @@ public class ItemGroup extends Item {
 
     /**
      * Rotate along Y axis, around center
-     * @param angle of rotation (in degree)
+     * @param angle of rotation (in radians)
      * @param center the center of rotation
      */
     public void rotateYAround(float angle, Vector3f center) {
@@ -197,7 +195,7 @@ public class ItemGroup extends Item {
 
     /**
      * Rotate along Z axis, around center
-     * @param angle of rotation (in degree)
+     * @param angle of rotation (in radians)
      * @param center the center of rotation
      */
     public void rotateZAround(float angle, Vector3f center) {

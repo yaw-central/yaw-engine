@@ -1,24 +1,17 @@
 package yaw.engine;
 
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
-import yaw.engine.items.HitBox;
-import yaw.engine.items.Item;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
-import yaw.engine.meshs.Material;
-import yaw.engine.meshs.Mesh;
-import yaw.engine.meshs.Texture;
-import yaw.engine.meshs.strategy.DefaultDrawingStrategy;
+import yaw.engine.mesh.Texture;
 import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
-import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  * This the main loop controlled by the World facade.
@@ -214,14 +207,16 @@ public class MainLoop implements Runnable {
 
     public synchronized void registerInputCallback(InputCallback callback) {
         inputCallback = callback;
-        Window.getGLFWKeyCallback().registerInputCallback(callback);
+        if(initialized) {
+            Window.getGLFWKeyCallback().registerInputCallback(callback);
+        }
     }
 
     //3D click
 
     public synchronized void registerMouse3DClickCallBack(Mouse3DClickCallBack mc){
         if(mouseCallback != null) {
-            throw new Error("Input callback already registered");
+            throw new Error("Mouse callback already registered");
         }
         mouseCallback = mc;
 
@@ -229,10 +224,6 @@ public class MainLoop implements Runnable {
             Window.getGLFWMouseCallback().registerMouseCallback(mc);
         }
     }
-
-
-
-
 
 
     // End 3D click
