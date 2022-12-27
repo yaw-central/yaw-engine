@@ -20,7 +20,7 @@ public class RotatingGroup implements UpdateCallback {
     private static long deltaRefreshMillis = 1000;
     private long prevDeltaRefreshMillis = 0;
     private ItemGroup cubes ;
-    private float speed = 10f / 256f;
+    private float speed = 10f / 512f;
 
     public RotatingGroup(ItemGroup cubes) {
         this.cubes = cubes;
@@ -42,14 +42,14 @@ public class RotatingGroup implements UpdateCallback {
         long currentMillis = System.currentTimeMillis();
         if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
             double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
+            //System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
             nbUpdates = 0;
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
         }
 
         cubes.rotateXYZ(0.0f, 3.1415925f * speed * (float) deltaTime, 0.0f);
-        cubes.fetchItem("first").rotateXYZ(0f, 0.1f, 0f);
+        cubes.fetchItem("first").rotateXYZ(0f, 0.01f, 0f);
         //cubes.rotateXYZ(0f, 0f, 0.1f);
 
         /*for(int i=0; i<cubes.getItems().size();i++){
