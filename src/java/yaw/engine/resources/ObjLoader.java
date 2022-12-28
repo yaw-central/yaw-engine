@@ -4,9 +4,7 @@ import org.w3c.dom.Text;
 import yaw.engine.geom.Geometry;
 import yaw.engine.mesh.Mesh;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +38,14 @@ public class ObjLoader {
         return parseFromBufferedReader(new BufferedReader(new FileReader(filename)));
     }
 
-
+    public static Mesh parseFromResource(String name) throws IOException {
+        InputStream istream = ObjLoader.class.getResourceAsStream(name);
+        if (istream == null) {
+            throw new ParseError("Cannot find resource: "+name);
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(istream));
+        return parseFromBufferedReader(reader);
+    }
 
     public static Mesh parseFromBufferedReader(BufferedReader reader) throws IOException {
         String[] lines = Utils.readLines(reader);
