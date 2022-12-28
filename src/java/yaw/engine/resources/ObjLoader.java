@@ -47,59 +47,92 @@ public class ObjLoader {
         if (line.isEmpty()) {
             return new NoEntry(linepos);
         }
-        int charpos = 1;
-        char nextChar = fetchChar(line, charpos, linepos);
-        if (nextChar == '#') {
+        if (line.charAt(0) == '#') {
             return new LineComment(line.substring(1).trim(), linepos);
-        } else if (nextChar == 'v') {
-            charpos += 1;
-            nextChar = fetchChar(line, charpos, linepos);
-            if (Character.isSpaceChar(nextChar)) {
-                charpos += 1;
-                nextChar = fetchChar(line, charpos, linepos);
-                // parse a vertex
-                Utils.FloatParse fpx = Utils.parseFloat(line, charpos-1);
-                if (fpx == null) {
-                    throw new ParseError("Expecting X coordinate for vertex", linepos);
-                }
-                charpos = fpx.endpos + 1;
-                Utils.FloatParse fpy = Utils.parseFloat(line, charpos-1);
-                if (fpy == null) {
-                    throw new ParseError("Expecting Y coordinate for vertex", linepos);
-                }
-                charpos = fpy.endpos + 1;
-                Utils.FloatParse fpz = Utils.parseFloat(line, charpos-1);
-                if (fpz == null) {
-                    throw new ParseError("Expecting Z coordinate for vertex", linepos);
-                }
-                return new VertexEntry(fpx.f, fpy.f, fpz.f, linepos);
+        }
 
-            } else if (nextChar == 'n') {
-                // parse a normal
-            } else if (nextChar == 't') {
-                // parse a texture coordinate
+        String[] parts = line.split("\\s+");
+        if (parts.length == 0) {
+            return new NoEntry(linepos);
+        }
 
-            } else {
-                throw new ParseError("Unsupported entry type: v" + nextChar, linepos);
+        if (parts[0].equals("v")) {
+            // parse a vertex
+            if (parts.length < 4) {
+                throw new ParseError("Not enough coordinates for vertex", linepos);
+            }
+            float x,y ,z;
+            try {
+                x = Float.parseFloat(parts[1]);
+                y = Float.parseFloat(parts[2]);
+                z = Float.parseFloat(parts[3]);
+            } catch (NumberFormatException e) {
+                throw new ParseError("Cannot parse vertex coordinates", linepos, e);
             }
 
-        } else if (nextChar == 'f') {
-            // parse a face (vertex indices)
+            return new VertexEntry(x, y, z, linepos);
+        } else if (parts[0].equals("vn")) {
+            // parse a normal
+            if (parts.length < 4) {
+                throw new ParseError("Not enough coordinates for normal", linepos);
+            }
+            float nx, ny ,nz;
+            try {
+                nx = Float.parseFloat(parts[1]);
+                ny = Float.parseFloat(parts[2]);
+                nz = Float.parseFloat(parts[3]);
+            } catch (NumberFormatException e) {
+                throw new ParseError("Cannot parse normal coordinates", linepos, e);
+            }
+
+            return new NormalEntry(nx, ny, nz, linepos);
+        } else if (parts[0].equals("vt")) {
+            // parse a texture coordinates
+            if (parts.length < 3) {
+                throw new ParseError("Not enough coordinates for texture", linepos);
+            }
+            float tx, ty;
+            try {
+                tx = Float.parseFloat(parts[1]);
+                ty = Float.parseFloat(parts[2]);
+            } catch (NumberFormatException e) {
+                throw new ParseError("Cannot parse texture coordinates", linepos, e);
+            }
+
+            return new TextureEntry(tx, ty, linepos);
+        } else if (parts[0].equals("f")) {
+            // Parse a face
+            List<FaceVertex> faces = new ArrayList<>();
+            for(int i=1; i<parts.length; i++) {
+                String[] sindices = parts[i].split("/");
+                if (sindices.length == 0 || sindices.length > 3) {
+                    throw new ParseError("Cannot parse face : wrong indices", linepos);
+                }
+                int[] indices = new int[sindices.length];
+                for(int j=0; j<sindices.length; j++) {
+                    try {
+                        if (sindices[j].equals("")) {
+                            indices[j] = 0;
+                        } else {
+                            indices[j] = Integer.parseInt(sindices[j]);
+                        }
+                    } catch (NumberFormatException e) {
+                        throw new ParseError("Cannot parse face index", linepos, e);
+                    }
+                }
+                switch (indices.length) {
+                    case 1: faces.add(new FaceVertex(indices[0], 0, 0)); break;
+                    case 2: faces.add(new FaceVertex(indices[0], indices[1], 0)); break;
+                    case 3: faces.add(new FaceVertex(indices[0], indices[1], indices[2]));break;
+                    default:
+                        throw new Error("Should not be reachable (please report)");
+                }
+            }
+            return new FaceEntry(faces.toArray(new FaceVertex[0]), linepos);
         } else {
-            throw new ParseError("Unsupported entry: " + line, linepos);
+            return new UnsupportedEntry(parts[0], line, linepos);
         }
 
-        return null;
-    }
-
-    private static char fetchChar(String str, int charpos, int linepos) {
-        if (charpos -1 < 0) {
-            throw new Error("Wrong char position: " + (charpos - 1) + " (please report)");
-        }
-        if (charpos - 1 >= str.length()) {
-            throw new ParseError("Unexpected end of line", linepos);
-        }
-        return str.charAt(charpos - 1);
     }
 
 }

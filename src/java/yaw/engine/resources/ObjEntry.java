@@ -7,6 +7,7 @@ public abstract class ObjEntry {
         , NORMAL
         , FACE
         , LINE_COMMENT
+        , UNSUPPORTED
         , NO_ENTRY
     }
 
@@ -63,3 +64,59 @@ class VertexEntry extends ObjEntry {
     }
 }
 
+class NormalEntry extends ObjEntry {
+    public float nx;
+    public float ny;
+    public float nz;
+
+    public NormalEntry(float nx, float ny, float nz, int linepos) {
+        super(EntryType.NORMAL, linepos);
+        this.nx = nx;
+        this.ny = ny;
+        this.nz = nz;
+    }
+}
+
+class TextureEntry extends ObjEntry {
+    public float tx;
+    public float ty;
+
+    public TextureEntry(float tx, float ty, int linepos) {
+        super(EntryType.TEXT_COORD, linepos);
+        this.tx = tx;
+        this.ty = ty;
+    }
+}
+
+class FaceEntry extends ObjEntry {
+    FaceVertex[] face;
+
+    public FaceEntry(FaceVertex[] face, int linepos) {
+        super(EntryType.FACE, linepos);
+        this.face = face;
+    }
+}
+
+class FaceVertex {
+    public int vertexId;
+    public int textId;
+    public int normId;
+
+    public FaceVertex(int vertexId, int textId, int normId) {
+        // remark : Id=0 means no id
+        this.vertexId = vertexId;
+        this.textId = textId;
+        this.normId = normId;
+    }
+}
+
+class UnsupportedEntry extends ObjEntry {
+    public String keyword;
+    public String line;
+
+    public UnsupportedEntry(String keyword, String line, int linepos) {
+        super(EntryType.UNSUPPORTED, linepos);
+        this.keyword = keyword;
+        this.line = line;
+    }
+}
