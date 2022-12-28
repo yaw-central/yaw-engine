@@ -27,6 +27,13 @@ public abstract class ObjEntry {
         return linepos;
     }
 
+    public VertexEntry asVertex() { throw new Error("Cannot downcast"); }
+    public TextureEntry asTexture() { throw new Error("Cannot downcast"); }
+
+    public NormalEntry asNormal() { throw new Error("Cannot downcast"); }
+
+    public FaceEntry asFace() { throw new Error("Cannot downcast"); }
+
     @Override
     public String toString() {
         return type + "{" +
@@ -62,6 +69,11 @@ class VertexEntry extends ObjEntry {
         this.y = y;
         this.z = z;
     }
+
+    @Override
+    public VertexEntry asVertex() {
+        return this;
+    }
 }
 
 class NormalEntry extends ObjEntry {
@@ -75,6 +87,11 @@ class NormalEntry extends ObjEntry {
         this.ny = ny;
         this.nz = nz;
     }
+
+    @Override
+    public NormalEntry asNormal() {
+        return this;
+    }
 }
 
 class TextureEntry extends ObjEntry {
@@ -86,6 +103,11 @@ class TextureEntry extends ObjEntry {
         this.tx = tx;
         this.ty = ty;
     }
+
+    @Override
+    public TextureEntry asTexture() {
+        return this;
+    }
 }
 
 class FaceEntry extends ObjEntry {
@@ -94,6 +116,11 @@ class FaceEntry extends ObjEntry {
     public FaceEntry(FaceVertex[] face, int linepos) {
         super(EntryType.FACE, linepos);
         this.face = face;
+    }
+
+    @Override
+    public FaceEntry asFace() {
+        return this;
     }
 }
 

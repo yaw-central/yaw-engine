@@ -1,7 +1,9 @@
 package yaw.engine.geom;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+import yaw.engine.mesh.Mesh;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +13,15 @@ public class Geometry {
     private List<Vector3f> vertices;
     private List<Vector3i> triangles;
 
+    private List<Vector2f> textCoords;
+
     private List<Vector3f> normals;
+
 
     public Geometry() {
         vertices = new ArrayList<>();
         triangles = new ArrayList<>();
+        textCoords = new ArrayList<>();
         normals = new ArrayList<>();
     }
 
@@ -149,4 +155,45 @@ public class Geometry {
         }
         return norms;
     }
+
+    public void addTextCoord(float tx, float ty) {
+        textCoords.add(new Vector2f(tx, ty));
+    }
+
+    public float[] getTextCoords() {
+        if (textCoords.isEmpty()) {
+            throw new Error("No texture coordinates in geometry");
+        }
+        float[] tcoords = new float[textCoords.size()*2];
+        int i = 0;
+        for(Vector2f t : textCoords) {
+            tcoords[i] = t.x;
+            tcoords[i+1] = t.y;
+            i += 2;
+        }
+        return tcoords;
+    }
+
+    public Mesh buildMesh() {
+        float[] vertices = getVertices();
+        float[] uvCoords = null;
+        if(!textCoords.isEmpty()) {
+            uvCoords = getTextCoords();
+        }
+        if (normals.isEmpty()) {
+            generateNormals();
+        }
+        float[] normals = getNormals();
+
+        int[] indices = getIndices();
+
+        Mesh mesh = null;
+        if(!textCoords.isEmpty()) {
+            mesh = new Mesh(vertices, uvCoords, normals, indices);
+        } else {
+            mesh = new Mesh(vertices, normals, indices);
+        }
+        return mesh;
+    }
+
 }
