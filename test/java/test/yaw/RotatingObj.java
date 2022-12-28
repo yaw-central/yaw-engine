@@ -51,8 +51,8 @@ public class RotatingObj implements UpdateCallback {
 
 		float angle = 2.0f * 3.1415925f * (float) deltaTime * speed;
 		//System.out.println(deltaTime);
-		cube.rotateZ(angle);
-		cube.rotateXYZAround(0f, 3.1415925f * speed * (float) deltaTime, 0f, new Vector3f(0f, 0f, -10f));
+		cube.rotateY(angle);
+		//cube.rotateXYZAround(0f, 3.1415925f * speed * (float) deltaTime, 0f, new Vector3f(0f, 0f, -10f));
 		//cube.rotateX(0.0f);
 
 
@@ -62,6 +62,7 @@ public class RotatingObj implements UpdateCallback {
 
 		World world = new World(0, 0, 800, 600);
 		world.getSceneLight().setSun(new DirectionalLight());
+		world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
 
 		Mesh objm = null;
 		try {
@@ -73,9 +74,12 @@ public class RotatingObj implements UpdateCallback {
 
 		objm.setDrawingStrategy(new DefaultDrawingStrategy());
 		Material mat = new Material();
+		mat.setColor(new Vector3f(1f , 0.7f, 0.5f));
 		objm.setMaterial(mat);
-		ItemObject obji = world.createItemObject("obj", 0f, 0f, -2f, 1.0f, objm);
-		obji.translate(2f,0f, -5f);
+		ItemObject obji = world.createItemObject("obj", 0f, 0f, 0f, 1.0f, objm);
+		//obji.translate(2f,0f, -5f);
+
+		world.getCamera().translate(0, 0,4);
 
 		RotatingObj rObj = new RotatingObj(obji);
 
