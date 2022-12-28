@@ -4,6 +4,8 @@ import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.DirectionalLight;
+import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 import yaw.engine.resources.ObjLoader;
@@ -48,7 +50,7 @@ public class RotatingObj implements UpdateCallback {
 		//cube.rotateZAround(1f, new Vector3f(0f, 0f, -3f));
 
 		float angle = 2.0f * 3.1415925f * (float) deltaTime * speed;
-		System.out.println(deltaTime);
+		//System.out.println(deltaTime);
 		cube.rotateZ(angle);
 		cube.rotateXYZAround(0f, 3.1415925f * speed * (float) deltaTime, 0f, new Vector3f(0f, 0f, -10f));
 		//cube.rotateX(0.0f);
@@ -59,21 +61,23 @@ public class RotatingObj implements UpdateCallback {
 	public static void main(String[] args) {
 
 		World world = new World(0, 0, 800, 600);
+		world.getSceneLight().setSun(new DirectionalLight());
 
 		Mesh objm = null;
 		try {
-			objm = ObjLoader.parseFromResource("/resources/models/mycube.obj");
+			objm = ObjLoader.parseFromResource("/resources/models/cube.obj");
 		} catch (IOException e) {
 			System.out.println("Errror : " + e.getMessage());
 			System.exit(1);
 		}
 
 		objm.setDrawingStrategy(new DefaultDrawingStrategy());
+		Material mat = new Material();
+		objm.setMaterial(mat);
 		ItemObject obji = world.createItemObject("obj", 0f, 0f, -2f, 1.0f, objm);
 		obji.translate(2f,0f, -5f);
 
 		RotatingObj rObj = new RotatingObj(obji);
-
 
 		world.registerUpdateCallback(rObj);
 

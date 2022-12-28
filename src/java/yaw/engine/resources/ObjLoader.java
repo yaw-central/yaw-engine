@@ -126,7 +126,7 @@ public class ObjLoader {
             }
             // Here we have the vertex indices, we now apply a dumb triangulation
             // algorithm for faces with more than 3 points
-            for(int i=0; i<triIndices.length - 1; i+=2) {
+            for(int i=1; i<triIndices.length - 1; i++) {
                 GLTriangle tri = new GLTriangle(triIndices[0], triIndices[i], triIndices[i+1]);
                 glTriangles.add(tri);
             }
