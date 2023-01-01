@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
@@ -21,7 +22,7 @@ public class RotatingObj implements UpdateCallback {
 	private static long deltaRefreshMillis = 1000;
 	private long prevDeltaRefreshMillis = 0;
 	private ItemObject cube ;
-	private float speed = 0.025f;
+	private float speed = 0.1f;
 
 	public RotatingObj(ItemObject cube) {
 		this.cube = cube;
@@ -62,11 +63,12 @@ public class RotatingObj implements UpdateCallback {
 
 		World world = new World(0, 0, 800, 600);
 		world.getSceneLight().setSun(new DirectionalLight());
-		world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
+		//world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
+		world.getSceneLight().setAmbient(new AmbientLight(1.0f, 1.0f, 1.0f, 0.3f));
 
 		Mesh objm = null;
 		try {
-			objm = ObjLoader.parseFromResource("/resources/models/cube.obj");
+			objm = ObjLoader.parseFromResource("/resources/models/icosphere.obj");
 		} catch (IOException e) {
 			System.out.println("Errror : " + e.getMessage());
 			System.exit(1);
@@ -74,7 +76,7 @@ public class RotatingObj implements UpdateCallback {
 
 		objm.setDrawingStrategy(new DefaultDrawingStrategy());
 		Material mat = new Material();
-		mat.setColor(new Vector3f(1f , 0.7f, 0.5f));
+		mat.setColor(new Vector3f(0.1f , 0.7f, 0.9f));
 		objm.setMaterial(mat);
 		ItemObject obji = world.createItemObject("obj", 0f, 0f, 0f, 1.0f, objm);
 		//obji.translate(2f,0f, -5f);
