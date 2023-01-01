@@ -6,4 +6,9 @@ public class TestLib {
             super("Test Error: " + msg);
         }
     }
+
+    public static void main(String ... args) {
+        GeomLibTest.testAll();
+        ObjLoaderTest.testAll();
+    }
 }
