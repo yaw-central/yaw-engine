@@ -1,8 +1,6 @@
 package yaw.engine.resources;
 
-import org.w3c.dom.Text;
 import yaw.engine.geom.Geometry;
-import yaw.engine.mesh.Mesh;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ObjLoader {
-    public enum TriangulationMode {
-        NO_TRIANGULATION
-        , TRIANGLE_FANS
-    };
+    public enum LoadMode {
+        LOAD_UNDEFINED
+        , LOAD_FROM_FILE
+        , LOAD_FROM_RESOURCE
+    }
 
     public static class ParseError extends Error {
         public ParseError(String message) {
@@ -34,38 +33,135 @@ public class ObjLoader {
         }
     }
 
-    public static Mesh parseFromFile(String filename) throws IOException {
-        return parseFromBufferedReader(new BufferedReader(new FileReader(filename)));
+    private LoadMode loadMode = LoadMode.LOAD_UNDEFINED;
+    private String loadPath = null;
+
+    private ObjScene objScene;
+
+    private String currentObject = null;
+
+    public ObjLoader() {
+        objScene = new ObjScene();
     }
 
-    public static Mesh parseFromResource(String name) throws IOException {
+    public ObjScene getScene() {
+        return objScene;
+    }
+
+    public void parseFromFile(String filename) throws IOException {
+        loadMode = LoadMode.LOAD_FROM_FILE;
+        loadPath = filename;
+        objScene = new ObjScene();
+        currentObject = null;
+        parseFromBufferedReader(new BufferedReader(new FileReader(filename)));
+    }
+
+    public void parseFromResource(String name) throws IOException {
         InputStream istream = ObjLoader.class.getResourceAsStream(name);
         if (istream == null) {
             throw new ParseError("Cannot find resource: "+name);
         }
         BufferedReader reader = new BufferedReader(new InputStreamReader(istream));
-        return parseFromBufferedReader(reader);
+        loadMode = LoadMode.LOAD_FROM_RESOURCE;
+        loadPath = name;
+        objScene = new ObjScene();
+        currentObject = null;
+        parseFromBufferedReader(reader);
     }
 
-    public static Mesh parseFromBufferedReader(BufferedReader reader) throws IOException {
+    public void parseFromBufferedReader(BufferedReader reader) throws IOException {
         String[] lines = Utils.readLines(reader);
-        return parseFromLines(lines);
+        parseFromLines(lines);
     }
 
-    public static Mesh parseFromLines(String[] lines) {
+    public void parseFromLines(String[] lines) {
+        int linepos = 0;
+
+        while(linepos < lines.length - 1) {
+            linepos++;
+            ObjEntry entry = parseLine(linepos, lines[linepos - 1]);
+            switch (entry.getType()) {
+                case MTLLIB:
+                    MtlLoader mtlLoader = new MtlLoader(objScene);
+                    switch (loadMode) {
+                        case LOAD_FROM_FILE: {
+                            String mtlName = Utils.fetchRelativeName(loadPath, ((MtlLibEntry) entry).mtllib);
+                            try {
+                                mtlLoader.parseFromFile(mtlName);
+                            } catch (IOException e) {
+                                throw new ParseError("Cannot parse MTL file '" + mtlName + "'", linepos, e);
+                            }
+                            break;
+                        }
+                        case LOAD_FROM_RESOURCE: {
+                            String mtlName = Utils.fetchRelativeName(loadPath, ((MtlLibEntry) entry).mtllib);
+                            try {
+                                mtlLoader.parseFromResource(mtlName);
+                            } catch (IOException e) {
+                                throw new ParseError("Cannot parse MTL resource '" + mtlName + "'", linepos, e);
+                            }
+                            break;
+                        }
+                        default:
+                            throw new Error("Undefined load mode (please report)");
+                    }
+                    break;
+                case LINE_COMMENT:
+                case NO_ENTRY:
+                    continue;
+                default:
+                    // let's parse a new geometry
+                    linepos = parseGeometry(lines, linepos);
+            }
+        }
+    }
+
+    public int parseGeometry(String[] lines, int startline) {
+        int linepos = startline - 1;
+        String objName = null;
+        String matName = null;
         List<VertexEntry> vertexEntries = new ArrayList<>();
         List<TextureEntry> textureEntries = new ArrayList<>();
         List<NormalEntry> normalEntries = new ArrayList<>();
         List<FaceEntry> faceEntries = new ArrayList<>();
-        for(int i=0; i<lines.length; i++) {
-            ObjEntry entry = parseLine(i+1, lines[i]);
+        boolean cont = true;
+        while (cont) {
+            linepos++;
+            if (linepos -1 >= lines.length) {
+                // no more line, let's build the geometry
+                break;
+            }
+            ObjEntry entry = parseLine(linepos, lines[linepos-1]);
             switch (entry.getType()) {
                 case VERTEX: vertexEntries.add(entry.asVertex());break;
                 case TEXT_COORD: textureEntries.add(entry.asTexture());break;
                 case NORMAL: normalEntries.add(entry.asNormal());break;
                 case FACE: faceEntries.add(entry.asFace());break;
+                case NO_ENTRY:
+                case UNSUPPORTED:
+                    break;
+                case USEMTL:
+                    if (matName == null) {
+                        matName = ((UseMtlEntry) entry).matName;
+                    } else {
+                        // a new material is specified, we end the geometry
+                        cont = false;
+                    }
+                    break;
+                case MTLLIB:
+                    // somewhat unexpected, we end the geometry
+                    cont = false;
+                    break;
+                case OBJNAME:
+                    if (objName == null) {
+                        objName = ((ObjNameEntry) entry).objName;
+                    } else {
+                        // a new object will start, we end the geometry
+                        cont = false;
+                    }
+                    break;
                 default:
-                    break; // skip
+                    throw new Error("Unexpected entry: " + entry);
             }
         }
 
@@ -149,13 +245,17 @@ public class ObjLoader {
             geom.addTriangle(glTriangles.get(i).indice1, glTriangles.get(i).indice2, glTriangles.get(i).indice3);
         }
 
-        Mesh mesh = geom.buildMesh();
-        return mesh;
+        if (objName == null) {
+            objName = objScene.getFreshGeomName();
+        }
+        objScene.addGeom(objName, geom);
+        if (matName != null) {
+            objScene.assignMaterial(objName, matName);
+        }
+        return linepos;
     }
 
-
-
-    public static ObjEntry parseLine(int linepos, String line) {
+    public ObjEntry parseLine(int linepos, String line) {
         if (line.isEmpty()) {
             return new NoEntry(linepos);
         }
@@ -168,7 +268,22 @@ public class ObjLoader {
             return new NoEntry(linepos);
         }
 
-        if (parts[0].equals("v")) {
+        if (parts[0].equals("o")) {
+            if (parts.length < 2) {
+                throw new ParseError("Missing object name", linepos);
+            }
+            return new ObjNameEntry(parts[1], linepos);
+        } else  if (parts[0].equals("mtllib")) {
+                if (parts.length < 2) {
+                    throw new ParseError("Missing MTL library name", linepos);
+                }
+                return new MtlLibEntry(parts[1], linepos);
+        } else  if (parts[0].equals("usemtl")) {
+            if (parts.length < 2) {
+                throw new ParseError("Missing MTL material name", linepos);
+            }
+            return new UseMtlEntry(parts[1], linepos);
+        } else if (parts[0].equals("v")) {
             // parse a vertex
             if (parts.length < 4) {
                 throw new ParseError("Not enough coordinates for vertex", linepos);

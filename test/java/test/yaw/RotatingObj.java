@@ -3,6 +3,7 @@ package test.yaw;
 import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
+import yaw.engine.geom.Geometry;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
@@ -64,15 +65,17 @@ public class RotatingObj implements UpdateCallback {
 		World world = new World(0, 0, 800, 600);
 		world.getSceneLight().setSun(new DirectionalLight());
 		//world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
-		world.getSceneLight().setAmbient(new AmbientLight(1.0f, 1.0f, 1.0f, 0.3f));
+		world.getSceneLight().setAmbient(new AmbientLight(1.0f, 1.0f, 1.0f, 0.4f));
 
-		Mesh objm = null;
+		ObjLoader objLoader = new ObjLoader();
 		try {
-			objm = ObjLoader.parseFromResource("/resources/models/icosphere.obj");
+			objLoader.parseFromResource("/resources/models/icosphere.obj");
 		} catch (IOException e) {
 			System.out.println("Errror : " + e.getMessage());
 			System.exit(1);
 		}
+		Geometry geom = objLoader.getScene().getGeometryByIndex(0);
+		Mesh objm = geom.buildMesh();
 
 		objm.setDrawingStrategy(new DefaultDrawingStrategy());
 		Material mat = new Material();

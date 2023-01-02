@@ -6,6 +6,9 @@ public abstract class ObjEntry {
         , TEXT_COORD
         , NORMAL
         , FACE
+        , OBJNAME
+        , MTLLIB
+        , USEMTL
         , LINE_COMMENT
         , UNSUPPORTED
         , NO_ENTRY
@@ -134,6 +137,33 @@ class FaceVertex {
         this.vertexId = vertexId;
         this.textId = textId;
         this.normId = normId;
+    }
+}
+
+class ObjNameEntry extends ObjEntry {
+    public String objName;
+
+    public ObjNameEntry(String objName, int linepos) {
+        super(EntryType.OBJNAME, linepos);
+        this.objName = objName;
+    }
+}
+
+class MtlLibEntry extends ObjEntry {
+    public String mtllib;
+
+    public MtlLibEntry(String mtllib, int linepos) {
+        super(EntryType.MTLLIB, linepos);
+        this.mtllib = mtllib;
+    }
+}
+
+class UseMtlEntry extends ObjEntry {
+    public String matName;
+
+    public UseMtlEntry(String matName, int linepos) {
+        super(EntryType.USEMTL, linepos);
+        this.matName = matName;
     }
 }
 
