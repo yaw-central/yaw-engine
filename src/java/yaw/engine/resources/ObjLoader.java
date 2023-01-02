@@ -16,6 +16,13 @@ public class ObjLoader {
         , TRIANGLE_FANS
     };
 
+    public enum LoadMode {
+        LOAD_UNDEFINED
+        , LOAD_FROM_FILE
+        , LOAD_FROM_RESOURCE
+    }
+
+
     public static class ParseError extends Error {
         public ParseError(String message) {
             super("Parse error ==> " + message);
@@ -34,9 +41,14 @@ public class ObjLoader {
         }
     }
 
+    private LoadMode loadMode = LoadMode.LOAD_UNDEFINED;
+    private String loadPath = null;
+
     public ObjLoader() {}
 
     public Mesh parseFromFile(String filename) throws IOException {
+        loadMode = LoadMode.LOAD_FROM_FILE;
+        loadPath = filename;
         return parseFromBufferedReader(new BufferedReader(new FileReader(filename)));
     }
 
@@ -46,6 +58,8 @@ public class ObjLoader {
             throw new ParseError("Cannot find resource: "+name);
         }
         BufferedReader reader = new BufferedReader(new InputStreamReader(istream));
+        loadMode = LoadMode.LOAD_FROM_RESOURCE;
+        loadPath = name;
         return parseFromBufferedReader(reader);
     }
 
