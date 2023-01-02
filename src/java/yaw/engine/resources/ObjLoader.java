@@ -34,11 +34,13 @@ public class ObjLoader {
         }
     }
 
-    public static Mesh parseFromFile(String filename) throws IOException {
+    public ObjLoader() {}
+
+    public Mesh parseFromFile(String filename) throws IOException {
         return parseFromBufferedReader(new BufferedReader(new FileReader(filename)));
     }
 
-    public static Mesh parseFromResource(String name) throws IOException {
+    public Mesh parseFromResource(String name) throws IOException {
         InputStream istream = ObjLoader.class.getResourceAsStream(name);
         if (istream == null) {
             throw new ParseError("Cannot find resource: "+name);
@@ -47,12 +49,12 @@ public class ObjLoader {
         return parseFromBufferedReader(reader);
     }
 
-    public static Mesh parseFromBufferedReader(BufferedReader reader) throws IOException {
+    public Mesh parseFromBufferedReader(BufferedReader reader) throws IOException {
         String[] lines = Utils.readLines(reader);
         return parseFromLines(lines);
     }
 
-    public static Mesh parseFromLines(String[] lines) {
+    public Mesh parseFromLines(String[] lines) {
         List<VertexEntry> vertexEntries = new ArrayList<>();
         List<TextureEntry> textureEntries = new ArrayList<>();
         List<NormalEntry> normalEntries = new ArrayList<>();
@@ -153,9 +155,7 @@ public class ObjLoader {
         return mesh;
     }
 
-
-
-    public static ObjEntry parseLine(int linepos, String line) {
+    public ObjEntry parseLine(int linepos, String line) {
         if (line.isEmpty()) {
             return new NoEntry(linepos);
         }

@@ -68,7 +68,7 @@ public class RotatingObj implements UpdateCallback {
 
 		Mesh objm = null;
 		try {
-			objm = ObjLoader.parseFromResource("/resources/models/icosphere.obj");
+			objm = new ObjLoader().parseFromResource("/resources/models/icosphere.obj");
 		} catch (IOException e) {
 			System.out.println("Errror : " + e.getMessage());
 			System.exit(1);
