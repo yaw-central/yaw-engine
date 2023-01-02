@@ -1,8 +1,8 @@
 package yaw.engine.resources;
 
+import org.joml.Vector3f;
+
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MtlLoader {
     public enum LoadMode {
@@ -73,27 +73,27 @@ public class MtlLoader {
             currentMaterial = material;
             return;
         } else if (parts[0].equals("Ns")) {
-            float shininess = parseMaterialValue("shininess", parts, linepos);
+            float shininess = parseMaterialFloat("shininess", parts, linepos);
             currentMaterial.shininess = shininess;
             return;
         } else if (parts[0].equals("Ka")) {
-            float ambient = parseMaterialValue("ambient", parts, linepos);
+            Vector3f ambient = parseMaterialVector3f("ambient", parts, linepos);
             currentMaterial.ambient = ambient;
             return;
         } else if (parts[0].equals("Kd")) {
-            float diffuse = parseMaterialValue("diffuse", parts, linepos);
+            Vector3f diffuse = parseMaterialVector3f("diffuse", parts, linepos);
             currentMaterial.diffuse = diffuse;
             return;
         } else if (parts[0].equals("Ks")) {
-            float specular = parseMaterialValue("specular", parts, linepos);
+            Vector3f specular = parseMaterialVector3f("specular", parts, linepos);
             currentMaterial.specular = specular;
             return;
         } else if (parts[0].equals("Ke")) {
-            float emissive = parseMaterialValue("emissive", parts, linepos);
+            Vector3f emissive = parseMaterialVector3f("emissive", parts, linepos);
             currentMaterial.emissive = emissive;
             return;
         } else if (parts[0].equals("d")) {
-            float opacity = parseMaterialValue("opacity", parts, linepos);
+            float opacity = parseMaterialFloat("opacity", parts, linepos);
             currentMaterial.opacity = opacity;
             return;
         } else {
@@ -102,7 +102,7 @@ public class MtlLoader {
         }
     }
 
-    public float parseMaterialValue(String desc, String[] parts, int linepos) {
+    public float parseMaterialFloat(String desc, String[] parts, int linepos) {
         if (parts.length < 2) {
             throw new ObjLoader.ParseError("Missing " + desc + " value", linepos);
         }
@@ -116,5 +116,23 @@ public class MtlLoader {
             throw new ObjLoader.ParseError("Cannot parse "+ desc + " value", linepos, e);
         }
         return value;
+    }
+
+    public Vector3f parseMaterialVector3f(String desc, String[] parts, int linepos) {
+        if (parts.length < 4) {
+            throw new ObjLoader.ParseError("Missing " + desc + " values", linepos);
+        }
+        if (currentMaterial == null) {
+            throw new ObjLoader.ParseError("Material name is not specified", linepos);
+        }
+        float x = 0, y = 0, z = 0;
+        try {
+            x = Float.parseFloat(parts[1]);
+            y = Float.parseFloat(parts[2]);
+            z = Float.parseFloat(parts[3]);
+        } catch (NumberFormatException e) {
+            throw new ObjLoader.ParseError("Cannot parse "+ desc + " value", linepos, e);
+        }
+        return new Vector3f(x, y, z);
     }
 }

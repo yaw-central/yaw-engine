@@ -65,11 +65,11 @@ public class RotatingObj implements UpdateCallback {
 		World world = new World(0, 0, 800, 600);
 		world.getSceneLight().setSun(new DirectionalLight());
 		//world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
-		world.getSceneLight().setAmbient(new AmbientLight(1.0f, 1.0f, 1.0f, 0.3f));
+		world.getSceneLight().setAmbient(new AmbientLight(1.0f, 1.0f, 1.0f, 0.4f));
 
 		ObjLoader objLoader = new ObjLoader();
 		try {
-			objLoader.parseFromResource("/resources/models/cube.obj");
+			objLoader.parseFromResource("/resources/models/icosphere.obj");
 		} catch (IOException e) {
 			System.out.println("Errror : " + e.getMessage());
 			System.exit(1);
