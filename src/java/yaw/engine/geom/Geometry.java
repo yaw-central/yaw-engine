@@ -129,8 +129,8 @@ public class Geometry {
             Vector3f trinorm = v2.sub(v1).cross(v3.sub(v1)).normalize();
 
             normals.set(i1, n1.add(trinorm));
-            normals.set(i2, n1.add(trinorm));
-            normals.set(i3, n1.add(trinorm));
+            normals.set(i2, n2.add(trinorm));
+            normals.set(i3, n3.add(trinorm));
         }
 
         // normalize everything
