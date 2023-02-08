@@ -17,7 +17,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
  * This the main loop controlled by the World facade.
  *
  * */
-public class MainLoop implements Runnable {
+public class GameLoop implements Runnable {
     private final SceneVertex mSceneVertex;
     private final Vector<Skybox> mSkyboxToBeRemoved;
     private Camera mCamera;
@@ -58,7 +58,7 @@ public class MainLoop implements Runnable {
      * @param pInitHeight initHeight
      * @param pInitVSYNC  initVSYNC
      */
-    public MainLoop(int pInitX, int pInitY, int pInitWidth, int pInitHeight, boolean pInitVSYNC) {
+    public GameLoop(int pInitX, int pInitY, int pInitWidth, int pInitHeight, boolean pInitVSYNC) {
         this(pInitX, pInitY, pInitWidth, pInitHeight);
         this.initVSYNC = pInitVSYNC;
         this.initialized = false;
@@ -72,7 +72,7 @@ public class MainLoop implements Runnable {
      * @param pInitWidth  initWidth
      * @param pInitHeight initHeight
      */
-    public MainLoop(int pInitX, int pInitY, int pInitWidth, int pInitHeight) {
+    public GameLoop(int pInitX, int pInitY, int pInitWidth, int pInitHeight) {
         this();
         this.initX = pInitX;
         this.initY = pInitY;
@@ -80,7 +80,7 @@ public class MainLoop implements Runnable {
         this.initHeight = pInitHeight;
     }
 
-    public MainLoop() {
+    public GameLoop() {
         this.mRenderer = new Renderer();
         this.mCamerasList = new Vector<>();
         this.mCamera = new Camera();
