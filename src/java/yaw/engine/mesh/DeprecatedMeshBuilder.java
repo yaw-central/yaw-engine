@@ -37,9 +37,9 @@ public class DeprecatedMeshBuilder {
     public static Mesh generate(String meshType, float xLength, float yLength, float zLength, float cx, float cy, float cz) {
         Mesh mesh = null;
         /*Warning default reflectance*/
-        Material lMaterial = null;
+        ADSMaterial lMaterial = null;
         try {
-            lMaterial = new Material(new Vector3f(cx, cy, cz));
+            lMaterial = new ADSMaterial(new Vector3f(cx, cy, cz));
         } catch (Exception pE) {
             pE.printStackTrace();
         }

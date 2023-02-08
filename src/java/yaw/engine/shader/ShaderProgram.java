@@ -4,7 +4,7 @@ import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.PointLight;
 import yaw.engine.light.SpotLight;
-import yaw.engine.mesh.Material;
+import yaw.engine.mesh.ADSMaterial;
 import yaw.engine.util.LoggerYAW;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -211,7 +211,7 @@ public class ShaderProgram {
      * @param uniformName the uniform name
      * @param material    the material
      */
-    public void setUniform(String uniformName, Material material) {
+    public void setUniform(String uniformName, ADSMaterial material) {
 
         setUniform(uniformName + ".color", material.getColor());
 

@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import yaw.engine.SceneVertex;
 import yaw.engine.items.ItemObject;
-import yaw.engine.mesh.Material;
+import yaw.engine.mesh.ADSMaterial;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.shader.shadowFragShader;
@@ -28,7 +28,7 @@ public class ShadowMap {
         }
 
         @Override
-        public void setUniform(String uniformName, Material material) {
+        public void setUniform(String uniformName, ADSMaterial material) {
             // Don't do anything as there is no material
         }
     }

@@ -35,7 +35,7 @@ public class Mesh {
     private int[] mIndices; //order into which  mVertices should be drawn by referring to their  position
     private float[] mTextCoords;
     private int mWeight;  // the mWeight of an object in a group (e.g. a mass in a group planets)
-    private Material mMaterial;
+    private ADSMaterial mMaterial;
     private Map<String, String> mOptionalAttributes;
     //strategy when we draw the elements
     private MeshDrawingStrategy mDrawingStrategy;
@@ -77,7 +77,7 @@ public class Mesh {
      * @param pWeight     mWeight numbre of vertices
      */
     public Mesh(float[] pVertices, float[] pTextCoords, float[] pNormals, int[] pIndices, int pWeight) {
-        this.mMaterial = new Material();
+        this.mMaterial = new ADSMaterial();
         this.mVertices = pVertices;
         this.mIndices = pIndices;
         this.mNormals = pNormals == null ? generateNormals() : pNormals;
@@ -297,11 +297,11 @@ public class Mesh {
         return mVertices;
     }
 
-    public Material getMaterial() {
+    public ADSMaterial getMaterial() {
         return mMaterial;
     }
 
-    public void setMaterial(Material pMaterial) {
+    public void setMaterial(ADSMaterial pMaterial) {
         this.mMaterial = pMaterial;
     }
 

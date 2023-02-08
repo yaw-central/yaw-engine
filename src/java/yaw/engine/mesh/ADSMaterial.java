@@ -7,7 +7,7 @@ import org.joml.Vector3f;
  * ColorMapping, TextMapping, ProceduralMapping (material generator with reuse of images)
  */
 
-public class Material {
+public class ADSMaterial {
     private static final float REFLECTANCE_DEFAULT_VALUE = 0f;
     private static final Vector3f DEFAULT_COLOUR = new Vector3f(1.0f, 1.0f, 1.0f);
 
@@ -23,7 +23,7 @@ public class Material {
      *
      * @param pReflectance reflectance reflectance should be between 0 and 1
      */
-    public Material(float pReflectance) {
+    public ADSMaterial(float pReflectance) {
         this();
         this.mReflectance = pReflectance;
     }
@@ -31,7 +31,7 @@ public class Material {
     /**
      * Construct a material with white color and an initial reflectance value of 1000f
      */
-    public Material() {
+    public ADSMaterial() {
         this.mColor = DEFAULT_COLOUR;
         this.mReflectance = REFLECTANCE_DEFAULT_VALUE;
     }
@@ -41,7 +41,7 @@ public class Material {
      *
      * @param pTexture the texture
      */
-    public Material(Texture pTexture) {
+    public ADSMaterial(Texture pTexture) {
         this();
         this.mTexture = pTexture;
     }
@@ -52,7 +52,7 @@ public class Material {
      * @param pTexture     the texture
      * @param pReflectance the reflectance
      */
-    public Material(Texture pTexture, float pReflectance) {
+    public ADSMaterial(Texture pTexture, float pReflectance) {
         this();
         this.mTexture = pTexture;
         this.mReflectance = pReflectance;
@@ -64,7 +64,7 @@ public class Material {
      * @param pColor       basic RGB vector
      * @param pReflectance reflectance reflectance should be between 0 and 1
      */
-    public Material(Vector3f pColor, float pReflectance) {
+    public ADSMaterial(Vector3f pColor, float pReflectance) {
         this();
         this.mColor = pColor;
         this.mReflectance = pReflectance;
@@ -75,7 +75,7 @@ public class Material {
      *
      * @param pColor basic RGB vector
      */
-    public Material(Vector3f pColor) {
+    public ADSMaterial(Vector3f pColor) {
         this();
         this.mColor = pColor;
         this.mReflectance = REFLECTANCE_DEFAULT_VALUE;

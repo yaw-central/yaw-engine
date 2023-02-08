@@ -7,7 +7,7 @@ import yaw.engine.geom.Geometry;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
-import yaw.engine.mesh.Material;
+import yaw.engine.mesh.ADSMaterial;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 import yaw.engine.resources.ObjLoader;
@@ -61,7 +61,6 @@ public class RotatingObj implements UpdateCallback {
 	}
 	
 	public static void main(String[] args) {
-
 		World world = new World(0, 0, 800, 600);
 		world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
 		//world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
@@ -78,7 +77,7 @@ public class RotatingObj implements UpdateCallback {
 		Mesh objm = geom.buildMesh();
 
 		objm.setDrawingStrategy(new DefaultDrawingStrategy());
-		Material mat = new Material();
+		ADSMaterial mat = new ADSMaterial();
 		mat.setColor(new Vector3f(0.1f , 0.7f, 0.9f));
 		objm.setMaterial(mat);
 		ItemObject obji = world.createItemObject("obj", 0f, 0f, 0f, 1.0f, objm);

@@ -3,6 +3,7 @@ package yaw.engine.camera;
 import yaw.engine.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import yaw.engine.shader.ShaderCode;
 
 /**
  * Class which will hold the position and rotation state of our camera.
@@ -140,18 +141,18 @@ public class Camera {
     }
 
     public void lookAt(Vector3f target) {
-	Vector3f camPos = getPosition();
-	Vector3f camDir = new Vector3f();
-	camPos.sub(target, camDir);
-	camDir.normalize();
-	Vector3f up = new Vector3f(0.0f, 1.0f, 0.0f);
-	Vector3f camRight = up.cross(camDir).normalize();
-	Vector3f camUp = camDir.cross(camRight);
-	lookAt(camPos, target, camUp);
+	    Vector3f camPos = getPosition();
+        Vector3f camDir = new Vector3f();
+        camPos.sub(target, camDir);
+        camDir.normalize();
+        Vector3f up = new Vector3f(0.0f, 1.0f, 0.0f);
+        Vector3f camRight = up.cross(camDir).normalize();
+        Vector3f camUp = camDir.cross(camRight);
+        lookAt(camPos, target, camUp);
     }
 
     public void lookAtTarget(float targetX, float targetY, float targetZ) {
-	lookAt(new Vector3f(targetX, targetY, targetZ));
+	    lookAt(new Vector3f(targetX, targetY, targetZ));
     }
 
 
@@ -210,5 +211,18 @@ public class Camera {
         updateProjectionMat();
     }
 
+
+    public void glslPrepareUniforms(ShaderCode shader) {
+        shader.l("uniform mat4 viewMatrix;")
+              .l("uniform mat4 projectionMatrix;");
+    }
+
+    public String glslGetViewMatrixUniform() {
+        return "viewMatrix";
+    }
+
+    public String glslGetProjectionMatrixUniform() {
+        return "projectionMatrix";
+    }
 
 }

@@ -7,7 +7,7 @@ import yaw.engine.items.HitBox;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
-import yaw.engine.mesh.Material;
+import yaw.engine.mesh.ADSMaterial;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.Texture;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
@@ -139,7 +139,7 @@ public class World  {
         }
         System.out.println("pTextureName " + pTextureName);
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
-        Material lMaterial = new Material(lMaterialColor);
+        ADSMaterial lMaterial = new ADSMaterial(lMaterialColor);
         
         //Texture part
         if (pTextureName != null && !(pTextureName.matches("Material.*") || pTextureName.isEmpty())) {
@@ -171,7 +171,7 @@ public class World  {
             throw new RuntimeException("RGB must represent 3 colors");
         }
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
-        Material lMaterial = new Material(lMaterialColor);
+        ADSMaterial lMaterial = new ADSMaterial(lMaterialColor);
         Mesh lMesh = new Mesh(pVertices, pNormals, pIndices);
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         lMesh.setMaterial(lMaterial);
