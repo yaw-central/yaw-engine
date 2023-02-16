@@ -106,7 +106,7 @@ public class Renderer {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);       /* Specify the value used for depth buffer comparisons. */
         glClearDepth(1); /* GlClearDepth specifies the depth value used by glClear to clear the depth buffer.
-                                                   The values ​​specified by glClearDepth are set to range [0.1].*/
+                                                   The values specified by glClearDepth are set to range [0.1].*/
 
         glDisable(GL_BLEND);
 
