@@ -2,6 +2,8 @@ package yaw.engine.mesh;
 
 import org.joml.Vector3f;
 import yaw.engine.items.ItemObject;
+import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
+import yaw.engine.mesh.strategy.HelperDrawingStrategy;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.util.LoggerYAW;
 import org.lwjgl.BufferUtils;
@@ -160,7 +162,17 @@ public class Mesh {
             pShaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
             if (mDrawingStrategy != null) {
                 //delegate the drawing
+
+                pShaderProgram.setUniform(HelperDrawingStrategy.enableSummitHelper);
                 mDrawingStrategy.drawMesh(this);
+                if(HelperDrawingStrategy.enableSummitHelper)
+                {
+                    pShaderProgram.setUniform(HelperDrawingStrategy.enableSummitHelper);
+                    HelperDrawingStrategy.drawMesh(this);
+                }
+
+
+
             } else {
                 LoggerYAW.getLogger().severe("No drawing strategy has been set for the mesh");
                 throw new RuntimeException("No drawing strategy has been set for the mesh");

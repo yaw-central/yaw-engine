@@ -18,6 +18,7 @@ public class BoundingBoxDrawingStrategy implements MeshDrawingStrategy {
         if(isVisible) {
             glEnable(GL_POLYGON_OFFSET_FILL);
             glEnable(GL_PROGRAM_POINT_SIZE);
+
             glPolygonOffset(1, 0);
             glDrawElements(GL_LINES, pMesh.getIndices().length, GL_UNSIGNED_INT, 0);
         }
