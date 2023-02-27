@@ -13,3 +13,6 @@ $PYTHON3 ./shader_classify.py "yaw.engine.shader" ./shadowVertShader.vs
 
 echo "* Making shadow fragment shader *"
 $PYTHON3 ./shader_classify.py "yaw.engine.shader" ./shadowFragShader.fs
+
+echo "* Making shadow fragment shader Helper summit color *"
+$PYTHON3 ./shader_classify.py "yaw.engine.shader" ./FragShaderHelperSummitColor.fs

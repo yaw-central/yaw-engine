@@ -411,4 +411,16 @@ public class ShaderProgram {
         return mProgramId;
     }
 
+    public void setUniform(boolean enableSummitHelper) {
+        if(enableSummitHelper)
+            glUniform1i(enableSummit, GL_TRUE);
+        else
+            glUniform1i(enableSummit, GL_FALSE);
+        System.out.println("mon enable summit helper" + enableSummitHelper);
+    }
+    int enableSummit;
+    public void createHelperSummitUniform()
+    {
+        enableSummit = glGetUniformLocation(mProgramId, "helperSummit");
+    }
 }

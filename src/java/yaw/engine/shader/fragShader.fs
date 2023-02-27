@@ -6,6 +6,7 @@ const int MAX_SPOT_LIGHTS = 5;
 
 in vec2 outTexCoord;
 
+in vec4 summit;
 in vec3 vNorm;
 in vec3 vPos;
 in vec4 vDirectionalShadowSpace;
@@ -56,6 +57,7 @@ uniform DirectionalLight directionalLight;
 uniform sampler2D shadowMapSampler;
 uniform float bias;
 uniform vec3 camera_pos;
+uniform bool helperSummit;
 
 float calcShadow(vec4 lightSpace, vec3 to_light_dir, vec3 normal)
 {
@@ -183,6 +185,10 @@ void main()
             totalLight += calcSpotLight(spotLights[i], vPos, normal);
         }
     }
-    fragColor = vec4((basecolor * totalLight).xyz,1);
+
+    if (helperSummit)
+        fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    else
+        fragColor = vec4((basecolor * totalLight).xyz,1);
 
 }

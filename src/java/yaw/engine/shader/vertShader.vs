@@ -8,6 +8,7 @@ out vec3 vNorm;
 out vec3 vPos;
 out vec2 outTexCoord;
 out vec4 vDirectionalShadowSpace;
+out vec4 summit;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -18,8 +19,10 @@ void main()
 {
 	vec4 mvPos = modelMatrix * vec4(position, 1.0);
     gl_Position = projectionMatrix * viewMatrix * mvPos;
+    gl_PointSize = 50;
     vNorm = normalize(transpose(inverse(mat3(modelMatrix))) * normal);
     vPos = mvPos.xyz;
     vDirectionalShadowSpace = directionalShadowMatrix * mvPos;
     outTexCoord=texCoord;
+    summit = vec4(1.0, 0.0, 0.0, 1.0);
 }
