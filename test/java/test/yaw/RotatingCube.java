@@ -56,6 +56,8 @@ public class RotatingCube implements UpdateCallback {
 	public static void main(String[] args) {
 
 		World world = new World(0, 0, 800, 600);
+		Mesh axeX = MeshReferentiel.makeReferentiel();
+		ItemObject ref = world.createItemObject("axeX", 0f, 0f, -2f, 1.0f, axeX);
 
 		Mesh cubem = MeshExamples.makeDice(1);
 		ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, cubem);
