@@ -13,18 +13,12 @@ public class MeshReferentiel {
         };
 
         int[] indices = {
-                0, 1, // X axis
-                2, 3, // Y axis
-                4, 5  // Z axis
+                0, 1,
+                2, 3,
+                4, 5
         };
 
-        float[] normals = new float[]{
-                1,0,0,
-                0,1,0,
-                0,0,1
-        };
-
-        Mesh axes = new Mesh(vertices, null, normals,indices,6);
+        Mesh axes = new Mesh(vertices, null, null,indices,6);
         axes.setDrawingStrategy(new AxesHelperDrawingStrategy());
 
         return axes;
