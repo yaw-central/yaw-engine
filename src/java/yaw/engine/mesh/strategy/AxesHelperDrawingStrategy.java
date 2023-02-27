@@ -9,7 +9,6 @@ public class AxesHelperDrawingStrategy implements MeshDrawingStrategy {
 
     @Override
     public void drawMesh(Mesh pMesh) {
-        glEnable(GL_COLOR_MATERIAL);
         glDrawElements(GL_LINES, pMesh.getIndices().length, GL_UNSIGNED_INT, 0);
     }
 

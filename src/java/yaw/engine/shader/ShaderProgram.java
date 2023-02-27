@@ -416,7 +416,6 @@ public class ShaderProgram {
             glUniform1i(enableSummit, GL_TRUE);
         else
             glUniform1i(enableSummit, GL_FALSE);
-        System.out.println("mon enable summit helper" + enableSummitHelper);
     }
     int enableSummit;
     public void createHelperSummitUniform()
