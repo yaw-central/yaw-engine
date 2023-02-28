@@ -67,11 +67,6 @@ public class RotatingObj implements UpdateCallback {
 		//world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
 		world.getSceneLight().setAmbient(new AmbientLight(1.0f, 1.0f, 1.0f, 0.4f));
 
-		Mesh axeX = MeshReferentiel.makeReferentiel();
-		ItemObject ref = world.createItemObject("axeX", 0f, 0f, 0f, 2.0f, axeX);
-
-		RotatingObj rRef = new RotatingObj(ref);
-		world.registerUpdateCallback(rRef);
 
 		ObjLoader objLoader = new ObjLoader();
 		try {
