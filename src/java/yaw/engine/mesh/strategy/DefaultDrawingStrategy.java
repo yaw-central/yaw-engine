@@ -19,7 +19,6 @@ public class DefaultDrawingStrategy implements MeshDrawingStrategy {
 
     }
 
-    public static void drawMeshSummit(Mesh pMesh) {
-    }
+
 
 }

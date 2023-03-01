@@ -79,6 +79,7 @@ public class Renderer {
             pCamera.updateProjectionMat();
         }
 
+
         //Debug
         /*  int err = GL11.GL_NO_ERROR;
         if ((err = GL11.glGetError()) != GL11.GL_NO_ERROR) {

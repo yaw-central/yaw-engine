@@ -2,6 +2,7 @@ package yaw.engine;
 
 import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
+import yaw.engine.helper.HelperRenderer;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
@@ -23,6 +24,7 @@ public class MainLoop implements Runnable {
     private Camera mCamera;
     private Vector<Camera> mCamerasList;
     private Renderer mRenderer;
+    private HelperRenderer mDebug;
     private SceneLight mSceneLight;
     private Vector<ItemGroup> mItemGroupArrayList;
     private Skybox mSkybox = null;
@@ -82,6 +84,7 @@ public class MainLoop implements Runnable {
 
     public MainLoop() {
         this.mRenderer = new Renderer();
+        this.mDebug = new HelperRenderer();
         this.mCamerasList = new Vector<>();
         this.mCamera = new Camera();
         mCamerasList.add(mCamera);
@@ -237,6 +240,7 @@ public class MainLoop implements Runnable {
         Window.init(initWidth, initHeight, initVSYNC);
         // Create the rendering logic of our game.
         mRenderer.init();
+        mDebug.init();
 
         if(inputCallback != null) {
             Window.getGLFWKeyCallback().registerInputCallback(inputCallback);
@@ -289,7 +293,10 @@ public class MainLoop implements Runnable {
                1 Maximum thread in Synchronize -> mutual exclusion.*/
             synchronized (mSceneVertex) {
                 mSceneLight.renderShadowMap(mSceneVertex);
+                mDebug.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
                 mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
+
+
             }
 
            /*  Rendered with vSync (vertical Synchronization)
@@ -305,6 +312,7 @@ public class MainLoop implements Runnable {
     private void cleanup() {
         /* Deallocations renderer, SceneVertex and Skybox. */
         mRenderer.cleanUp();
+
         mSceneVertex.cleanUp();
         if (mSkybox != null) mSkybox.cleanUp();
         /* Deallocation of the window's resources. */

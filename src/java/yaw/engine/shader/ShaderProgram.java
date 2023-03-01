@@ -422,4 +422,6 @@ public class ShaderProgram {
     {
         enableSummit = glGetUniformLocation(mProgramId, "helperSummit");
     }
+
+    public HashMap<String, Integer> getMap(){return mUniformsList;}
 }

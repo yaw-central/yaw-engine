@@ -1,6 +1,7 @@
 package yaw.engine.mesh;
 
 import org.joml.Vector3f;
+import yaw.engine.helper.HelperRenderer;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 import yaw.engine.mesh.strategy.HelperDrawingStrategy;
@@ -154,7 +155,7 @@ public class Mesh {
         initRender();
 
 
-        pShaderProgram.setUniform("material", mMaterial);
+        //pShaderProgram.setUniform("material", mMaterial);
         for (ItemObject lItem : pItems) {
             //can be moved to Item class
             //Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
