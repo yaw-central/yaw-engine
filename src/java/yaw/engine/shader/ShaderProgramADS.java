@@ -34,8 +34,6 @@ public class ShaderProgramADS extends ShaderProgram {
 
         setUniform(uniformName + ".reflectance", material.getReflectance());
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> fa7ae18dc91b462c2dab547c11a9a8e6d503005c
+
+
