@@ -3,13 +3,10 @@ package yaw.engine.light;
 import yaw.engine.SceneVertex;
 import yaw.engine.camera.Camera;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.shader.ShaderProgram;
+import yaw.engine.shader.*;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import yaw.engine.shader.ShaderProgramADS;
-import yaw.engine.shader.fragShader;
-import yaw.engine.shader.vertShader;
 
 public class SceneLight {
     // Maximum number of pointLight and spotLight which can be created.
@@ -53,28 +50,19 @@ public class SceneLight {
 
 
 
-    public void renderShadowMap(SceneVertex pSceneVertex, Camera pCamera) {
-        mSun.renderShadowMap(pSceneVertex, pCamera);
+    public void renderShadowMap(SceneVertex pSceneVertex, Camera pCamera, ShaderManager shaderManager) {
+        mSun.renderShadowMap(pSceneVertex, pCamera, shaderManager);
     }
 
-    public void init(){
-
-        try {
-            /* Initialization of the shader program. */
-            mShaderProgram = Mesh.getShader();
-
-        }catch (Exception e){
-            System.out.println("Erreur scene light");
-        }
-    }
 
     /**
      * Set to the render the different light
      *
      * @param viewMatrix viewMatrix
      */
-    public void render(Matrix4f viewMatrix) {
-        init();
+    public void render(Matrix4f viewMatrix, ShaderManager shaderManager) {
+
+        mShaderProgram = (ShaderProgramADS) shaderManager.getShaderProgram(0);
         mShaderProgram.bind();
         mShaderProgram.setUniform("ambientLight", mAmbient);
         mShaderProgram.setUniform("specularPower", mSpecularPower);

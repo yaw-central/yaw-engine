@@ -6,6 +6,7 @@ import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
 import yaw.engine.mesh.Texture;
+import yaw.engine.shader.ShaderManager;
 import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
@@ -30,6 +31,7 @@ public class MainLoop implements Runnable {
     private boolean mLoop;
     private int initX, initY, initWidth, initHeight;
     private boolean initVSYNC;
+    private ShaderManager shaderManager;
 
 
     //3D click
@@ -94,6 +96,7 @@ public class MainLoop implements Runnable {
         this.mStringTextureConcurrentHashMap = new ConcurrentHashMap<>();
         this.updateCallback = null;
         this.inputCallback = null;
+        this.shaderManager = new ShaderManager();
     }
 
     /* package */ synchronized void addToScene(ItemObject itemObj) {
@@ -288,8 +291,8 @@ public class MainLoop implements Runnable {
            /*  Input of critical section, allows to protect the creation of our logic of Game .
                1 Maximum thread in Synchronize -> mutual exclusion.*/
             synchronized (mSceneVertex) {
-                mSceneLight.renderShadowMap(mSceneVertex, mCamera);
-                mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
+                //mSceneLight.renderShadowMap(mSceneVertex, mCamera, shaderManager);
+                mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox, shaderManager);
             }
 
            /*  Rendered with vSync (vertical Synchronization)
@@ -305,7 +308,8 @@ public class MainLoop implements Runnable {
     private void cleanup() {
         /* Deallocations renderer, SceneVertex and Skybox. */
         //mRenderer.cleanUp();
-        mSceneVertex.cleanUp();
+        mSceneVertex.cleanUp(shaderManager);
+        shaderManager.cleanUp();
         if (mSkybox != null) mSkybox.cleanUp();
         /* Deallocation of the window's resources. */
         Window.cleanUp();

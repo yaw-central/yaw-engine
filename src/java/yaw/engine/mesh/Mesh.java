@@ -6,10 +6,7 @@ import org.lwjgl.opengl.GL20;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
-import yaw.engine.shader.ShaderProgram;
-import yaw.engine.shader.ShaderProgramADS;
-import yaw.engine.shader.fragShader;
-import yaw.engine.shader.vertShader;
+import yaw.engine.shader.*;
 import yaw.engine.util.LoggerYAW;
 import org.lwjgl.BufferUtils;
 
@@ -97,38 +94,6 @@ public class Mesh {
      * Initialize  vertex, mNormals, mIndices and mTextureCoordinate buffer
      */
     public void initBuffer() {
-        try {
-            /* Initialization of the shader program. */
-            mShaderProgram = new ShaderProgramADS();
-            mShaderProgram.createVertexShader(vertShader.SHADER_STRING);
-            mShaderProgram.createFragmentShader(fragShader.SHADER_STRING);
-
-            /* Binds the code and checks that everything has been done correctly. */
-            mShaderProgram.link();
-
-            mShaderProgram.createUniform("projectionMatrix");
-            mShaderProgram.createUniform("viewMatrix");
-            mShaderProgram.createUniform("modelMatrix");
-
-            /* Initialization of the shadow map matrix uniform. */
-            mShaderProgram.createUniform("directionalShadowMatrix");
-
-            /* Create uniform for material. */
-            mShaderProgram.createMaterialUniform("material");
-            mShaderProgram.createUniform("texture_sampler");
-            /* Initialization of the light's uniform. */
-            mShaderProgram.createUniform("camera_pos");
-            mShaderProgram.createUniform("specularPower");
-            mShaderProgram.createUniform("ambientLight");
-            mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
-            mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
-            mShaderProgram.createDirectionalLightUniform("directionalLight");
-            mShaderProgram.createUniform("shadowMapSampler");
-            mShaderProgram.createUniform("bias");
-
-        }catch (Exception e){
-            System.out.println("Erreur mesh init");
-        }
         //initialization order is important do not change unless you know what to do
         mVaoId = glGenVertexArrays();
         glBindVertexArray(mVaoId);
@@ -183,10 +148,10 @@ public class Mesh {
      *
      * @param pItems         item
      */
-    public void render(List<ItemObject> pItems, Camera pCamera) {
+    public void render(List<ItemObject> pItems, Camera pCamera, ShaderManager shaderManager) {
         //initRender
+        mShaderProgram = (ShaderProgramADS) shaderManager.getShaderProgram(0);
         initRender();
-        mShaderProgram.bind();
         //mShaderProgram.bind();
         /* Set the camera to render. */
         mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
@@ -235,7 +200,6 @@ public class Mesh {
         glBindVertexArray(0);
         glDeleteVertexArrays(mVaoId);
 
-        mShaderProgram.cleanup();
 
 
     }

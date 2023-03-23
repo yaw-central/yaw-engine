@@ -5,6 +5,7 @@ package yaw.engine;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Mesh;
+import yaw.engine.shader.ShaderManager;
 import yaw.engine.shader.ShaderProgram;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class SceneVertex {
     /**
      * Invoke the method cleanup on all the active mesh
      */
-    public void cleanUp() {
+    public void cleanUp(ShaderManager shaderManager) {
         for (Mesh lMesh : mMeshMap.keySet()) {
             lMesh.cleanUp();
         }
@@ -101,7 +102,7 @@ public class SceneVertex {
      * @param pCamera camera in wich that will render
      */
 
-    public void render(Camera pCamera) {
+    public void render(Camera pCamera, ShaderManager shaderManager) {
         List<Mesh> lRmListe = new ArrayList<>();
         for (Mesh lMesh : mMeshMap.keySet()) {
             List<ItemObject> lItems = mMeshMap.get(lMesh);
@@ -113,7 +114,7 @@ public class SceneVertex {
                         lMesh.initBuffer();
                         notInit.remove(lMesh);
                     }
-                    lMesh.render(lItems, pCamera);
+                    lMesh.render(lItems, pCamera,shaderManager);
                 } catch (Exception e) {
                     System.out.println("Erreur scene vertex");
                 }

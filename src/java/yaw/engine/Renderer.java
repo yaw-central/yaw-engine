@@ -2,6 +2,7 @@ package yaw.engine;
 
 import yaw.engine.camera.Camera;
 import yaw.engine.light.SceneLight;
+import yaw.engine.shader.ShaderManager;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.shader.fragShader;
 import yaw.engine.shader.vertShader;
@@ -53,7 +54,7 @@ public class Renderer {
      * @param pCamera      camera
      * @param pSkybox      skybox
      */
-    public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox) {
+    public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox, ShaderManager shaderManager) {
 
         //Preparation of the camera
         if (isResized || pSceneVertex.isItemAdded()) {
@@ -94,8 +95,8 @@ public class Renderer {
         XXX useless?  sc.update(); */
 
         /* Rendering of the object. */
-        pSceneVertex.render(pCamera);
-        pSceneLight.render(new Matrix4f().identity());
+        pSceneVertex.render(pCamera,shaderManager);
+        pSceneLight.render(new Matrix4f().identity(), shaderManager);
         /* Cleans all services. */
         //mShaderProgram.unbind();
         if (pSkybox != null) {
