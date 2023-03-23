@@ -99,7 +99,7 @@ public class Mesh {
     /**
      * Initialize  vertex, mNormals, mIndices and mTextureCoordinate buffer
      */
-    public void init() {
+    public void initBuffer() {
 
 
 
@@ -201,8 +201,6 @@ public class Mesh {
         mShaderProgram.bind();
 
         //mShaderProgram.bind();
-        System.out.println("le program courant actif est = " + GL20.glGetInteger(GL20.GL_CURRENT_PROGRAM) + " tandis que mon shader program est " + mShaderProgram.getId());
-        //System.out.println("mon mshaderprogram " + mShaderProgram);
         /* Set the camera to render. */
         mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
         mShaderProgram.setUniform("texture_sampler", 0);
@@ -250,6 +248,8 @@ public class Mesh {
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(mVaoId);
+
+        mShaderProgram.cleanup();
 
 
     }

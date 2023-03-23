@@ -16,23 +16,21 @@ import static org.lwjgl.opengl.GL11.*;
  * The shader allows to describe the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading, etc ...
  */
 public class Renderer {
-    protected ShaderProgram mShaderProgram;
-
     /**
      * Basic rendering.
      */
     public void init() throws Exception {
-
+        /* ?? */
     }
 
     /**
      * The Shader Program is deallocated
      */
-    public void cleanUp() {
+    /*public void cleanUp() {
         if (mShaderProgram != null) {
             mShaderProgram.cleanup();
         }
-    }
+    }*/
 
     /**
      * Specific rendering.
@@ -80,14 +78,13 @@ public class Renderer {
 
 
         /* Init Objects. */
-        pSceneVertex.initMesh();
+        //pSceneVertex.initMesh();
 
         /* Update objects
         XXX useless?  sc.update(); */
 
-
         /* Rendering of the object. */
-        pSceneVertex.draw(pCamera);
+        pSceneVertex.render(pCamera);
         pSceneLight.render(new Matrix4f().identity());
         /* Cleans all services. */
         //mShaderProgram.unbind();

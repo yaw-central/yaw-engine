@@ -304,7 +304,7 @@ public class MainLoop implements Runnable {
      */
     private void cleanup() {
         /* Deallocations renderer, SceneVertex and Skybox. */
-        mRenderer.cleanUp();
+        //mRenderer.cleanUp();
         mSceneVertex.cleanUp();
         if (mSkybox != null) mSkybox.cleanUp();
         /* Deallocation of the window's resources. */

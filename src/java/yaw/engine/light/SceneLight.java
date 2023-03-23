@@ -94,8 +94,6 @@ public class SceneLight {
             currPointLight.setPosition(lightPos);
 
             mShaderProgram.setUniform("pointLights", currPointLight, i);
-
-
         }
 
         // Process Spot Ligths

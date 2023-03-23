@@ -87,12 +87,12 @@ public class SceneVertex {
     /**
      * Invoke the method init on all the mesh in the non initialize mesh collection
      */
-    public void initMesh() {
+    /*public void initMesh() {
         for (Mesh lMesh : notInit) {
-            lMesh.init();
+            lMesh.initBuffer();
         }
         notInit.clear();
-    }
+    }*/
 
     /**
      * Invoke the method render on all mesh with associated items
@@ -101,7 +101,7 @@ public class SceneVertex {
      * @param pCamera camera in wich that will render
      */
 
-    public void draw(Camera pCamera) {
+    public void render(Camera pCamera) {
         List<Mesh> lRmListe = new ArrayList<>();
         for (Mesh lMesh : mMeshMap.keySet()) {
             List<ItemObject> lItems = mMeshMap.get(lMesh);
@@ -109,9 +109,11 @@ public class SceneVertex {
                 lRmListe.add(lMesh);
             } else {
                 try {
-
+                    if(notInit.contains(lMesh)){
+                        lMesh.initBuffer();
+                        notInit.remove(lMesh);
+                    }
                     lMesh.render(lItems, pCamera);
-
                 } catch (Exception e) {
                     System.out.println("Erreur scene vertex");
                 }
