@@ -32,7 +32,6 @@ public class Mesh {
     //reference to the VAO(wrapper)
     private int mVaoId;
     //VBO's ID
-
     //VBO
     private float[] mVertices;//mVertices
     private float[] mNormals;
@@ -45,7 +44,7 @@ public class Mesh {
     private MeshDrawingStrategy mDrawingStrategy;
 
     private static ShaderProgramADS mShaderProgram;
-    private boolean isInit = false;
+
 
     /**
      * Construct a Mesh with the specified mMaterial , mVertices, mNormals , mTextureCoordinate and mIndices.
@@ -92,17 +91,44 @@ public class Mesh {
         this.mTextCoords = pTextCoords == null ? new float[1] : pTextCoords;
         this.mOptionalAttributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
-        isInit = false;
-        System.out.println("Il est init !");
     }
 
     /**
      * Initialize  vertex, mNormals, mIndices and mTextureCoordinate buffer
      */
     public void initBuffer() {
+        try {
+            /* Initialization of the shader program. */
+            mShaderProgram = new ShaderProgramADS();
+            mShaderProgram.createVertexShader(vertShader.SHADER_STRING);
+            mShaderProgram.createFragmentShader(fragShader.SHADER_STRING);
 
+            /* Binds the code and checks that everything has been done correctly. */
+            mShaderProgram.link();
 
+            mShaderProgram.createUniform("projectionMatrix");
+            mShaderProgram.createUniform("viewMatrix");
+            mShaderProgram.createUniform("modelMatrix");
 
+            /* Initialization of the shadow map matrix uniform. */
+            mShaderProgram.createUniform("directionalShadowMatrix");
+
+            /* Create uniform for material. */
+            mShaderProgram.createMaterialUniform("material");
+            mShaderProgram.createUniform("texture_sampler");
+            /* Initialization of the light's uniform. */
+            mShaderProgram.createUniform("camera_pos");
+            mShaderProgram.createUniform("specularPower");
+            mShaderProgram.createUniform("ambientLight");
+            mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
+            mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
+            mShaderProgram.createDirectionalLightUniform("directionalLight");
+            mShaderProgram.createUniform("shadowMapSampler");
+            mShaderProgram.createUniform("bias");
+
+        }catch (Exception e){
+            System.out.println("Erreur mesh init");
+        }
         //initialization order is important do not change unless you know what to do
         mVaoId = glGenVertexArrays();
         glBindVertexArray(mVaoId);
@@ -150,7 +176,6 @@ public class Mesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-
     }
 
     /**
@@ -159,47 +184,9 @@ public class Mesh {
      * @param pItems         item
      */
     public void render(List<ItemObject> pItems, Camera pCamera) {
-        if(!isInit){
-            try {
-                /* Initialization of the shader program. */
-                mShaderProgram = new ShaderProgramADS();
-                mShaderProgram.createVertexShader(vertShader.SHADER_STRING);
-                mShaderProgram.createFragmentShader(fragShader.SHADER_STRING);
-
-
-                /* Binds the code and checks that everything has been done correctly. */
-                mShaderProgram.link();
-
-                mShaderProgram.createUniform("projectionMatrix");
-                mShaderProgram.createUniform("viewMatrix");
-                mShaderProgram.createUniform("modelMatrix");
-
-                /* Initialization of the shadow map matrix uniform. */
-                mShaderProgram.createUniform("directionalShadowMatrix");
-
-                /* Create uniform for material. */
-                mShaderProgram.createMaterialUniform("material");
-                mShaderProgram.createUniform("texture_sampler");
-                /* Initialization of the light's uniform. */
-                mShaderProgram.createUniform("camera_pos");
-                mShaderProgram.createUniform("specularPower");
-                mShaderProgram.createUniform("ambientLight");
-                mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
-                mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
-                mShaderProgram.createDirectionalLightUniform("directionalLight");
-                mShaderProgram.createUniform("shadowMapSampler");
-                mShaderProgram.createUniform("bias");
-                isInit = true;
-            }catch (Exception e){
-                System.out.println("Erreur mesh init");
-            }
-        }
-
-
         //initRender
         initRender();
         mShaderProgram.bind();
-
         //mShaderProgram.bind();
         /* Set the camera to render. */
         mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
@@ -215,20 +202,19 @@ public class Mesh {
             //Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
 
             mShaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
-            if (mDrawingStrategy != null) {
+            /*if (mDrawingStrategy != null) {
                 //delegate the drawing
                 mDrawingStrategy.drawMesh(this);
             } else {
                 LoggerYAW.getLogger().severe("No drawing strategy has been set for the mesh");
                 throw new RuntimeException("No drawing strategy has been set for the mesh");
-            }
-
+            }*/
+            glDrawElements(GL_TRIANGLES, this.getIndices().length, GL_UNSIGNED_INT, 0);
         }
         //end render
 
         mShaderProgram.unbind();
         endRender();
-        //mShaderProgram.cleanup();
 
     }
 
