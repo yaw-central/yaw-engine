@@ -34,9 +34,9 @@ public class TreeTest implements UpdateCallback {
 
         world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
 
-        ShadowMap shadow = new ShadowMap();
-        shadow.setBias(0.0005f);
-        world.getSceneLight().getSun().setShadowMap(shadow);
+        //ShadowMap shadow = new ShadowMap();
+        //shadow.setBias(0.0005f);
+        //world.getSceneLight().getSun().setShadowMap(shadow);
 
         world.getSceneLight().getAmbientLight().setIntensity(0.3f);
 

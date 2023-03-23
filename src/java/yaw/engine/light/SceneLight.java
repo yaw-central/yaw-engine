@@ -1,10 +1,15 @@
 package yaw.engine.light;
 
 import yaw.engine.SceneVertex;
+import yaw.engine.camera.Camera;
+import yaw.engine.mesh.Mesh;
 import yaw.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import yaw.engine.shader.ShaderProgramADS;
+import yaw.engine.shader.fragShader;
+import yaw.engine.shader.vertShader;
 
 public class SceneLight {
     // Maximum number of pointLight and spotLight which can be created.
@@ -17,7 +22,8 @@ public class SceneLight {
     private DirectionalLight mSun;
     private PointLight[] mPointTable;
     private SpotLight[] mSpotTable;
-
+    private ShaderProgramADS mShaderProgram;
+    private boolean isInit;
     /**
      * Constructor without parameters, it used to create the maximum of point light and spot light.
      */
@@ -30,6 +36,7 @@ public class SceneLight {
         this.mSpotTable = new SpotLight[MAX_SPOTLIGHT];
         for (int i = 0; i < MAX_SPOTLIGHT; i++)
             this.mSpotTable[i] = new SpotLight();
+        isInit = false;
     }
 
     public void removeSun() {
@@ -46,19 +53,31 @@ public class SceneLight {
 
 
 
-    public void renderShadowMap(SceneVertex pSceneVertex) {
-        mSun.renderShadowMap(pSceneVertex);
+    public void renderShadowMap(SceneVertex pSceneVertex, Camera pCamera) {
+        mSun.renderShadowMap(pSceneVertex, pCamera);
+    }
+
+    public void init(){
+
+        try {
+            /* Initialization of the shader program. */
+            mShaderProgram = Mesh.getShader();
+
+        }catch (Exception e){
+            System.out.println("Erreur scene light");
+        }
     }
 
     /**
      * Set to the render the different light
      *
-     * @param sh         shaderProgram
      * @param viewMatrix viewMatrix
      */
-    public void render(ShaderProgram sh, Matrix4f viewMatrix) {
-        sh.setUniform("ambientLight", mAmbient);
-        sh.setUniform("specularPower", mSpecularPower);
+    public void render(Matrix4f viewMatrix) {
+        init();
+        mShaderProgram.bind();
+        mShaderProgram.setUniform("ambientLight", mAmbient);
+        mShaderProgram.setUniform("specularPower", mSpecularPower);
 
         // Process Point Lights
         for (int i = 0; i < MAX_POINTLIGHT; i++) {
@@ -74,7 +93,9 @@ public class SceneLight {
             //Bug correction
             currPointLight.setPosition(lightPos);
 
-            sh.setUniform("pointLights", currPointLight, i);
+            mShaderProgram.setUniform("pointLights", currPointLight, i);
+
+
         }
 
         // Process Spot Ligths
@@ -95,7 +116,8 @@ public class SceneLight {
             //Bug Correction
             currSpotLight.setPosition(lightPos);
 
-            sh.setUniform("spotLights", currSpotLight, i);
+            mShaderProgram.setUniform("spotLights", currSpotLight, i);
+
         }
 
         // Get a copy of the directional light object and transform its position to view coordinates
@@ -103,9 +125,9 @@ public class SceneLight {
         Vector4f dir = new Vector4f(currDirLight.mDirection, 0);
         dir.mul(viewMatrix);
         currDirLight.mDirection = new Vector3f(dir.x, dir.y, dir.z);
-        sh.setUniform("directionalLight", currDirLight);
+        mShaderProgram.setUniform("directionalLight", currDirLight);
+        mSun.bindShadowMap(mShaderProgram);
 
-        mSun.bindShadowMap(sh);
     }
 
     /**

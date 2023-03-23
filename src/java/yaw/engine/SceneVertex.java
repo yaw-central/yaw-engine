@@ -2,6 +2,7 @@ package yaw.engine;
 
 
 
+import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.shader.ShaderProgram;
@@ -97,17 +98,23 @@ public class SceneVertex {
      * Invoke the method render on all mesh with associated items
      * otherwise clean then remove mesh which has an empty list of items
      *
-     * @param pShaderProgram Shader program that will render
+     * @param pCamera camera in wich that will render
      */
 
-    public void draw(ShaderProgram pShaderProgram) {
+    public void draw(Camera pCamera) {
         List<Mesh> lRmListe = new ArrayList<>();
         for (Mesh lMesh : mMeshMap.keySet()) {
             List<ItemObject> lItems = mMeshMap.get(lMesh);
             if (lItems.isEmpty()) {
                 lRmListe.add(lMesh);
             } else {
-                lMesh.render(lItems, pShaderProgram);
+                try {
+
+                    lMesh.render(lItems, pCamera);
+
+                } catch (Exception e) {
+                    System.out.println("Erreur scene vertex");
+                }
             }
         }
         /*Clean then remove*/

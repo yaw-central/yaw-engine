@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import yaw.engine.SceneVertex;
+import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
@@ -104,7 +105,7 @@ public class ShadowMap {
 
     }
 
-    public void render(SceneVertex pSceneVertex, DirectionalLight light) {
+    public void render(SceneVertex pSceneVertex, DirectionalLight light, Camera pCamera) {
 
         if(!initialized) {
             try {
@@ -147,7 +148,11 @@ public class ShadowMap {
             }
             if(castingItems.isEmpty()) continue;
 
-            lMesh.render(castingItems, mShaderProgram);
+            try {
+                lMesh.render(castingItems, pCamera);
+            } catch (Exception e) {
+                System.out.println("Erreur ShadowMap");
+            }
         }
 
 

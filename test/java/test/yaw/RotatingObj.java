@@ -65,7 +65,7 @@ public class RotatingObj implements UpdateCallback {
 		World world = new World(0, 0, 800, 600);
 		world.getSceneLight().setSun(new DirectionalLight());
 		//world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
-		world.getSceneLight().setAmbient(new AmbientLight(1.0f, 1.0f, 1.0f, 0.4f));
+		world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
 
 		ObjLoader objLoader = new ObjLoader();
 		try {

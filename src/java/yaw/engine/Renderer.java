@@ -22,34 +22,7 @@ public class Renderer {
      * Basic rendering.
      */
     public void init() throws Exception {
-        /* Initialization of the shader program. */
-        mShaderProgram = new ShaderProgram();
-        mShaderProgram.createVertexShader(vertShader.SHADER_STRING);
-        mShaderProgram.createFragmentShader(fragShader.SHADER_STRING);
 
-
-        /* Binds the code and checks that everything has been done correctly. */
-        mShaderProgram.link();
-
-        mShaderProgram.createUniform("projectionMatrix");
-        mShaderProgram.createUniform("viewMatrix");
-        mShaderProgram.createUniform("modelMatrix");
-
-        /* Initialization of the shadow map matrix uniform. */
-        mShaderProgram.createUniform("directionalShadowMatrix");
-
-        /* Create uniform for material. */
-        mShaderProgram.createMaterialUniform("material");
-        mShaderProgram.createUniform("texture_sampler");
-        /* Initialization of the light's uniform. */
-        mShaderProgram.createUniform("camera_pos");
-        mShaderProgram.createUniform("specularPower");
-        mShaderProgram.createUniform("ambientLight");
-        mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
-        mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
-        mShaderProgram.createDirectionalLightUniform("directionalLight");
-        mShaderProgram.createUniform("shadowMapSampler");
-        mShaderProgram.createUniform("bias");
     }
 
     /**
@@ -89,15 +62,6 @@ public class Renderer {
         /* Initialization of the window we currently use. */
         glViewport(0, 0, Window.getWidth(), Window.getHeight());
 
-        mShaderProgram.bind();
-
-        /* Set the camera to render. */
-        mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
-        mShaderProgram.setUniform("texture_sampler", 0);
-        mShaderProgram.setUniform("camera_pos", pCamera.getPosition());
-        Matrix4f viewMat = pCamera.getViewMat();
-        mShaderProgram.setUniform("viewMatrix", viewMat);
-
         /* Enable the option needed to render.*/
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
@@ -113,7 +77,7 @@ public class Renderer {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         /* Rendering of the light. */
-        pSceneLight.render(mShaderProgram, new Matrix4f().identity());
+
 
         /* Init Objects. */
         pSceneVertex.initMesh();
@@ -123,9 +87,10 @@ public class Renderer {
 
 
         /* Rendering of the object. */
-        pSceneVertex.draw(mShaderProgram);
+        pSceneVertex.draw(pCamera);
+        pSceneLight.render(new Matrix4f().identity());
         /* Cleans all services. */
-        mShaderProgram.unbind();
+        //mShaderProgram.unbind();
         if (pSkybox != null) {
             if (pSkybox.init == false) {
                 try {

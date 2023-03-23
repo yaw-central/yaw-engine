@@ -288,7 +288,7 @@ public class MainLoop implements Runnable {
            /*  Input of critical section, allows to protect the creation of our logic of Game .
                1 Maximum thread in Synchronize -> mutual exclusion.*/
             synchronized (mSceneVertex) {
-                mSceneLight.renderShadowMap(mSceneVertex);
+                mSceneLight.renderShadowMap(mSceneVertex, mCamera);
                 mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
             }
 

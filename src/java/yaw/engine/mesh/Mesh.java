@@ -1,17 +1,21 @@
 package yaw.engine.mesh;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL20;
+import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.SceneLight;
 import yaw.engine.shader.ShaderProgram;
+import yaw.engine.shader.ShaderProgramADS;
+import yaw.engine.shader.fragShader;
+import yaw.engine.shader.vertShader;
 import yaw.engine.util.LoggerYAW;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -39,6 +43,9 @@ public class Mesh {
     private Map<String, String> mOptionalAttributes;
     //strategy when we draw the elements
     private MeshDrawingStrategy mDrawingStrategy;
+
+    private static ShaderProgramADS mShaderProgram;
+    private boolean isInit = false;
 
     /**
      * Construct a Mesh with the specified mMaterial , mVertices, mNormals , mTextureCoordinate and mIndices.
@@ -85,12 +92,17 @@ public class Mesh {
         this.mTextCoords = pTextCoords == null ? new float[1] : pTextCoords;
         this.mOptionalAttributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
+        isInit = false;
+        System.out.println("Il est init !");
     }
 
     /**
      * Initialize  vertex, mNormals, mIndices and mTextureCoordinate buffer
      */
     public void init() {
+
+
+
         //initialization order is important do not change unless you know what to do
         mVaoId = glGenVertexArrays();
         glBindVertexArray(mVaoId);
@@ -138,26 +150,73 @@ public class Mesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
+
     }
 
     /**
      * Render the specified items
      *
      * @param pItems         item
-     * @param pShaderProgram shaderProgram
      */
-    public void render(List<ItemObject> pItems, ShaderProgram pShaderProgram) {
+    public void render(List<ItemObject> pItems, Camera pCamera) {
+        if(!isInit){
+            try {
+                /* Initialization of the shader program. */
+                mShaderProgram = new ShaderProgramADS();
+                mShaderProgram.createVertexShader(vertShader.SHADER_STRING);
+                mShaderProgram.createFragmentShader(fragShader.SHADER_STRING);
+
+
+                /* Binds the code and checks that everything has been done correctly. */
+                mShaderProgram.link();
+
+                mShaderProgram.createUniform("projectionMatrix");
+                mShaderProgram.createUniform("viewMatrix");
+                mShaderProgram.createUniform("modelMatrix");
+
+                /* Initialization of the shadow map matrix uniform. */
+                mShaderProgram.createUniform("directionalShadowMatrix");
+
+                /* Create uniform for material. */
+                mShaderProgram.createMaterialUniform("material");
+                mShaderProgram.createUniform("texture_sampler");
+                /* Initialization of the light's uniform. */
+                mShaderProgram.createUniform("camera_pos");
+                mShaderProgram.createUniform("specularPower");
+                mShaderProgram.createUniform("ambientLight");
+                mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
+                mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
+                mShaderProgram.createDirectionalLightUniform("directionalLight");
+                mShaderProgram.createUniform("shadowMapSampler");
+                mShaderProgram.createUniform("bias");
+                isInit = true;
+            }catch (Exception e){
+                System.out.println("Erreur mesh init");
+            }
+        }
+
 
         //initRender
         initRender();
+        mShaderProgram.bind();
 
+        //mShaderProgram.bind();
+        System.out.println("le program courant actif est = " + GL20.glGetInteger(GL20.GL_CURRENT_PROGRAM) + " tandis que mon shader program est " + mShaderProgram.getId());
+        //System.out.println("mon mshaderprogram " + mShaderProgram);
+        /* Set the camera to render. */
+        mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        mShaderProgram.setUniform("texture_sampler", 0);
+        mShaderProgram.setUniform("camera_pos", pCamera.getPosition());
+        Matrix4f viewMat = pCamera.getViewMat();
+        mShaderProgram.setUniform("viewMatrix", viewMat);
 
-        pShaderProgram.setUniform("material", mMaterial);
+        mShaderProgram.setUniform("material", mMaterial);
         for (ItemObject lItem : pItems) {
+
             //can be moved to Item class
             //Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
 
-            pShaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
+            mShaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
             if (mDrawingStrategy != null) {
                 //delegate the drawing
                 mDrawingStrategy.drawMesh(this);
@@ -169,7 +228,10 @@ public class Mesh {
         }
         //end render
 
+        mShaderProgram.unbind();
         endRender();
+        //mShaderProgram.cleanup();
+
     }
 
     public void cleanUp() {
@@ -323,5 +385,17 @@ public class Mesh {
 
     public void setTextCoords(float[] pTextCoord) {
         mTextCoords = pTextCoord;
+    }
+
+    public void bind() {
+        mShaderProgram.bind();
+    }
+
+    public void unbind() {
+        mShaderProgram.unbind();
+    }
+    public static ShaderProgramADS getShader()
+    {
+        return mShaderProgram;
     }
 }
