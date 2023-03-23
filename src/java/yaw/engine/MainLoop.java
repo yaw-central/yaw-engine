@@ -96,7 +96,6 @@ public class MainLoop implements Runnable {
         this.mStringTextureConcurrentHashMap = new ConcurrentHashMap<>();
         this.updateCallback = null;
         this.inputCallback = null;
-        this.shaderManager = new ShaderManager();
     }
 
     /* package */ synchronized void addToScene(ItemObject itemObj) {
@@ -248,7 +247,7 @@ public class MainLoop implements Runnable {
         if(mouseCallback != null) {
             Window.getGLFWMouseCallback().registerMouseCallback(mouseCallback);
         }
-
+        this.shaderManager = new ShaderManager();
         initialized = true;
     }
 
@@ -291,7 +290,7 @@ public class MainLoop implements Runnable {
            /*  Input of critical section, allows to protect the creation of our logic of Game .
                1 Maximum thread in Synchronize -> mutual exclusion.*/
             synchronized (mSceneVertex) {
-                //mSceneLight.renderShadowMap(mSceneVertex, mCamera, shaderManager);
+                mSceneLight.renderShadowMap(mSceneVertex, mCamera, shaderManager);
                 mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox, shaderManager);
             }
 
