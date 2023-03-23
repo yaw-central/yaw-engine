@@ -16,6 +16,11 @@ import static org.lwjgl.opengl.GL11.*;
  * The shader allows to describe the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading, etc ...
  */
 public class Renderer {
+<<<<<<< HEAD
+=======
+//    protected ShaderProgram mShaderProgram;
+
+>>>>>>> fa7ae18dc91b462c2dab547c11a9a8e6d503005c
     /**
      * Basic rendering.
      */
@@ -23,6 +28,7 @@ public class Renderer {
         /* ?? */
     }
 
+<<<<<<< HEAD
     /**
      * The Shader Program is deallocated
      */
@@ -31,6 +37,16 @@ public class Renderer {
             mShaderProgram.cleanup();
         }
     }*/
+=======
+//    /**
+//     * The Shader Program is deallocated
+//     */
+//    public void cleanUp() {
+//        if (mShaderProgram != null) {
+//            mShaderProgram.cleanup();
+//        }
+//    }
+>>>>>>> fa7ae18dc91b462c2dab547c11a9a8e6d503005c
 
     /**
      * Specific rendering.

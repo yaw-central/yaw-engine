@@ -180,7 +180,7 @@ public class MainLoop implements Runnable {
         } catch (Exception pE) {
             pE.printStackTrace();
         } finally {
-            cleanup();
+//            cleanup();
         }
     }
 
@@ -304,7 +304,11 @@ public class MainLoop implements Runnable {
      */
     private void cleanup() {
         /* Deallocations renderer, SceneVertex and Skybox. */
+<<<<<<< HEAD
         //mRenderer.cleanUp();
+=======
+//        mRenderer.cleanUp();
+>>>>>>> fa7ae18dc91b462c2dab547c11a9a8e6d503005c
         mSceneVertex.cleanUp();
         if (mSkybox != null) mSkybox.cleanUp();
         /* Deallocation of the window's resources. */
