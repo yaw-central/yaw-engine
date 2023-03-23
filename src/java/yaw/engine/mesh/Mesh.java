@@ -152,7 +152,7 @@ public class Mesh {
         //initRender
         mShaderProgram = (ShaderProgramADS) shaderManager.getShaderProgram(0);
         initRender();
-        //mShaderProgram.bind();
+        mShaderProgram.bind();
         /* Set the camera to render. */
         mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
         mShaderProgram.setUniform("texture_sampler", 0);
