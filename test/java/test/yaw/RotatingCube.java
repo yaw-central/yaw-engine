@@ -63,7 +63,6 @@ public class RotatingCube implements UpdateCallback {
 
 		RotatingCube rCube = new RotatingCube(cube);
 
-
 		world.registerUpdateCallback(rCube);
 
 		world.launchSync();

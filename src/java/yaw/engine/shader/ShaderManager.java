@@ -75,6 +75,18 @@ public class ShaderManager {
 
             shaderlist.add(mShaderProgramHelperNormal);
 
+            /* helperAxesMesh ShaderProgram */
+
+            ShaderProgramHelperAxesMesh mShaderProgramHelperAxesMesh = new ShaderProgramHelperAxesMesh();
+            mShaderProgramHelperAxesMesh.createVertexShader(vertShaderHelperAxesMesh.SHADER_STRING);
+            mShaderProgramHelperAxesMesh.createGeometryShader(geoShaderHelperAxesMesh.SHADER_STRING);
+            mShaderProgramHelperAxesMesh.createFragmentShader(fragShaderHelperAxesMesh.SHADER_STRING);
+
+            mShaderProgramHelperAxesMesh.link();
+
+            mShaderProgramHelperAxesMesh.createUniform("viewMatrix");
+            mShaderProgramHelperAxesMesh.createUniform("modelMatrix");
+            shaderlist.add(mShaderProgramHelperAxesMesh);
 
         }catch(Exception e){
             System.out.println("Erreur constructeur ShaderManager");
@@ -96,6 +108,7 @@ public class ShaderManager {
     public ShaderProgramADS getShaderProgramAds() { return (ShaderProgramADS) shaderlist.get(0);}
     public ShaderProgramHelperSummit getShaderProgramHelperSummit() { return (ShaderProgramHelperSummit) shaderlist.get(1);}
     public ShaderProgramHelperNormal getShaderProgramHelperNormals() { return (ShaderProgramHelperNormal) shaderlist.get(2);}
+    public ShaderProgramHelperAxesMesh getShaderProgramHelperAxesMesh() { return (ShaderProgramHelperAxesMesh) shaderlist.get(3);}
 
     /**
      * The Shader Program is deallocated

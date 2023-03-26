@@ -31,6 +31,7 @@ public class RotatingObjHelper implements UpdateCallback {
 
     public boolean actifSummit = false;
     public boolean actifNormal = false;
+    public boolean actifAxesMesh = false;
 
     public RotatingObjHelper(ItemObject cube) {
         this.cube = cube;
@@ -100,7 +101,6 @@ public class RotatingObjHelper implements UpdateCallback {
 
         RotatingObjHelper rObj = new RotatingObjHelper(obji);
 
-
         // press S to show summit N to show normal H to show both
         InputCallback key = new InputCallback() {
             @Override
@@ -114,6 +114,10 @@ public class RotatingObjHelper implements UpdateCallback {
                         case GLFW_KEY_N:
                             rObj.actifNormal = !rObj.actifNormal;
                             obji.getMesh().setDrawHelperNormal(rObj.actifNormal);
+                            break;
+                        case GLFW_KEY_Q :
+                            rObj.actifAxesMesh = !rObj.actifAxesMesh;
+                            obji.getMesh().setDrawHelperAxesMesh(rObj.actifAxesMesh);
                             break;
                         case GLFW_KEY_H:
                             if (rObj.actifNormal == rObj.actifSummit){

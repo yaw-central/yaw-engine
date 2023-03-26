@@ -26,6 +26,7 @@ public class MainLoop implements Runnable {
     private Renderer mRenderer;
     private RendererHelperSummit mRendererHelperSummit;
     private RendererHelperNormal mRendererHelperNormal;
+    private RendererHelperAxesMesh mRendererHelperAxesMesh;
     private SceneLight mSceneLight;
     private Vector<ItemGroup> mItemGroupArrayList;
     private Skybox mSkybox = null;
@@ -88,6 +89,7 @@ public class MainLoop implements Runnable {
         this.mRenderer = new Renderer();
         this.mRendererHelperSummit = new RendererHelperSummit();
         this.mRendererHelperNormal = new RendererHelperNormal();
+        this.mRendererHelperAxesMesh = new RendererHelperAxesMesh();
         this.mCamerasList = new Vector<>();
         this.mCamera = new Camera();
         mCamerasList.add(mCamera);
@@ -298,6 +300,7 @@ public class MainLoop implements Runnable {
                 mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox, shaderManager);
                 mRendererHelperSummit.render(mSceneVertex, mCamera, shaderManager);
                 mRendererHelperNormal.render(mSceneVertex, mCamera, shaderManager);
+                mRendererHelperAxesMesh.render(mSceneVertex, mCamera, shaderManager);
             }
 
            /*  Rendered with vSync (vertical Synchronization)

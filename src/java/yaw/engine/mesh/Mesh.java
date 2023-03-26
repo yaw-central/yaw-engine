@@ -2,6 +2,7 @@ package yaw.engine.mesh;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import yaw.engine.Helper.ShaderProgramHelperAxesMesh;
 import yaw.engine.Helper.ShaderProgramHelperNormal;
 import yaw.engine.Helper.ShaderProgramHelperSummit;
 import yaw.engine.camera.Camera;
@@ -42,10 +43,11 @@ public class Mesh {
     private ShaderProgramADS mShaderProgram;
     private ShaderProgramHelperSummit mShaderProgramHelperSummit;
     private ShaderProgramHelperNormal shaderProgramHelperNormal;
-
+    private ShaderProgramHelperAxesMesh shaderProgramHelperAxesMesh;
     private boolean drawAds;
     private boolean drawHelperSummit;
     private boolean drawHelperNormal;
+    private boolean drawHelperAxesMesh;
 
 
     /**
@@ -93,6 +95,10 @@ public class Mesh {
         this.mTextCoords = pTextCoords == null ? new float[1] : pTextCoords;
         this.mOptionalAttributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
+        this.drawHelperSummit = false;
+        this.drawHelperNormal = false;
+        this.drawHelperAxesMesh = false;
+        this.drawAds = false;
     }
 
     /**
@@ -146,9 +152,8 @@ public class Mesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-        drawHelperSummit = false;
-        drawHelperNormal = false;
-        drawAds = false;
+
+
 
     }
 
@@ -232,6 +237,23 @@ public class Mesh {
         shaderProgramHelperNormal.unbind();
         endRender();
 
+    }
+
+    public void renderHelperAxesMesh(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager){
+        shaderProgramHelperAxesMesh = shaderManager.getShaderProgramHelperAxesMesh();
+        initRender();
+        shaderProgramHelperAxesMesh.bind();
+
+        Matrix4f viewMat = pCamera.getViewMat();
+        shaderProgramHelperAxesMesh.setUniform("viewMatrix", viewMat);
+
+        for (ItemObject lItem : pItems) {
+            //shaderProgramHelperAxesMesh.setUniform("modelMatrix", lItem.getWorldMatrix());
+            glDrawElements(GL_LINES, this.getIndices().length, GL_UNSIGNED_INT, 0);
+        }
+
+        shaderProgramHelperAxesMesh.unbind();
+        endRender();
     }
 
 
@@ -390,21 +412,17 @@ public class Mesh {
         mTextCoords = pTextCoord;
     }
 
-    public void bind() {
-        mShaderProgram.bind();
-    }
-
-    public void unbind() {
-        mShaderProgram.unbind();
-    }
-
     public void setDrawHelperSummit(boolean bool){drawHelperSummit = bool;}
     public void setDrawHelperNormal(boolean bool){drawHelperNormal = bool;}
     public void setDrawAds(boolean bool){drawAds = bool;}
+    public void setDrawHelperAxesMesh(boolean bool){ drawHelperAxesMesh = bool;}
 
     public boolean getDrawHelperSummit(){ return drawHelperSummit; }
     public boolean getDrawHelperNormal(){ return drawHelperNormal; }
     public boolean getDrawAds(){ return drawAds; }
+    public boolean getDrawHelperAxesMesh(){ return drawHelperAxesMesh;}
+
+
 
 
 

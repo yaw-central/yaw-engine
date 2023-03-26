@@ -24,6 +24,7 @@ public class SceneVertex {
     private HashMap<Mesh, List<ItemObject>> mMeshMap;
     private HashMap<Mesh, List<ItemObject>> mMeshMapHelperSummit;
     private HashMap<Mesh, List<ItemObject>> mMeshMapHelperNormal;
+    private HashMap<Mesh, List<ItemObject>> mMeshMapHelperAxesMesh;
     private ArrayList<Mesh> notInit;
 
 
@@ -31,6 +32,7 @@ public class SceneVertex {
         mMeshMap = new HashMap<>();
         mMeshMapHelperSummit = new HashMap<>();
         mMeshMapHelperNormal = new HashMap<>();
+        mMeshMapHelperAxesMesh = new HashMap<>();
         notInit = new ArrayList<>();
 
     }
@@ -131,6 +133,12 @@ public class SceneVertex {
                     }else{
                         mMeshMapHelperNormal.remove(lMesh);
                     }
+                    if (lMesh.getDrawHelperAxesMesh()){
+                        mMeshMapHelperAxesMesh.put(lMesh, lItems);
+                    }else{
+                        mMeshMapHelperAxesMesh.remove(lMesh);
+                    }
+
                 } catch (Exception e) {
                     System.out.println("Erreur scene vertex");
                 }
@@ -149,8 +157,7 @@ public class SceneVertex {
         for (Mesh lMesh : mMeshMapHelperSummit.keySet()) {
             List<ItemObject> lItems = mMeshMapHelperSummit.get(lMesh);
             try {
-                if(lMesh.getDrawHelperSummit())
-                    lMesh.renderHelperSummit(lItems, pCamera, shaderManager);
+                lMesh.renderHelperSummit(lItems, pCamera, shaderManager);
             } catch (Exception e) {
                 System.out.println("Erreur scene vertex Helper Summit");
             }
@@ -166,6 +173,18 @@ public class SceneVertex {
                 lMesh.renderHelperNormal(lItems, pCamera,shaderManager);
             } catch (Exception e) {
                 System.out.println("Erreur scene vertex Helper Normal");
+            }
+
+        }
+    }
+
+    public void renderHelperAxesMesh(Camera pCamera, ShaderManager shaderManager){
+        for (Mesh lMesh : mMeshMapHelperAxesMesh.keySet()) {
+            List<ItemObject> lItems = mMeshMapHelperAxesMesh.get(lMesh);
+            try {
+                lMesh.renderHelperAxesMesh(lItems, pCamera,shaderManager);
+            } catch (Exception e) {
+                System.out.println("Erreur scene vertex Helper AxesMesh");
             }
 
         }
