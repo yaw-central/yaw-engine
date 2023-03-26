@@ -83,9 +83,10 @@ public class ShaderManager {
             mShaderProgramHelperAxesMesh.createFragmentShader(fragShaderHelperAxesMesh.SHADER_STRING);
 
             mShaderProgramHelperAxesMesh.link();
-
+            mShaderProgramHelperAxesMesh.createUniform("projectionMatrix");
             mShaderProgramHelperAxesMesh.createUniform("viewMatrix");
             mShaderProgramHelperAxesMesh.createUniform("modelMatrix");
+
             shaderlist.add(mShaderProgramHelperAxesMesh);
 
         }catch(Exception e){

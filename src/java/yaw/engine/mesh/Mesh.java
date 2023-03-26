@@ -243,12 +243,12 @@ public class Mesh {
         shaderProgramHelperAxesMesh = shaderManager.getShaderProgramHelperAxesMesh();
         initRender();
         shaderProgramHelperAxesMesh.bind();
+        shaderProgramHelperAxesMesh.setUniform("projectionMatrix", pCamera.getProjectionMat());
 
         Matrix4f viewMat = pCamera.getViewMat();
         shaderProgramHelperAxesMesh.setUniform("viewMatrix", viewMat);
-
         for (ItemObject lItem : pItems) {
-            //shaderProgramHelperAxesMesh.setUniform("modelMatrix", lItem.getWorldMatrix());
+            shaderProgramHelperAxesMesh.setUniform("modelMatrix", lItem.getWorldMatrix());
             glDrawElements(GL_LINES, this.getIndices().length, GL_UNSIGNED_INT, 0);
         }
 
