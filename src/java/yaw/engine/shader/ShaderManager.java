@@ -1,11 +1,10 @@
 package yaw.engine.shader;
 
-import yaw.engine.Window;
+import yaw.engine.Helper.*;
 import yaw.engine.light.SceneLight;
 
 import java.util.ArrayList;
 
-import static org.lwjgl.opengl.GL11.glViewport;
 
 
 public class ShaderManager {
@@ -44,6 +43,39 @@ public class ShaderManager {
             mShaderProgram.createUniform("bias");
 
             shaderlist.add(mShaderProgram);
+
+            /* HelperSummit ShaderProgram */
+
+            ShaderProgramHelperSummit mShaderProgramHelperSummit = new ShaderProgramHelperSummit();
+            mShaderProgramHelperSummit.createVertexShader(vertShaderHelperSummit.SHADER_STRING);
+            mShaderProgramHelperSummit.createFragmentShader(fragShaderHelperSummit.SHADER_STRING);
+
+            mShaderProgramHelperSummit.link();
+
+
+            mShaderProgramHelperSummit.createUniform("projectionMatrix");
+            mShaderProgramHelperSummit.createUniform("viewMatrix");
+            mShaderProgramHelperSummit.createUniform("modelMatrix");
+
+
+            shaderlist.add(mShaderProgramHelperSummit);
+
+            /* helperNormal ShaderProgram */
+
+            ShaderProgramHelperNormal mShaderProgramHelperNormal = new ShaderProgramHelperNormal();
+            mShaderProgramHelperNormal.createVertexShader(vertShaderHelperNormal.SHADER_STRING);
+            mShaderProgramHelperNormal.createGeometryShader(geoShaderHelperNormal.SHADER_STRING);
+            mShaderProgramHelperNormal.createFragmentShader(fragShaderHelperSummit.SHADER_STRING);
+
+            mShaderProgramHelperNormal.link();
+
+            mShaderProgramHelperNormal.createUniform("projectionMatrix");
+            mShaderProgramHelperNormal.createUniform("viewMatrix");
+            mShaderProgramHelperNormal.createUniform("modelMatrix");
+
+            shaderlist.add(mShaderProgramHelperNormal);
+
+
         }catch(Exception e){
             System.out.println("Erreur constructeur ShaderManager");
         }
@@ -61,11 +93,16 @@ public class ShaderManager {
         return shaderlist.get(id);
     }
 
+    public ShaderProgramADS getShaderProgramAds() { return (ShaderProgramADS) shaderlist.get(0);}
+    public ShaderProgramHelperSummit getShaderProgramHelperSummit() { return (ShaderProgramHelperSummit) shaderlist.get(1);}
+    public ShaderProgramHelperNormal getShaderProgramHelperNormals() { return (ShaderProgramHelperNormal) shaderlist.get(2);}
+
+    /**
+     * The Shader Program is deallocated
+     */
     public void cleanUp(){
         for(ShaderProgram sp : shaderlist){
             sp.cleanup();
         }
     }
-
-
 }

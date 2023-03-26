@@ -24,6 +24,8 @@ public class MainLoop implements Runnable {
     private Camera mCamera;
     private Vector<Camera> mCamerasList;
     private Renderer mRenderer;
+    private RendererHelperSummit mRendererHelperSummit;
+    private RendererHelperNormal mRendererHelperNormal;
     private SceneLight mSceneLight;
     private Vector<ItemGroup> mItemGroupArrayList;
     private Skybox mSkybox = null;
@@ -84,6 +86,8 @@ public class MainLoop implements Runnable {
 
     public MainLoop() {
         this.mRenderer = new Renderer();
+        this.mRendererHelperSummit = new RendererHelperSummit();
+        this.mRendererHelperNormal = new RendererHelperNormal();
         this.mCamerasList = new Vector<>();
         this.mCamera = new Camera();
         mCamerasList.add(mCamera);
@@ -292,6 +296,8 @@ public class MainLoop implements Runnable {
             synchronized (mSceneVertex) {
                 mSceneLight.renderShadowMap(mSceneVertex, mCamera, shaderManager);
                 mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox, shaderManager);
+                mRendererHelperSummit.render(mSceneVertex, mCamera, shaderManager);
+                mRendererHelperNormal.render(mSceneVertex, mCamera, shaderManager);
             }
 
            /*  Rendered with vSync (vertical Synchronization)

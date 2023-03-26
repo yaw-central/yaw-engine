@@ -17,8 +17,6 @@ import static org.lwjgl.opengl.GL11.*;
  * The shader allows to describe the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading, etc ...
  */
 public class Renderer {
-//    protected ShaderProgram mShaderProgram;
-
     /**
      * Basic rendering.
      */
@@ -27,32 +25,16 @@ public class Renderer {
     }
 
     /**
-     * The Shader Program is deallocated
-     */
-    /*public void cleanUp() {
-        if (mShaderProgram != null) {
-            mShaderProgram.cleanup();
-        }
-    }*/
-//    /**
-//     * The Shader Program is deallocated
-//     */
-//    public void cleanUp() {
-//        if (mShaderProgram != null) {
-//            mShaderProgram.cleanup();
-//        }
-//    }
-
-    /**
      * Specific rendering.
      * Configuring rendering with the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading,
      * Which are passed by arguments
      *
-     * @param pSceneVertex sceneVertex
-     * @param pSceneLight  sceneLight
-     * @param isResized    isResized
-     * @param pCamera      camera
-     * @param pSkybox      skybox
+     * @param pSceneVertex  sceneVertex
+     * @param pSceneLight   sceneLight
+     * @param isResized     isResized
+     * @param pCamera       camera
+     * @param pSkybox       skybox
+     * @param shaderManager shaderManager
      */
     public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox, ShaderManager shaderManager) {
 

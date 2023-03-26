@@ -150,7 +150,7 @@ public class ShadowMap {
             if(castingItems.isEmpty()) continue;
 
             try {
-                lMesh.render(castingItems, pCamera, shaderManager);
+                lMesh.renderAds(castingItems, pCamera, shaderManager);
             } catch (Exception e) {
                 System.out.println("Erreur ShadowMap");
             }

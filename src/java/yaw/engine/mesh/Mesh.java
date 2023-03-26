@@ -2,17 +2,17 @@ package yaw.engine.mesh;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL20;
+import yaw.engine.Helper.ShaderProgramHelperNormal;
+import yaw.engine.Helper.ShaderProgramHelperSummit;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
-import yaw.engine.light.SceneLight;
 import yaw.engine.shader.*;
-import yaw.engine.util.LoggerYAW;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
+
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -39,8 +39,13 @@ public class Mesh {
     private Map<String, String> mOptionalAttributes;
     //strategy when we draw the elements
     private MeshDrawingStrategy mDrawingStrategy;
+    private ShaderProgramADS mShaderProgram;
+    private ShaderProgramHelperSummit mShaderProgramHelperSummit;
+    private ShaderProgramHelperNormal shaderProgramHelperNormal;
 
-    private static ShaderProgramADS mShaderProgram;
+    private boolean drawAds;
+    private boolean drawHelperSummit;
+    private boolean drawHelperNormal;
 
 
     /**
@@ -141,6 +146,10 @@ public class Mesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
+        drawHelperSummit = false;
+        drawHelperNormal = false;
+        drawAds = false;
+
     }
 
     /**
@@ -148,9 +157,9 @@ public class Mesh {
      *
      * @param pItems         item
      */
-    public void render(List<ItemObject> pItems, Camera pCamera, ShaderManager shaderManager) {
+    public void renderAds(List<ItemObject> pItems, Camera pCamera, ShaderManager shaderManager) {
         //initRender
-        mShaderProgram = (ShaderProgramADS) shaderManager.getShaderProgram(0);
+        mShaderProgram = shaderManager.getShaderProgramAds();
         initRender();
         mShaderProgram.bind();
         /* Set the camera to render. */
@@ -181,7 +190,51 @@ public class Mesh {
         mShaderProgram.unbind();
         endRender();
 
+
     }
+
+    public void renderHelperSummit(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager) {
+
+
+        //initRender
+        mShaderProgramHelperSummit = shaderManager.getShaderProgramHelperSummit();
+        initRender();
+
+        mShaderProgramHelperSummit.bind();
+        mShaderProgramHelperSummit.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        Matrix4f viewMat = pCamera.getViewMat();
+        mShaderProgramHelperSummit.setUniform("viewMatrix", viewMat);
+        for (ItemObject lItem : pItems) {
+            mShaderProgramHelperSummit.setUniform("modelMatrix", lItem.getWorldMatrix());
+            glDrawElements(GL_POINTS, this.getIndices().length, GL_UNSIGNED_INT, 0);
+        }
+
+        mShaderProgramHelperSummit.unbind();
+        endRender();
+
+    }
+
+    public void renderHelperNormal(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager) {
+        //initRender
+        shaderProgramHelperNormal = shaderManager.getShaderProgramHelperNormals();
+        initRender();
+
+
+        shaderProgramHelperNormal.bind();
+        shaderProgramHelperNormal.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        Matrix4f viewMat = pCamera.getViewMat();
+        shaderProgramHelperNormal.setUniform("viewMatrix", viewMat);
+        for (ItemObject lItem : pItems) {
+            shaderProgramHelperNormal.setUniform("modelMatrix", lItem.getWorldMatrix());
+            glDrawElements(GL_POINTS, this.getIndices().length, GL_UNSIGNED_INT, 0);
+        }
+
+        shaderProgramHelperNormal.unbind();
+        endRender();
+
+    }
+
+
 
     public void cleanUp() {
         //de-allocation of VAO and VBO
@@ -344,8 +397,15 @@ public class Mesh {
     public void unbind() {
         mShaderProgram.unbind();
     }
-    public static ShaderProgramADS getShader()
-    {
-        return mShaderProgram;
-    }
+
+    public void setDrawHelperSummit(boolean bool){drawHelperSummit = bool;}
+    public void setDrawHelperNormal(boolean bool){drawHelperNormal = bool;}
+    public void setDrawAds(boolean bool){drawAds = bool;}
+
+    public boolean getDrawHelperSummit(){ return drawHelperSummit; }
+    public boolean getDrawHelperNormal(){ return drawHelperNormal; }
+    public boolean getDrawAds(){ return drawAds; }
+
+
+
 }
