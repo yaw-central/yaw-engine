@@ -13,5 +13,5 @@ out vec3 vNormal;
 void main() {
     vec4 mvPos = modelMatrix * vec4(position, 1.0);
     gl_Position = projectionMatrix * viewMatrix * mvPos;
-    vNormal = normal;
+    vNormal = normalize(transpose(inverse(mat3(modelMatrix))) * normal);
 }

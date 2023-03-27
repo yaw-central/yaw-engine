@@ -224,7 +224,6 @@ public class Mesh {
         shaderProgramHelperNormal = shaderManager.getShaderProgramHelperNormals();
         initRender();
 
-
         shaderProgramHelperNormal.bind();
         shaderProgramHelperNormal.setUniform("projectionMatrix", pCamera.getProjectionMat());
         Matrix4f viewMat = pCamera.getViewMat();

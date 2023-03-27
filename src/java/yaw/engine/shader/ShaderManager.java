@@ -87,6 +87,7 @@ public class ShaderManager {
             mShaderProgramHelperAxesMesh.createUniform("viewMatrix");
             mShaderProgramHelperAxesMesh.createUniform("modelMatrix");
 
+
             shaderlist.add(mShaderProgramHelperAxesMesh);
 
         }catch(Exception e){
