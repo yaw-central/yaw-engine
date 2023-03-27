@@ -247,6 +247,7 @@ public class Mesh {
         Matrix4f viewMat = pCamera.getViewMat();
         shaderProgramHelperAxesMesh.setUniform("viewMatrix", viewMat);
         for (ItemObject lItem : pItems) {
+            shaderProgramHelperAxesMesh.setUniform("center", lItem.getPosition());
             shaderProgramHelperAxesMesh.setUniform("modelMatrix", lItem.getWorldMatrix());
             glDrawElements(GL_LINES, this.getIndices().length, GL_UNSIGNED_INT, 0);
         }
