@@ -17,9 +17,7 @@ public class ShaderCode {
     }
 
     public void mkIndent() {
-        for(int i = 1; i < indentLevel * INDENT_SPACES; i++) {
-            code.append(' ');
-        }
+        code.append(" ".repeat(indentLevel * INDENT_SPACES));
     }
 
     public ShaderCode indent() {
@@ -42,6 +40,27 @@ public class ShaderCode {
         mkIndent();
         code.append(line);
         code.append("\n");
+        return this;
+    }
+
+    public ShaderCode l() {
+        code.append("\n");
+        return this;
+    }
+
+    public ShaderCode beginMain() {
+        mkIndent();
+        code.append("void main()\n");
+        mkIndent();
+        code.append("{\n");
+        indent();
+        return this;
+    }
+
+    public ShaderCode endMain() {
+        dedent();
+        mkIndent();
+        code.append("}\n");
         return this;
     }
 
