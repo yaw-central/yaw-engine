@@ -2,6 +2,7 @@ package yaw.engine;
 
 import yaw.engine.camera.Camera;
 import yaw.engine.light.SceneLight;
+import yaw.engine.shader.ShaderManager;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.shader.fragShader;
 import yaw.engine.shader.vertShader;
@@ -16,49 +17,11 @@ import static org.lwjgl.opengl.GL11.*;
  * The shader allows to describe the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading, etc ...
  */
 public class Renderer {
-    protected ShaderProgram mShaderProgram;
-
     /**
      * Basic rendering.
      */
     public void init() throws Exception {
-        /* Initialization of the shader program. */
-        mShaderProgram = new ShaderProgram();
-        mShaderProgram.createVertexShader(vertShader.SHADER_STRING);
-        mShaderProgram.createFragmentShader(fragShader.SHADER_STRING);
-
-
-        /* Binds the code and checks that everything has been done correctly. */
-        mShaderProgram.link();
-
-        mShaderProgram.createUniform("projectionMatrix");
-        mShaderProgram.createUniform("viewMatrix");
-        mShaderProgram.createUniform("modelMatrix");
-
-        /* Initialization of the shadow map matrix uniform. */
-        mShaderProgram.createUniform("directionalShadowMatrix");
-
-        /* Create uniform for material. */
-        mShaderProgram.createMaterialUniform("material");
-        mShaderProgram.createUniform("texture_sampler");
-        /* Initialization of the light's uniform. */
-        mShaderProgram.createUniform("camera_pos");
-        mShaderProgram.createUniform("specularPower");
-        mShaderProgram.createUniform("ambientLight");
-        mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
-        mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
-        mShaderProgram.createDirectionalLightUniform("directionalLight");
-        mShaderProgram.createUniform("shadowMapSampler");
-        mShaderProgram.createUniform("bias");
-    }
-
-    /**
-     * The Shader Program is deallocated
-     */
-    public void cleanUp() {
-        if (mShaderProgram != null) {
-            mShaderProgram.cleanup();
-        }
+        /* ?? */
     }
 
     /**
@@ -66,13 +29,14 @@ public class Renderer {
      * Configuring rendering with the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading,
      * Which are passed by arguments
      *
-     * @param pSceneVertex sceneVertex
-     * @param pSceneLight  sceneLight
-     * @param isResized    isResized
-     * @param pCamera      camera
-     * @param pSkybox      skybox
+     * @param pSceneVertex  sceneVertex
+     * @param pSceneLight   sceneLight
+     * @param isResized     isResized
+     * @param pCamera       camera
+     * @param pSkybox       skybox
+     * @param shaderManager shaderManager
      */
-    public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox) {
+    public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox, ShaderManager shaderManager) {
 
         //Preparation of the camera
         if (isResized || pSceneVertex.isItemAdded()) {
@@ -89,15 +53,6 @@ public class Renderer {
         /* Initialization of the window we currently use. */
         glViewport(0, 0, Window.getWidth(), Window.getHeight());
 
-        mShaderProgram.bind();
-
-        /* Set the camera to render. */
-        mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
-        mShaderProgram.setUniform("texture_sampler", 0);
-        mShaderProgram.setUniform("camera_pos", pCamera.getPosition());
-        Matrix4f viewMat = pCamera.getViewMat();
-        mShaderProgram.setUniform("viewMatrix", viewMat);
-
         /* Enable the option needed to render.*/
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
@@ -113,19 +68,19 @@ public class Renderer {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         /* Rendering of the light. */
-        pSceneLight.render(mShaderProgram, new Matrix4f().identity());
+
 
         /* Init Objects. */
-        pSceneVertex.initMesh();
+        //pSceneVertex.initMesh();
 
         /* Update objects
         XXX useless?  sc.update(); */
 
-
         /* Rendering of the object. */
-        pSceneVertex.draw(mShaderProgram);
+        pSceneVertex.render(pCamera,shaderManager);
+        pSceneLight.render(new Matrix4f().identity(), shaderManager);
         /* Cleans all services. */
-        mShaderProgram.unbind();
+        //mShaderProgram.unbind();
         if (pSkybox != null) {
             if (pSkybox.init == false) {
                 try {

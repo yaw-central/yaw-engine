@@ -2,8 +2,10 @@ package yaw.engine;
 
 
 
+import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Mesh;
+import yaw.engine.shader.ShaderManager;
 import yaw.engine.shader.ShaderProgram;
 
 import java.util.ArrayList;
@@ -20,12 +22,19 @@ public class SceneVertex {
     //old code from a previous attempt to manage a group of scene vertex
     private boolean itemAdded = false;
     private HashMap<Mesh, List<ItemObject>> mMeshMap;
+    private HashMap<Mesh, List<ItemObject>> mMeshMapHelperSummit;
+    private HashMap<Mesh, List<ItemObject>> mMeshMapHelperNormal;
+    private HashMap<Mesh, List<ItemObject>> mMeshMapHelperAxesMesh;
     private ArrayList<Mesh> notInit;
 
 
     public SceneVertex() {
         mMeshMap = new HashMap<>();
+        mMeshMapHelperSummit = new HashMap<>();
+        mMeshMapHelperNormal = new HashMap<>();
+        mMeshMapHelperAxesMesh = new HashMap<>();
         notInit = new ArrayList<>();
+
     }
 
     /**
@@ -77,7 +86,7 @@ public class SceneVertex {
     /**
      * Invoke the method cleanup on all the active mesh
      */
-    public void cleanUp() {
+    public void cleanUp(ShaderManager shaderManager) {
         for (Mesh lMesh : mMeshMap.keySet()) {
             lMesh.cleanUp();
         }
@@ -86,34 +95,98 @@ public class SceneVertex {
     /**
      * Invoke the method init on all the mesh in the non initialize mesh collection
      */
-    public void initMesh() {
+    /*public void initMesh() {
         for (Mesh lMesh : notInit) {
-            lMesh.init();
+            lMesh.initBuffer();
         }
         notInit.clear();
-    }
+    }*/
 
     /**
      * Invoke the method render on all mesh with associated items
      * otherwise clean then remove mesh which has an empty list of items
      *
-     * @param pShaderProgram Shader program that will render
+     * @param pCamera camera in wich that will render
      */
 
-    public void draw(ShaderProgram pShaderProgram) {
+    public void render(Camera pCamera, ShaderManager shaderManager) {
         List<Mesh> lRmListe = new ArrayList<>();
         for (Mesh lMesh : mMeshMap.keySet()) {
             List<ItemObject> lItems = mMeshMap.get(lMesh);
             if (lItems.isEmpty()) {
                 lRmListe.add(lMesh);
             } else {
-                lMesh.render(lItems, pShaderProgram);
+                try {
+                    if(notInit.contains(lMesh)){
+                        lMesh.initBuffer();
+                        notInit.remove(lMesh);
+                    }
+                    lMesh.renderAds(lItems, pCamera,shaderManager);
+
+                    if (lMesh.getDrawHelperSummit()){
+                        mMeshMapHelperSummit.put(lMesh, lItems);
+                    }else {
+                        mMeshMapHelperSummit.remove(lMesh);
+                    }
+                    if (lMesh.getDrawHelperNormal()) {
+                        mMeshMapHelperNormal.put(lMesh, lItems);
+                    }else{
+                        mMeshMapHelperNormal.remove(lMesh);
+                    }
+                    if (lMesh.getDrawHelperAxesMesh()){
+                        mMeshMapHelperAxesMesh.put(lMesh, lItems);
+                    }else{
+                        mMeshMapHelperAxesMesh.remove(lMesh);
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("Erreur scene vertex");
+                }
             }
         }
         /*Clean then remove*/
         for (Mesh lMesh : lRmListe) {
             lMesh.cleanUp();
             mMeshMap.remove(lMesh);
+        }
+
+    }
+
+    public void renderHelperSummit(Camera pCamera, ShaderManager shaderManager){
+
+        for (Mesh lMesh : mMeshMapHelperSummit.keySet()) {
+            List<ItemObject> lItems = mMeshMapHelperSummit.get(lMesh);
+            try {
+                lMesh.renderHelperSummit(lItems, pCamera, shaderManager);
+            } catch (Exception e) {
+                System.out.println("Erreur scene vertex Helper Summit");
+            }
+
+        }
+
+    }
+
+    public void renderHelperNormal(Camera pCamera, ShaderManager shaderManager){
+        for (Mesh lMesh : mMeshMapHelperNormal.keySet()) {
+            List<ItemObject> lItems = mMeshMapHelperNormal.get(lMesh);
+            try {
+                lMesh.renderHelperNormal(lItems, pCamera,shaderManager);
+            } catch (Exception e) {
+                System.out.println("Erreur scene vertex Helper Normal");
+            }
+
+        }
+    }
+
+    public void renderHelperAxesMesh(Camera pCamera, ShaderManager shaderManager){
+        for (Mesh lMesh : mMeshMapHelperAxesMesh.keySet()) {
+            List<ItemObject> lItems = mMeshMapHelperAxesMesh.get(lMesh);
+            try {
+                lMesh.renderHelperAxesMesh(lItems, pCamera,shaderManager);
+            } catch (Exception e) {
+                System.out.println("Erreur scene vertex Helper AxesMesh");
+            }
+
         }
     }
 

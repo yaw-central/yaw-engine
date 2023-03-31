@@ -1,17 +1,19 @@
 package yaw.engine.mesh;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import yaw.engine.Helper.ShaderProgramHelperAxesMesh;
+import yaw.engine.Helper.ShaderProgramHelperNormal;
+import yaw.engine.Helper.ShaderProgramHelperSummit;
+import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
-import yaw.engine.shader.ShaderProgram;
-import yaw.engine.util.LoggerYAW;
+import yaw.engine.shader.*;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -28,7 +30,6 @@ public class Mesh {
     //reference to the VAO(wrapper)
     private int mVaoId;
     //VBO's ID
-
     //VBO
     private float[] mVertices;//mVertices
     private float[] mNormals;
@@ -39,6 +40,15 @@ public class Mesh {
     private Map<String, String> mOptionalAttributes;
     //strategy when we draw the elements
     private MeshDrawingStrategy mDrawingStrategy;
+    private ShaderProgramADS mShaderProgram;
+    private ShaderProgramHelperSummit mShaderProgramHelperSummit;
+    private ShaderProgramHelperNormal shaderProgramHelperNormal;
+    private ShaderProgramHelperAxesMesh shaderProgramHelperAxesMesh;
+    private boolean drawAds;
+    private boolean drawHelperSummit;
+    private boolean drawHelperNormal;
+    private boolean drawHelperAxesMesh;
+
 
     /**
      * Construct a Mesh with the specified mMaterial , mVertices, mNormals , mTextureCoordinate and mIndices.
@@ -85,12 +95,16 @@ public class Mesh {
         this.mTextCoords = pTextCoords == null ? new float[1] : pTextCoords;
         this.mOptionalAttributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
+        this.drawHelperSummit = false;
+        this.drawHelperNormal = false;
+        this.drawHelperAxesMesh = false;
+        this.drawAds = false;
     }
 
     /**
      * Initialize  vertex, mNormals, mIndices and mTextureCoordinate buffer
      */
-    public void init() {
+    public void initBuffer() {
         //initialization order is important do not change unless you know what to do
         mVaoId = glGenVertexArrays();
         glBindVertexArray(mVaoId);
@@ -138,39 +152,111 @@ public class Mesh {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
+
+
+
     }
 
     /**
      * Render the specified items
      *
      * @param pItems         item
-     * @param pShaderProgram shaderProgram
      */
-    public void render(List<ItemObject> pItems, ShaderProgram pShaderProgram) {
-
+    public void renderAds(List<ItemObject> pItems, Camera pCamera, ShaderManager shaderManager) {
         //initRender
+        mShaderProgram = shaderManager.getShaderProgramAds();
         initRender();
+        mShaderProgram.bind();
+        /* Set the camera to render. */
+        mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        mShaderProgram.setUniform("texture_sampler", 0);
+        mShaderProgram.setUniform("camera_pos", pCamera.getPosition());
+        Matrix4f viewMat = pCamera.getViewMat();
+        mShaderProgram.setUniform("viewMatrix", viewMat);
 
-
-        pShaderProgram.setUniform("material", mMaterial);
+        mShaderProgram.setUniform("material", mMaterial);
         for (ItemObject lItem : pItems) {
+
             //can be moved to Item class
             //Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
 
-            pShaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
-            if (mDrawingStrategy != null) {
+            mShaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
+            /*if (mDrawingStrategy != null) {
                 //delegate the drawing
                 mDrawingStrategy.drawMesh(this);
             } else {
                 LoggerYAW.getLogger().severe("No drawing strategy has been set for the mesh");
                 throw new RuntimeException("No drawing strategy has been set for the mesh");
-            }
-
+            }*/
+            glDrawElements(GL_TRIANGLES, this.getIndices().length, GL_UNSIGNED_INT, 0);
         }
         //end render
 
+        mShaderProgram.unbind();
+        endRender();
+
+
+    }
+
+    public void renderHelperSummit(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager) {
+
+
+        //initRender
+        mShaderProgramHelperSummit = shaderManager.getShaderProgramHelperSummit();
+        initRender();
+
+        mShaderProgramHelperSummit.bind();
+        mShaderProgramHelperSummit.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        Matrix4f viewMat = pCamera.getViewMat();
+        mShaderProgramHelperSummit.setUniform("viewMatrix", viewMat);
+        for (ItemObject lItem : pItems) {
+            mShaderProgramHelperSummit.setUniform("modelMatrix", lItem.getWorldMatrix());
+            glDrawElements(GL_POINTS, this.getIndices().length, GL_UNSIGNED_INT, 0);
+        }
+
+        mShaderProgramHelperSummit.unbind();
+        endRender();
+
+    }
+
+    public void renderHelperNormal(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager) {
+        //initRender
+        shaderProgramHelperNormal = shaderManager.getShaderProgramHelperNormals();
+        initRender();
+
+        shaderProgramHelperNormal.bind();
+        shaderProgramHelperNormal.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        Matrix4f viewMat = pCamera.getViewMat();
+        shaderProgramHelperNormal.setUniform("viewMatrix", viewMat);
+        for (ItemObject lItem : pItems) {
+            shaderProgramHelperNormal.setUniform("modelMatrix", lItem.getWorldMatrix());
+            glDrawElements(GL_POINTS, this.getIndices().length, GL_UNSIGNED_INT, 0);
+        }
+
+        shaderProgramHelperNormal.unbind();
+        endRender();
+
+    }
+
+    public void renderHelperAxesMesh(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager){
+        shaderProgramHelperAxesMesh = shaderManager.getShaderProgramHelperAxesMesh();
+        initRender();
+        shaderProgramHelperAxesMesh.bind();
+        shaderProgramHelperAxesMesh.setUniform("projectionMatrix", pCamera.getProjectionMat());
+
+        Matrix4f viewMat = pCamera.getViewMat();
+        shaderProgramHelperAxesMesh.setUniform("viewMatrix", viewMat);
+        for (ItemObject lItem : pItems) {
+            shaderProgramHelperAxesMesh.setUniform("center", lItem.getPosition());
+            shaderProgramHelperAxesMesh.setUniform("modelMatrix", lItem.getWorldMatrix());
+            glDrawElements(GL_LINES, this.getIndices().length, GL_UNSIGNED_INT, 0);
+        }
+
+        shaderProgramHelperAxesMesh.unbind();
         endRender();
     }
+
+
 
     public void cleanUp() {
         //de-allocation of VAO and VBO
@@ -188,6 +274,7 @@ public class Mesh {
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(mVaoId);
+
 
 
     }
@@ -324,4 +411,19 @@ public class Mesh {
     public void setTextCoords(float[] pTextCoord) {
         mTextCoords = pTextCoord;
     }
+
+    public void setDrawHelperSummit(boolean bool){drawHelperSummit = bool;}
+    public void setDrawHelperNormal(boolean bool){drawHelperNormal = bool;}
+    public void setDrawAds(boolean bool){drawAds = bool;}
+    public void setDrawHelperAxesMesh(boolean bool){ drawHelperAxesMesh = bool;}
+
+    public boolean getDrawHelperSummit(){ return drawHelperSummit; }
+    public boolean getDrawHelperNormal(){ return drawHelperNormal; }
+    public boolean getDrawAds(){ return drawAds; }
+    public boolean getDrawHelperAxesMesh(){ return drawHelperAxesMesh;}
+
+
+
+
+
 }

@@ -13,3 +13,15 @@ $PYTHON3 ./shader_classify.py "yaw.engine.shader" ./shadowVertShader.vs
 
 echo "* Making shadow fragment shader *"
 $PYTHON3 ./shader_classify.py "yaw.engine.shader" ./shadowFragShader.fs
+
+echo "* Making shadow fragment shader *"
+$PYTHON3 ./shader_classify.py "yaw.engine.shader" ./vertShaderHelperSummit.fs
+
+echo "* Making shadow fragment shader *"
+$PYTHON3 ./shader_classify.py "yaw.engine.shader" ./fragShaderHelperSummit.fs
+
+echo "* Making shadow fragment shader *"
+$PYTHON3 ./shader_classify.py "yaw.engine.shader" ./vertShaderHelperNormal.fs
+
+echo "* Making shadow fragment shader *"
+$PYTHON3 ./shader_classify.py "yaw.engine.shader" ./geoShaderHelperNormal.fs
