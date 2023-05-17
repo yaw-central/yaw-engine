@@ -7,6 +7,5 @@ public class RendererHelperAxesMesh {
 
     public void render(SceneVertex pSceneVertex, Camera pCamera, ShaderManager shaderManager) {
         pSceneVertex.renderHelperAxesMesh(pCamera, shaderManager);
-
     }
 }
