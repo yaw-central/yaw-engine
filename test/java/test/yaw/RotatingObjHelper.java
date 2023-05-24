@@ -61,7 +61,7 @@ public class RotatingObjHelper implements UpdateCallback {
 
         float angle = 2.0f * 3.1415925f * (float) deltaTime * speed;
         //System.out.println(deltaTime);
-        cube.rotateY(angle);
+        //cube.rotateY(angle);
         //cube.rotateXYZAround(0f, 3.1415925f * speed * (float) deltaTime, 0f, new Vector3f(0f, 0f, -10f));
         //cube.rotateX(0.0f);
 
@@ -92,7 +92,7 @@ public class RotatingObjHelper implements UpdateCallback {
         objm.setDrawingStrategy(new DefaultDrawingStrategy());
         Material mat = new Material();
         mat.setColor(new Vector3f(0.1f , 0.7f, 0.9f));
-        objm.setMaterial(mat);
+        objm.setMaterial(objLoader.getScene().getMaterialByIndex(0));
         ItemObject obji = world.createItemObject("obj", 0f, 0f, 0f, 1.0f, objm);
         //obji.translate(2f,0f, -5f);
 
