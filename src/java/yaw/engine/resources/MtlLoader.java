@@ -21,6 +21,12 @@ public class MtlLoader {
         this.objScene = objScene;
     }
 
+    public MtlLoader() {}
+
+    public MtlMaterial getMat(){
+        return currentMaterial;
+    }
+
     public void parseFromFile(String filename) throws IOException {
         loadMode = LoadMode.LOAD_FROM_FILE;
         loadPath = filename;
@@ -56,6 +62,7 @@ public class MtlLoader {
         if (line.charAt(0) == '#') {
             return;
         }
+
 
         String[] parts = line.split("\\s+");
         if (parts.length == 0) {
