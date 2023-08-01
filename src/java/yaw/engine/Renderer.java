@@ -80,7 +80,7 @@ public class Renderer {
         pSceneVertex.render(pCamera,shaderManager);
         pSceneLight.render(new Matrix4f().identity(), shaderManager);
         /* Cleans all services. */
-        //mShaderProgram.unbind();
+
         if (pSkybox != null) {
             if (pSkybox.init == false) {
                 try {

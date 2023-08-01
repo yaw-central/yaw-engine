@@ -47,8 +47,8 @@ public class ShaderManager {
             /* HelperSummit ShaderProgram */
 
             ShaderProgramHelperSummit mShaderProgramHelperSummit = new ShaderProgramHelperSummit();
-            mShaderProgramHelperSummit.createVertexShader(vertShaderHelperSummit.SHADER_STRING);
-            mShaderProgramHelperSummit.createFragmentShader(fragShaderHelperSummit.SHADER_STRING);
+            mShaderProgramHelperSummit.createVertexShader(mShaderProgramHelperSummit.getVs());
+            mShaderProgramHelperSummit.createFragmentShader(mShaderProgramHelperSummit.getFs());
 
             mShaderProgramHelperSummit.link();
 
@@ -63,9 +63,10 @@ public class ShaderManager {
             /* helperNormal ShaderProgram */
 
             ShaderProgramHelperNormal mShaderProgramHelperNormal = new ShaderProgramHelperNormal();
-            mShaderProgramHelperNormal.createVertexShader(vertShaderHelperNormal.SHADER_STRING);
-            mShaderProgramHelperNormal.createGeometryShader(geoShaderHelperNormal.SHADER_STRING);
-            mShaderProgramHelperNormal.createFragmentShader(fragShaderHelperSummit.SHADER_STRING);
+
+            mShaderProgramHelperNormal.createVertexShader(mShaderProgramHelperNormal.getVs());
+            mShaderProgramHelperNormal.createGeometryShader(mShaderProgramHelperNormal.getGs());
+            mShaderProgramHelperNormal.createFragmentShader(mShaderProgramHelperNormal.getFs());
 
             mShaderProgramHelperNormal.link();
 
@@ -78,9 +79,9 @@ public class ShaderManager {
             /* helperAxesMesh ShaderProgram */
 
             ShaderProgramHelperAxesMesh mShaderProgramHelperAxesMesh = new ShaderProgramHelperAxesMesh();
-            mShaderProgramHelperAxesMesh.createVertexShader(vertShaderHelperAxesMesh.SHADER_STRING);
-            mShaderProgramHelperAxesMesh.createGeometryShader(geoShaderHelperAxesMesh.SHADER_STRING);
-            mShaderProgramHelperAxesMesh.createFragmentShader(fragShaderHelperAxesMesh.SHADER_STRING);
+            mShaderProgramHelperAxesMesh.createVertexShader(mShaderProgramHelperAxesMesh.getVs());
+            mShaderProgramHelperAxesMesh.createGeometryShader(mShaderProgramHelperAxesMesh.getGs());
+            mShaderProgramHelperAxesMesh.createFragmentShader(mShaderProgramHelperAxesMesh.getFs());
 
             mShaderProgramHelperAxesMesh.link();
             mShaderProgramHelperAxesMesh.createUniform("projectionMatrix");

@@ -9,6 +9,7 @@ import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.shader.*;
 import org.lwjgl.BufferUtils;
+import yaw.engine.util.LoggerYAW;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -181,14 +182,15 @@ public class Mesh {
             //Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
 
             mShaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
-            /*if (mDrawingStrategy != null) {
+            if (mDrawingStrategy != null) {
                 //delegate the drawing
                 mDrawingStrategy.drawMesh(this);
             } else {
                 LoggerYAW.getLogger().severe("No drawing strategy has been set for the mesh");
                 throw new RuntimeException("No drawing strategy has been set for the mesh");
-            }*/
-            glDrawElements(GL_TRIANGLES, this.getIndices().length, GL_UNSIGNED_INT, 0);
+            }
+            // glDrawElements(GL_TRIANGLES, this.getIndices().length, GL_UNSIGNED_INT, 0);
+
         }
         //end render
 

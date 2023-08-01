@@ -1,6 +1,7 @@
 package yaw.engine.resources;
 
 import yaw.engine.geom.Geometry;
+import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
 
 import java.util.HashMap;
@@ -39,6 +40,26 @@ public class ObjScene {
         for (Geometry geom : geometries.values()) {
             if (i == index) {
                 return geom;
+            }
+        }
+        return null;
+    }
+
+    public MtlMaterial getMtlMaterialByIndex(int index) {
+        int i = 0;
+        for (MtlMaterial mat : materials.values()) {
+            if (i == index) {
+                return mat;
+            }
+        }
+        return null;
+    }
+
+    public Material getMaterialByIndex(int index) {
+        int i = 0;
+        for (MtlMaterial mat : materials.values()) {
+            if (i == index) {
+                return mat.getMaterial();
             }
         }
         return null;

@@ -92,7 +92,7 @@ public class RotatingObjHelper implements UpdateCallback {
         objm.setDrawingStrategy(new DefaultDrawingStrategy());
         Material mat = new Material();
         mat.setColor(new Vector3f(0.1f , 0.7f, 0.9f));
-        objm.setMaterial(mat);
+        objm.setMaterial(objLoader.getScene().getMaterialByIndex(0));
         ItemObject obji = world.createItemObject("obj", 0f, 0f, 0f, 1.0f, objm);
         //obji.translate(2f,0f, -5f);
 

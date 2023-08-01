@@ -26,6 +26,9 @@ public class ShaderProgram {
     private int mFragmentShaderId;
     private int mGeometryShaderId;
 
+    protected ShaderCode vs;
+    protected ShaderCode fs;
+
 
     /**
      * Constructor throws exception if the program could not create the shader
@@ -109,6 +112,10 @@ public class ShaderProgram {
             if (mFragmentShaderId != 0) {
                 /*Detaches a shader object from a program object to which it is attached*/
                 glDetachShader(mProgramId, mFragmentShaderId);
+            }
+            if(mGeometryShaderId != 0){
+                /*Detaches a shader object from a program object to which it is attached*/
+                glDetachShader(mProgramId, mGeometryShaderId);
             }
            /*Deletes a program object*/
             glDeleteProgram(mProgramId);
@@ -421,6 +428,14 @@ public class ShaderProgram {
 
     public int getId() {
         return mProgramId;
+    }
+
+    public String getVs() {
+        return vs.code.toString();
+    }
+
+    public String getFs(){
+        return fs.code.toString();
     }
 
 }
