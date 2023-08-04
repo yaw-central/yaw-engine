@@ -1,6 +1,6 @@
 package yaw.engine.shader;
 
-import yaw.engine.Helper.*;
+import yaw.engine.helper.*;
 import yaw.engine.light.SceneLight;
 
 import java.util.ArrayList;

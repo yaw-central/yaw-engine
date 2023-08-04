@@ -2,9 +2,9 @@ package yaw.engine.mesh;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import yaw.engine.Helper.ShaderProgramHelperAxesMesh;
-import yaw.engine.Helper.ShaderProgramHelperNormal;
-import yaw.engine.Helper.ShaderProgramHelperSummit;
+import yaw.engine.helper.ShaderProgramHelperAxesMesh;
+import yaw.engine.helper.ShaderProgramHelperNormal;
+import yaw.engine.helper.ShaderProgramHelperSummit;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.shader.*;

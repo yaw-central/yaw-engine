@@ -1,4 +1,4 @@
-package yaw.engine.Helper;
+package yaw.engine.helper;
 
 import yaw.engine.shader.ShaderCode;
 import yaw.engine.shader.ShaderProgram;
