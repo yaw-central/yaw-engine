@@ -66,6 +66,7 @@ public class TestCeilingCamera implements UpdateCallback {
         world.getCamera().rotateXYZ(-90,0,0);
         TestCeilingCamera ceilingCamera = new TestCeilingCamera();
 
+
         world.registerUpdateCallback(ceilingCamera);
 
         world.launchSync();

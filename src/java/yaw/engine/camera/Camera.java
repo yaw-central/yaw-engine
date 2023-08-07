@@ -1,8 +1,8 @@
 package yaw.engine.camera;
 
-import yaw.engine.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import yaw.engine.Window;
 
 /**
  * Class which will hold the position and rotation state of our camera.
@@ -10,9 +10,8 @@ import org.joml.Vector3f;
  * The perspective is defined by the pyramid clipping.
  */
 public class Camera {
-
     private Matrix4f projectionMat;
-    private Matrix4f cameraMat;
+    private final Matrix4f cameraMat;
     /* Angle of the field of view
        A small angle gives a zoom effect.
        Like a zoom on a pair of binoculars.. */
@@ -89,6 +88,10 @@ public class Camera {
         return cameraMat.getTranslation(new Vector3f());
     }
 
+    public void setPosition(Vector3f pos) {
+        translate(pos.sub(getPosition()));
+    }
+
     /**
      * Changes the position of the camera.
      *
@@ -98,10 +101,6 @@ public class Camera {
      */
     public void setPosition(float x, float y, float z) {
         setPosition(new Vector3f(x, y, z));
-    }
-
-    public void setPosition(Vector3f pos) {
-        translate(pos.sub(getPosition()));
     }
 
     /**
@@ -123,35 +122,35 @@ public class Camera {
     /**
      * Changes the camera to look at a target from a position
      *
-     * @param eye position of the camera
+     * @param eye    position of the camera
      * @param target position to look at
-     * @param up the direction of the cameras up vector
+     * @param up     the direction of the cameras up vector
      */
     public void lookAt(Vector3f eye, Vector3f target, Vector3f up) {
         cameraMat.lookAt(eye, target, up).invert();
     }
 
     public void lookAt(Vector3f target, Vector3f up) {
-	lookAt(getPosition(), target, up);
+        lookAt(getPosition(), target, up);
     }
 
     public void lookAt(float x, float y, float z, float ux, float uy, float uz) {
-	lookAt(new Vector3f(x, y, z), new Vector3f(ux, uy, uz));
+        lookAt(new Vector3f(x, y, z), new Vector3f(ux, uy, uz));
     }
 
     public void lookAt(Vector3f target) {
-	Vector3f camPos = getPosition();
-	Vector3f camDir = new Vector3f();
-	camPos.sub(target, camDir);
-	camDir.normalize();
-	Vector3f up = new Vector3f(0.0f, 1.0f, 0.0f);
-	Vector3f camRight = up.cross(camDir).normalize();
-	Vector3f camUp = camDir.cross(camRight);
-	lookAt(camPos, target, camUp);
+        Vector3f camPos = getPosition();
+        Vector3f camDir = new Vector3f();
+        camPos.sub(target, camDir);
+        camDir.normalize();
+        Vector3f up = new Vector3f(0.0f, 1.0f, 0.0f);
+        Vector3f camRight = up.cross(camDir).normalize();
+        Vector3f camUp = camDir.cross(camRight);
+        lookAt(camPos, target, camUp);
     }
 
     public void lookAtTarget(float targetX, float targetY, float targetZ) {
-	lookAt(new Vector3f(targetX, targetY, targetZ));
+        lookAt(new Vector3f(targetX, targetY, targetZ));
     }
 
 
@@ -159,12 +158,12 @@ public class Camera {
         return cameraMat.getEulerAnglesXYZ(new Vector3f());
     }
 
-    public void setRotation(float x, float y, float z) {
-        cameraMat.setRotationXYZ(x, y, z);
-    }
-
     public void setRotation(Vector3f rot) {
         setRotation(rot.x, rot.y, rot.z);
+    }
+
+    public void setRotation(float x, float y, float z) {
+        cameraMat.setRotationXYZ(x, y, z);
     }
 
     /**
@@ -209,6 +208,4 @@ public class Camera {
         this.fieldOfView = fov;
         updateProjectionMat();
     }
-
-
 }

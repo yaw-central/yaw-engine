@@ -14,7 +14,8 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL32.*;
+import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 
 public class ShaderProgram {
@@ -23,6 +24,10 @@ public class ShaderProgram {
     private final HashMap<String, Integer> mUniformsList = new HashMap<>();
     private int mVertexShaderId;
     private int mFragmentShaderId;
+    private int mGeometryShaderId;
+
+    protected ShaderCode vs;
+    protected ShaderCode fs;
 
 
     /**
@@ -55,6 +60,16 @@ public class ShaderProgram {
      */
     public void createFragmentShader(String shaderCode) throws Exception {
         mFragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
+    }
+
+    /**
+     * Create a geometry shader
+     *
+     * @param shaderCode source code for the shader
+     * @throws Exception the exception \o
+     */
+    public void createGeometryShader(String shaderCode) throws Exception {
+        mGeometryShaderId = createShader(shaderCode, GL_GEOMETRY_SHADER);
     }
 
     /**
@@ -97,6 +112,10 @@ public class ShaderProgram {
             if (mFragmentShaderId != 0) {
                 /*Detaches a shader object from a program object to which it is attached*/
                 glDetachShader(mProgramId, mFragmentShaderId);
+            }
+            if(mGeometryShaderId != 0){
+                /*Detaches a shader object from a program object to which it is attached*/
+                glDetachShader(mProgramId, mGeometryShaderId);
             }
            /*Deletes a program object*/
             glDeleteProgram(mProgramId);
@@ -409,6 +428,14 @@ public class ShaderProgram {
 
     public int getId() {
         return mProgramId;
+    }
+
+    public String getVs() {
+        return vs.code.toString();
+    }
+
+    public String getFs(){
+        return fs.code.toString();
     }
 
 }

@@ -9,35 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ObjLoader {
-    public enum LoadMode {
-        LOAD_UNDEFINED
-        , LOAD_FROM_FILE
-        , LOAD_FROM_RESOURCE
-    }
-
-    public static class ParseError extends Error {
-        public ParseError(String message) {
-            super("Parse error ==> " + message);
-        }
-
-        public ParseError(String message, int linepos) {
-            super("Parse error at line " + linepos + "\n ==> " + message);
-        }
-
-        public ParseError(String message, Throwable cause) {
-            super("Parse error ==> " + message, cause);
-        }
-
-        public ParseError(String message, int linepos, Throwable cause) {
-            super("Parse error at line " + linepos + "\n ==> " + message, cause);
-        }
-    }
-
     private LoadMode loadMode = LoadMode.LOAD_UNDEFINED;
     private String loadPath = null;
-
     private ObjScene objScene;
-
     private String currentObject = null;
 
     public ObjLoader() {
@@ -59,7 +33,7 @@ public class ObjLoader {
     public void parseFromResource(String name) throws IOException {
         InputStream istream = ObjLoader.class.getResourceAsStream(name);
         if (istream == null) {
-            throw new ParseError("Cannot find resource: "+name);
+            throw new ParseError("Cannot find resource: " + name);
         }
         BufferedReader reader = new BufferedReader(new InputStreamReader(istream));
         loadMode = LoadMode.LOAD_FROM_RESOURCE;
@@ -77,7 +51,7 @@ public class ObjLoader {
     public void parseFromLines(String[] lines) {
         int linepos = 0;
 
-        while(linepos < lines.length - 1) {
+        while (linepos < lines.length - 1) {
             linepos++;
             ObjEntry entry = parseLine(linepos, lines[linepos - 1]);
             switch (entry.getType()) {
@@ -127,16 +101,24 @@ public class ObjLoader {
         boolean cont = true;
         while (cont) {
             linepos++;
-            if (linepos -1 >= lines.length) {
+            if (linepos - 1 >= lines.length) {
                 // no more line, let's build the geometry
                 break;
             }
-            ObjEntry entry = parseLine(linepos, lines[linepos-1]);
+            ObjEntry entry = parseLine(linepos, lines[linepos - 1]);
             switch (entry.getType()) {
-                case VERTEX: vertexEntries.add(entry.asVertex());break;
-                case TEXT_COORD: textureEntries.add(entry.asTexture());break;
-                case NORMAL: normalEntries.add(entry.asNormal());break;
-                case FACE: faceEntries.add(entry.asFace());break;
+                case VERTEX:
+                    vertexEntries.add(entry.asVertex());
+                    break;
+                case TEXT_COORD:
+                    textureEntries.add(entry.asTexture());
+                    break;
+                case NORMAL:
+                    normalEntries.add(entry.asNormal());
+                    break;
+                case FACE:
+                    faceEntries.add(entry.asFace());
+                    break;
                 case NO_ENTRY:
                 case UNSUPPORTED:
                     break;
@@ -172,18 +154,18 @@ public class ObjLoader {
         boolean hasTextCoords = false;
         boolean hasNormals = false;
 
-        for(FaceEntry faceEntry : faceEntries) {
+        for (FaceEntry faceEntry : faceEntries) {
             int[] triIndices = new int[faceEntry.face.length];
-            for(int i = 0; i<faceEntry.face.length; i++) {
+            for (int i = 0; i < faceEntry.face.length; i++) {
                 FaceVertex faceVert = faceEntry.face[i];
-                VertexEntry vertexEntry = vertexEntries.get(faceVert.vertexId-1);
+                VertexEntry vertexEntry = vertexEntries.get(faceVert.vertexId - 1);
                 TextureEntry textureEntry = null;
                 if (faceVert.textId != 0) {
-                    textureEntry = textureEntries.get(faceVert.textId-1);
+                    textureEntry = textureEntries.get(faceVert.textId - 1);
                 }
                 NormalEntry normalEntry = null;
                 if (faceVert.normId != 0) {
-                    normalEntry = normalEntries.get(faceVert.normId-1);
+                    normalEntry = normalEntries.get(faceVert.normId - 1);
                 }
                 float[] positions = new float[3];
                 positions[0] = vertexEntry.x;
@@ -199,7 +181,7 @@ public class ObjLoader {
                 }
 
                 float[] normals = null;
-                if(normalEntry != null) {
+                if (normalEntry != null) {
                     normals = new float[3];
                     normals[0] = normalEntry.nx;
                     normals[1] = normalEntry.ny;
@@ -210,20 +192,20 @@ public class ObjLoader {
 
                 int vertIndex = -1;
                 Integer vertId = vertexMap.get(vertex);
-                if(vertId != null) {
+                if (vertId != null) {
                     vertIndex = vertId.intValue();
                 } else {
                     // new vertex
                     glVertices.add(vertex);
-                    vertIndex = glVertices.size()-1;
+                    vertIndex = glVertices.size() - 1;
                     vertexMap.put(vertex, vertIndex);
                 }
                 triIndices[i] = vertIndex;
             }
             // Here we have the vertex indices, we now apply a dumb triangulation
             // algorithm for faces with more than 3 points
-            for(int i=1; i<triIndices.length - 1; i++) {
-                GLTriangle tri = new GLTriangle(triIndices[0], triIndices[i], triIndices[i+1]);
+            for (int i = 1; i < triIndices.length - 1; i++) {
+                GLTriangle tri = new GLTriangle(triIndices[0], triIndices[i], triIndices[i + 1]);
                 glTriangles.add(tri);
             }
         }
@@ -231,7 +213,7 @@ public class ObjLoader {
         Geometry geom = new Geometry();
 
         // we may now build the Mesh geometry
-        for(int i=0; i<glVertices.size(); i++) {
+        for (int i = 0; i < glVertices.size(); i++) {
             geom.addVertices(glVertices.get(i).positions[0], glVertices.get(i).positions[1], glVertices.get(i).positions[2]);
             if (hasTextCoords) {
                 geom.addTextCoord(glVertices.get(i).textCoords[0], glVertices.get(i).textCoords[1]);
@@ -241,7 +223,7 @@ public class ObjLoader {
             }
         }
 
-        for(int i=0; i<glTriangles.size();i++) {
+        for (int i = 0; i < glTriangles.size(); i++) {
             geom.addTriangle(glTriangles.get(i).indice1, glTriangles.get(i).indice2, glTriangles.get(i).indice3);
         }
 
@@ -273,12 +255,12 @@ public class ObjLoader {
                 throw new ParseError("Missing object name", linepos);
             }
             return new ObjNameEntry(parts[1], linepos);
-        } else  if (parts[0].equals("mtllib")) {
-                if (parts.length < 2) {
-                    throw new ParseError("Missing MTL library name", linepos);
-                }
-                return new MtlLibEntry(parts[1], linepos);
-        } else  if (parts[0].equals("usemtl")) {
+        } else if (parts[0].equals("mtllib")) {
+            if (parts.length < 2) {
+                throw new ParseError("Missing MTL library name", linepos);
+            }
+            return new MtlLibEntry(parts[1], linepos);
+        } else if (parts[0].equals("usemtl")) {
             if (parts.length < 2) {
                 throw new ParseError("Missing MTL material name", linepos);
             }
@@ -288,7 +270,7 @@ public class ObjLoader {
             if (parts.length < 4) {
                 throw new ParseError("Not enough coordinates for vertex", linepos);
             }
-            float x,y ,z;
+            float x, y, z;
             try {
                 x = Float.parseFloat(parts[1]);
                 y = Float.parseFloat(parts[2]);
@@ -303,7 +285,7 @@ public class ObjLoader {
             if (parts.length < 4) {
                 throw new ParseError("Not enough coordinates for normal", linepos);
             }
-            float nx, ny ,nz;
+            float nx, ny, nz;
             try {
                 nx = Float.parseFloat(parts[1]);
                 ny = Float.parseFloat(parts[2]);
@@ -330,13 +312,13 @@ public class ObjLoader {
         } else if (parts[0].equals("f")) {
             // Parse a face
             List<FaceVertex> faces = new ArrayList<>();
-            for(int i=1; i<parts.length; i++) {
+            for (int i = 1; i < parts.length; i++) {
                 String[] sindices = parts[i].split("/");
                 if (sindices.length == 0 || sindices.length > 3) {
                     throw new ParseError("Cannot parse face : wrong indices", linepos);
                 }
                 int[] indices = new int[sindices.length];
-                for(int j=0; j<sindices.length; j++) {
+                for (int j = 0; j < sindices.length; j++) {
                     try {
                         if (sindices[j].equals("")) {
                             indices[j] = 0;
@@ -348,9 +330,15 @@ public class ObjLoader {
                     }
                 }
                 switch (indices.length) {
-                    case 1: faces.add(new FaceVertex(indices[0], 0, 0)); break;
-                    case 2: faces.add(new FaceVertex(indices[0], indices[1], 0)); break;
-                    case 3: faces.add(new FaceVertex(indices[0], indices[1], indices[2]));break;
+                    case 1:
+                        faces.add(new FaceVertex(indices[0], 0, 0));
+                        break;
+                    case 2:
+                        faces.add(new FaceVertex(indices[0], indices[1], 0));
+                        break;
+                    case 3:
+                        faces.add(new FaceVertex(indices[0], indices[1], indices[2]));
+                        break;
                     default:
                         throw new Error("Should not be reachable (please report)");
                 }
@@ -360,6 +348,28 @@ public class ObjLoader {
             return new UnsupportedEntry(parts[0], line, linepos);
         }
 
+    }
+
+    public enum LoadMode {
+        LOAD_UNDEFINED, LOAD_FROM_FILE, LOAD_FROM_RESOURCE
+    }
+
+    public static class ParseError extends Error {
+        public ParseError(String message) {
+            super("Parse error ==> " + message);
+        }
+
+        public ParseError(String message, int linepos) {
+            super("Parse error at line " + linepos + "\n ==> " + message);
+        }
+
+        public ParseError(String message, Throwable cause) {
+            super("Parse error ==> " + message, cause);
+        }
+
+        public ParseError(String message, int linepos, Throwable cause) {
+            super("Parse error at line " + linepos + "\n ==> " + message, cause);
+        }
     }
 
 }
@@ -377,7 +387,8 @@ class GLVertex {
 
     @Override
     public int hashCode() {
-        return positions.hashCode() + (textCoords == null ? 4242 : textCoords.hashCode())
+        return positions.hashCode()
+                + (textCoords == null ? 4242 : textCoords.hashCode())
                 + (normals == null ? 66666 : normals.hashCode());
     }
 
@@ -386,26 +397,23 @@ class GLVertex {
         if (this == obj) {
             return true;
         }
-        if(obj == null || obj.getClass()!= this.getClass()) {
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
         GLVertex other = (GLVertex) obj;
         if (!other.positions.equals(positions)) {
             return false;
         }
-        if(other.textCoords == null) {
+        if (other.textCoords == null) {
             return textCoords == null;
         }
-        if(!other.textCoords.equals(textCoords)) {
+        if (!other.textCoords.equals(textCoords)) {
             return false;
         }
-        if(other.normals == null) {
+        if (other.normals == null) {
             return normals == null;
         }
-        if(!other.normals.equals(normals)) {
-            return false;
-        }
-        return true;
+        return other.normals.equals(normals);
     }
 }
 

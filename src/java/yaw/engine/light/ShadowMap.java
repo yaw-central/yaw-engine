@@ -4,9 +4,11 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import yaw.engine.SceneVertex;
+import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
+import yaw.engine.shader.ShaderManager;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.shader.shadowFragShader;
 import yaw.engine.shader.shadowVertShader;
@@ -71,7 +73,7 @@ public class ShadowMap {
         this(2048, 2048);
     }
 
-    public void init() throws Exception {
+    public void init(ShaderManager shaderManager) throws Exception {
 
         mShaderProgram = new ShadowShaderProgram();
         mShaderProgram.createVertexShader(shadowVertShader.SHADER_STRING);
@@ -104,11 +106,11 @@ public class ShadowMap {
 
     }
 
-    public void render(SceneVertex pSceneVertex, DirectionalLight light) {
+    public void render(SceneVertex pSceneVertex, DirectionalLight light, Camera pCamera, ShaderManager shaderManager) {
 
         if(!initialized) {
             try {
-                init();
+                init(shaderManager);
                 initialized = true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -147,7 +149,11 @@ public class ShadowMap {
             }
             if(castingItems.isEmpty()) continue;
 
-            lMesh.render(castingItems, mShaderProgram);
+            try {
+                lMesh.renderAds(castingItems, pCamera, shaderManager);
+            } catch (Exception e) {
+                System.out.println("Erreur ShadowMap");
+            }
         }
 
 

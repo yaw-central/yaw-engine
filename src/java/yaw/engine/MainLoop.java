@@ -6,6 +6,7 @@ import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.SceneLight;
 import yaw.engine.mesh.Texture;
+import yaw.engine.shader.ShaderManager;
 import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
@@ -23,6 +24,9 @@ public class MainLoop implements Runnable {
     private Camera mCamera;
     private Vector<Camera> mCamerasList;
     private Renderer mRenderer;
+    private RendererHelperSummit mRendererHelperSummit;
+    private RendererHelperNormal mRendererHelperNormal;
+    private RendererHelperAxesMesh mRendererHelperAxesMesh;
     private SceneLight mSceneLight;
     private Vector<ItemGroup> mItemGroupArrayList;
     private Skybox mSkybox = null;
@@ -30,6 +34,7 @@ public class MainLoop implements Runnable {
     private boolean mLoop;
     private int initX, initY, initWidth, initHeight;
     private boolean initVSYNC;
+    private ShaderManager shaderManager;
 
 
     //3D click
@@ -82,6 +87,9 @@ public class MainLoop implements Runnable {
 
     public MainLoop() {
         this.mRenderer = new Renderer();
+        this.mRendererHelperSummit = new RendererHelperSummit();
+        this.mRendererHelperNormal = new RendererHelperNormal();
+        this.mRendererHelperAxesMesh = new RendererHelperAxesMesh();
         this.mCamerasList = new Vector<>();
         this.mCamera = new Camera();
         mCamerasList.add(mCamera);
@@ -180,7 +188,7 @@ public class MainLoop implements Runnable {
         } catch (Exception pE) {
             pE.printStackTrace();
         } finally {
-            cleanup();
+//            cleanup();
         }
     }
 
@@ -245,7 +253,7 @@ public class MainLoop implements Runnable {
         if(mouseCallback != null) {
             Window.getGLFWMouseCallback().registerMouseCallback(mouseCallback);
         }
-
+        this.shaderManager = new ShaderManager();
         initialized = true;
     }
 
@@ -288,8 +296,11 @@ public class MainLoop implements Runnable {
            /*  Input of critical section, allows to protect the creation of our logic of Game .
                1 Maximum thread in Synchronize -> mutual exclusion.*/
             synchronized (mSceneVertex) {
-                mSceneLight.renderShadowMap(mSceneVertex);
-                mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox);
+                mSceneLight.renderShadowMap(mSceneVertex, mCamera, shaderManager);
+                mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox, shaderManager);
+                mRendererHelperSummit.render(mSceneVertex, mCamera, shaderManager);
+                mRendererHelperNormal.render(mSceneVertex, mCamera, shaderManager);
+                mRendererHelperAxesMesh.render(mSceneVertex, mCamera, shaderManager);
             }
 
            /*  Rendered with vSync (vertical Synchronization)
@@ -304,8 +315,9 @@ public class MainLoop implements Runnable {
      */
     private void cleanup() {
         /* Deallocations renderer, SceneVertex and Skybox. */
-        mRenderer.cleanUp();
-        mSceneVertex.cleanUp();
+        //mRenderer.cleanUp();
+        mSceneVertex.cleanUp(shaderManager);
+        shaderManager.cleanUp();
         if (mSkybox != null) mSkybox.cleanUp();
         /* Deallocation of the window's resources. */
         Window.cleanUp();
