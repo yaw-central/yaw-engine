@@ -3,9 +3,9 @@ package yaw.engine.helper;
 import yaw.engine.shader.ShaderCode;
 import yaw.engine.shader.ShaderProgram;
 
-public class ShaderProgramHelperNormal extends ShaderProgram {
+public class HelperNormalsShaders extends ShaderProgram {
     private ShaderCode gs;
-    public ShaderProgramHelperNormal() throws Exception {
+    public HelperNormalsShaders() throws Exception {
         super();
         vs = new ShaderCode("330", true)
                 .cmt("Buffers")

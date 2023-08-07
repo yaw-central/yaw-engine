@@ -2,9 +2,9 @@ package yaw.engine.mesh;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import yaw.engine.helper.ShaderProgramHelperAxesMesh;
-import yaw.engine.helper.ShaderProgramHelperNormal;
-import yaw.engine.helper.ShaderProgramHelperSummit;
+import yaw.engine.helper.HelperAxesShaders;
+import yaw.engine.helper.HelperNormalsShaders;
+import yaw.engine.helper.HelperVerticesShaders;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.shader.*;
@@ -42,9 +42,9 @@ public class Mesh {
     //strategy when we draw the elements
     private MeshDrawingStrategy mDrawingStrategy;
     private ShaderProgramADS mShaderProgram;
-    private ShaderProgramHelperSummit mShaderProgramHelperSummit;
-    private ShaderProgramHelperNormal shaderProgramHelperNormal;
-    private ShaderProgramHelperAxesMesh shaderProgramHelperAxesMesh;
+    private HelperVerticesShaders mHelperVerticesShaders;
+    private HelperNormalsShaders helperNormalsShaders;
+    private HelperAxesShaders helperAxesShaders;
     private boolean drawAds;
     private boolean drawHelperSummit;
     private boolean drawHelperNormal;
@@ -204,57 +204,57 @@ public class Mesh {
 
 
         //initRender
-        mShaderProgramHelperSummit = shaderManager.getShaderProgramHelperSummit();
+        mHelperVerticesShaders = shaderManager.getShaderProgramHelperSummit();
         initRender();
 
-        mShaderProgramHelperSummit.bind();
-        mShaderProgramHelperSummit.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        mHelperVerticesShaders.bind();
+        mHelperVerticesShaders.setUniform("projectionMatrix", pCamera.getProjectionMat());
         Matrix4f viewMat = pCamera.getViewMat();
-        mShaderProgramHelperSummit.setUniform("viewMatrix", viewMat);
+        mHelperVerticesShaders.setUniform("viewMatrix", viewMat);
         for (ItemObject lItem : pItems) {
-            mShaderProgramHelperSummit.setUniform("modelMatrix", lItem.getWorldMatrix());
+            mHelperVerticesShaders.setUniform("modelMatrix", lItem.getWorldMatrix());
             glDrawElements(GL_POINTS, this.getIndices().length, GL_UNSIGNED_INT, 0);
         }
 
-        mShaderProgramHelperSummit.unbind();
+        mHelperVerticesShaders.unbind();
         endRender();
 
     }
 
     public void renderHelperNormal(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager) {
         //initRender
-        shaderProgramHelperNormal = shaderManager.getShaderProgramHelperNormals();
+        helperNormalsShaders = shaderManager.getShaderProgramHelperNormals();
         initRender();
 
-        shaderProgramHelperNormal.bind();
-        shaderProgramHelperNormal.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        helperNormalsShaders.bind();
+        helperNormalsShaders.setUniform("projectionMatrix", pCamera.getProjectionMat());
         Matrix4f viewMat = pCamera.getViewMat();
-        shaderProgramHelperNormal.setUniform("viewMatrix", viewMat);
+        helperNormalsShaders.setUniform("viewMatrix", viewMat);
         for (ItemObject lItem : pItems) {
-            shaderProgramHelperNormal.setUniform("modelMatrix", lItem.getWorldMatrix());
+            helperNormalsShaders.setUniform("modelMatrix", lItem.getWorldMatrix());
             glDrawElements(GL_POINTS, this.getIndices().length, GL_UNSIGNED_INT, 0);
         }
 
-        shaderProgramHelperNormal.unbind();
+        helperNormalsShaders.unbind();
         endRender();
 
     }
 
     public void renderHelperAxesMesh(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager){
-        shaderProgramHelperAxesMesh = shaderManager.getShaderProgramHelperAxesMesh();
+        helperAxesShaders = shaderManager.getShaderProgramHelperAxesMesh();
         initRender();
-        shaderProgramHelperAxesMesh.bind();
-        shaderProgramHelperAxesMesh.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        helperAxesShaders.bind();
+        helperAxesShaders.setUniform("projectionMatrix", pCamera.getProjectionMat());
 
         Matrix4f viewMat = pCamera.getViewMat();
-        shaderProgramHelperAxesMesh.setUniform("viewMatrix", viewMat);
+        helperAxesShaders.setUniform("viewMatrix", viewMat);
         for (ItemObject lItem : pItems) {
-            shaderProgramHelperAxesMesh.setUniform("center", lItem.getPosition());
-            shaderProgramHelperAxesMesh.setUniform("modelMatrix", lItem.getWorldMatrix());
+            helperAxesShaders.setUniform("center", lItem.getPosition());
+            helperAxesShaders.setUniform("modelMatrix", lItem.getWorldMatrix());
             glDrawElements(GL_LINES, this.getIndices().length, GL_UNSIGNED_INT, 0);
         }
 
-        shaderProgramHelperAxesMesh.unbind();
+        helperAxesShaders.unbind();
         endRender();
     }
 

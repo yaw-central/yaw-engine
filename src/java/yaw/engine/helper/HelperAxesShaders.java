@@ -3,14 +3,14 @@ package yaw.engine.helper;
 import yaw.engine.shader.ShaderCode;
 import yaw.engine.shader.ShaderProgram;
 
-public class ShaderProgramHelperAxesMesh extends ShaderProgram{
+public class HelperAxesShaders extends ShaderProgram{
     private ShaderCode gs;
     /**
      * Constructor throws exception if the program could not create the shader
      *
      * @throws Exception the exception
      */
-    public ShaderProgramHelperAxesMesh() throws Exception {
+    public HelperAxesShaders() throws Exception {
         super();
         vs = new ShaderCode("330", true)
                 .cmt("Uniforms")

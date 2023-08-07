@@ -46,50 +46,50 @@ public class ShaderManager {
 
             /* HelperSummit ShaderProgram */
 
-            ShaderProgramHelperSummit mShaderProgramHelperSummit = new ShaderProgramHelperSummit();
-            mShaderProgramHelperSummit.createVertexShader(mShaderProgramHelperSummit.getVs());
-            mShaderProgramHelperSummit.createFragmentShader(mShaderProgramHelperSummit.getFs());
+            HelperVerticesShaders mHelperVerticesShaders = new HelperVerticesShaders();
+            mHelperVerticesShaders.createVertexShader(mHelperVerticesShaders.getVs());
+            mHelperVerticesShaders.createFragmentShader(mHelperVerticesShaders.getFs());
 
-            mShaderProgramHelperSummit.link();
-
-
-            mShaderProgramHelperSummit.createUniform("projectionMatrix");
-            mShaderProgramHelperSummit.createUniform("viewMatrix");
-            mShaderProgramHelperSummit.createUniform("modelMatrix");
+            mHelperVerticesShaders.link();
 
 
-            shaderlist.add(mShaderProgramHelperSummit);
+            mHelperVerticesShaders.createUniform("projectionMatrix");
+            mHelperVerticesShaders.createUniform("viewMatrix");
+            mHelperVerticesShaders.createUniform("modelMatrix");
+
+
+            shaderlist.add(mHelperVerticesShaders);
 
             /* helperNormal ShaderProgram */
 
-            ShaderProgramHelperNormal mShaderProgramHelperNormal = new ShaderProgramHelperNormal();
+            HelperNormalsShaders mHelperNormalsShaders = new HelperNormalsShaders();
 
-            mShaderProgramHelperNormal.createVertexShader(mShaderProgramHelperNormal.getVs());
-            mShaderProgramHelperNormal.createGeometryShader(mShaderProgramHelperNormal.getGs());
-            mShaderProgramHelperNormal.createFragmentShader(mShaderProgramHelperNormal.getFs());
+            mHelperNormalsShaders.createVertexShader(mHelperNormalsShaders.getVs());
+            mHelperNormalsShaders.createGeometryShader(mHelperNormalsShaders.getGs());
+            mHelperNormalsShaders.createFragmentShader(mHelperNormalsShaders.getFs());
 
-            mShaderProgramHelperNormal.link();
+            mHelperNormalsShaders.link();
 
-            mShaderProgramHelperNormal.createUniform("projectionMatrix");
-            mShaderProgramHelperNormal.createUniform("viewMatrix");
-            mShaderProgramHelperNormal.createUniform("modelMatrix");
+            mHelperNormalsShaders.createUniform("projectionMatrix");
+            mHelperNormalsShaders.createUniform("viewMatrix");
+            mHelperNormalsShaders.createUniform("modelMatrix");
 
-            shaderlist.add(mShaderProgramHelperNormal);
+            shaderlist.add(mHelperNormalsShaders);
 
             /* helperAxesMesh ShaderProgram */
 
-            ShaderProgramHelperAxesMesh mShaderProgramHelperAxesMesh = new ShaderProgramHelperAxesMesh();
-            mShaderProgramHelperAxesMesh.createVertexShader(mShaderProgramHelperAxesMesh.getVs());
-            mShaderProgramHelperAxesMesh.createGeometryShader(mShaderProgramHelperAxesMesh.getGs());
-            mShaderProgramHelperAxesMesh.createFragmentShader(mShaderProgramHelperAxesMesh.getFs());
+            HelperAxesShaders mHelperAxesShaders = new HelperAxesShaders();
+            mHelperAxesShaders.createVertexShader(mHelperAxesShaders.getVs());
+            mHelperAxesShaders.createGeometryShader(mHelperAxesShaders.getGs());
+            mHelperAxesShaders.createFragmentShader(mHelperAxesShaders.getFs());
 
-            mShaderProgramHelperAxesMesh.link();
-            mShaderProgramHelperAxesMesh.createUniform("projectionMatrix");
-            mShaderProgramHelperAxesMesh.createUniform("viewMatrix");
-            mShaderProgramHelperAxesMesh.createUniform("modelMatrix");
-            mShaderProgramHelperAxesMesh.createUniform("center");
+            mHelperAxesShaders.link();
+            mHelperAxesShaders.createUniform("projectionMatrix");
+            mHelperAxesShaders.createUniform("viewMatrix");
+            mHelperAxesShaders.createUniform("modelMatrix");
+            mHelperAxesShaders.createUniform("center");
 
-            shaderlist.add(mShaderProgramHelperAxesMesh);
+            shaderlist.add(mHelperAxesShaders);
 
         }catch(Exception e){
             System.out.println("Erreur constructeur ShaderManager");
@@ -109,9 +109,9 @@ public class ShaderManager {
     }
 
     public ShaderProgramADS getShaderProgramAds() { return (ShaderProgramADS) shaderlist.get(0);}
-    public ShaderProgramHelperSummit getShaderProgramHelperSummit() { return (ShaderProgramHelperSummit) shaderlist.get(1);}
-    public ShaderProgramHelperNormal getShaderProgramHelperNormals() { return (ShaderProgramHelperNormal) shaderlist.get(2);}
-    public ShaderProgramHelperAxesMesh getShaderProgramHelperAxesMesh() { return (ShaderProgramHelperAxesMesh) shaderlist.get(3);}
+    public HelperVerticesShaders getShaderProgramHelperSummit() { return (HelperVerticesShaders) shaderlist.get(1);}
+    public HelperNormalsShaders getShaderProgramHelperNormals() { return (HelperNormalsShaders) shaderlist.get(2);}
+    public HelperAxesShaders getShaderProgramHelperAxesMesh() { return (HelperAxesShaders) shaderlist.get(3);}
 
     /**
      * The Shader Program is deallocated
