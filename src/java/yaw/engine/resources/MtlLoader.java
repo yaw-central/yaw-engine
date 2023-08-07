@@ -5,25 +5,19 @@ import org.joml.Vector3f;
 import java.io.*;
 
 public class MtlLoader {
-    public enum LoadMode {
-        LOAD_UNDEFINED
-        , LOAD_FROM_FILE
-        , LOAD_FROM_RESOURCE
-    }
     private LoadMode loadMode = LoadMode.LOAD_UNDEFINED;
     private String loadPath = null;
-
     private MtlMaterial currentMaterial = null;
-
     private ObjScene objScene;
 
     public MtlLoader(ObjScene objScene) {
         this.objScene = objScene;
     }
 
-    public MtlLoader() {}
+    public MtlLoader() {
+    }
 
-    public MtlMaterial getMat(){
+    public MtlMaterial getMat() {
         return currentMaterial;
     }
 
@@ -36,7 +30,7 @@ public class MtlLoader {
     public void parseFromResource(String name) throws IOException {
         InputStream istream = ObjLoader.class.getResourceAsStream(name);
         if (istream == null) {
-            throw new ObjLoader.ParseError("Cannot find resource: "+name);
+            throw new ObjLoader.ParseError("Cannot find resource: " + name);
         }
         BufferedReader reader = new BufferedReader(new InputStreamReader(istream));
         loadMode = LoadMode.LOAD_FROM_RESOURCE;
@@ -50,7 +44,7 @@ public class MtlLoader {
     }
 
     public void parseFromLines(String[] lines) {
-        for(int linepos=1; linepos<=lines.length; linepos++) {
+        for (int linepos = 1; linepos <= lines.length; linepos++) {
             parseLine(linepos, lines[linepos - 1]);
         }
     }
@@ -78,34 +72,26 @@ public class MtlLoader {
             MtlMaterial material = new MtlMaterial(matName);
             objScene.addMaterial(matName, material);
             currentMaterial = material;
-            return;
         } else if (parts[0].equals("Ns")) {
             float shininess = parseMaterialFloat("shininess", parts, linepos);
             currentMaterial.shininess = shininess;
-            return;
         } else if (parts[0].equals("Ka")) {
             Vector3f ambient = parseMaterialVector3f("ambient", parts, linepos);
             currentMaterial.ambient = ambient;
-            return;
         } else if (parts[0].equals("Kd")) {
             Vector3f diffuse = parseMaterialVector3f("diffuse", parts, linepos);
             currentMaterial.diffuse = diffuse;
-            return;
         } else if (parts[0].equals("Ks")) {
             Vector3f specular = parseMaterialVector3f("specular", parts, linepos);
             currentMaterial.specular = specular;
-            return;
         } else if (parts[0].equals("Ke")) {
             Vector3f emissive = parseMaterialVector3f("emissive", parts, linepos);
             currentMaterial.emissive = emissive;
-            return;
         } else if (parts[0].equals("d")) {
             float opacity = parseMaterialFloat("opacity", parts, linepos);
             currentMaterial.opacity = opacity;
-            return;
         } else {
             // unsupported entry : emit warning ?
-            return;
         }
     }
 
@@ -120,7 +106,7 @@ public class MtlLoader {
         try {
             value = Float.parseFloat(parts[1]);
         } catch (NumberFormatException e) {
-            throw new ObjLoader.ParseError("Cannot parse "+ desc + " value", linepos, e);
+            throw new ObjLoader.ParseError("Cannot parse " + desc + " value", linepos, e);
         }
         return value;
     }
@@ -138,8 +124,12 @@ public class MtlLoader {
             y = Float.parseFloat(parts[2]);
             z = Float.parseFloat(parts[3]);
         } catch (NumberFormatException e) {
-            throw new ObjLoader.ParseError("Cannot parse "+ desc + " value", linepos, e);
+            throw new ObjLoader.ParseError("Cannot parse " + desc + " value", linepos, e);
         }
         return new Vector3f(x, y, z);
+    }
+
+    public enum LoadMode {
+        LOAD_UNDEFINED, LOAD_FROM_FILE, LOAD_FROM_RESOURCE
     }
 }
