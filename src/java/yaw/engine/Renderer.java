@@ -51,11 +51,11 @@ public class Renderer {
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
+        /* Rendering of lights */
+        pSceneLight.setupShader(new Matrix4f().identity(), shaderManager);
+
         /* Rendering of the scene */
         pSceneVertex.render(pCamera, shaderManager);
-
-        /* Rendering of lights */
-        pSceneLight.render(new Matrix4f().identity(), shaderManager);
 
         /* skybox */
         if (pSkybox != null) {

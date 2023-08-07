@@ -189,15 +189,6 @@ public class SceneVertex {
         }
     }
 
-    // XXX: remove?
-    /*Maybe
-    public void update() {
-        for (Mesh m : mMeshMap.keySet()) {
-            for (Item i : mMeshMap.get(m))
-                i.update();
-        }
-    }*/
-
     /**
      * Retrieve all the items of the scene
      *

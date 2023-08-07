@@ -2,7 +2,6 @@ package yaw.engine.light;
 
 import yaw.engine.SceneVertex;
 import yaw.engine.camera.Camera;
-import yaw.engine.mesh.Mesh;
 import yaw.engine.shader.*;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -60,7 +59,7 @@ public class SceneLight {
      *
      * @param viewMatrix viewMatrix
      */
-    public void render(Matrix4f viewMatrix, ShaderManager shaderManager) {
+    public void setupShader(Matrix4f viewMatrix, ShaderManager shaderManager) {
 
         mShaderProgram = (ShaderProgramADS) shaderManager.getShaderProgram(0);
         mShaderProgram.bind();

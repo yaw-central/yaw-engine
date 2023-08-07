@@ -139,7 +139,6 @@ public class ShaderProgram {
      * @throws Exception the exception
      */
     public void createPointLightListUniform(String uniformName, int size) throws Exception {
-        LoggerYAW.logOpenGl();
         for (int i = 0; i < size; i++) {
             createPointLightUniform(uniformName + "[" + i + "]");
         }
@@ -152,11 +151,11 @@ public class ShaderProgram {
      * @return the location
      * @throws Exception the exception
      */
-    public int createUniform(String uniformName) throws Exception {
+    public int createUniform(String uniformName) {
         int res = glGetUniformLocation(mProgramId, uniformName);
         if (res < 0) {
 
-            throw new Exception("Uniform creation error: " + uniformName);
+            throw new Error("Uniform creation error: " + uniformName);
         }
         mUniformsList.put(uniformName, res);
         return res;

@@ -4,14 +4,40 @@ import yaw.engine.helper.*;
 import yaw.engine.light.SceneLight;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-
-
+/**
+ * This class manages all the shaders (shader programs)
+ * used to render a frame in the gameloop.
+ *
+ * This applies to the following "times" :
+ *
+ *  - initialization time : before entering the gameloop or when
+ *  a "reinitialization" must be performed, e.g. if the (maximum) number of lights change,
+ *  which require a reconstruction of the shader programs. This concerns e.g. the compilation
+ *  of the shader programs, the creation of uniforms, etc.
+ *  The corresponding methods are prefixed with  `init...`
+ *
+ *  - (frame) setup time `setup` : before the rendering, when e.g. all the global (shared) uniforms must be set.
+ *  The method prefix is `setup...`
+ *
+ *  - rendering time :  mostly setting the mesh-specific uniforms and issuing the draw commands.
+ *  The method prefix is `render...`, and it is the responsability of the renderer.
+ */
 public class ShaderManager {
+
+    private Map<String, ShaderProgram> shaderMap;
+
     private ArrayList<ShaderProgram> shaderlist;
 
-    public ShaderManager(){
-        this.shaderlist = new ArrayList<ShaderProgram>();
+    public ShaderManager() {
+        shaderMap = new HashMap<>();
+        shaderlist = new ArrayList<>();
+        init(null);
+    }
+
+    public void init(SceneLight scenelight) {
 
         try {
             /* Initialization of the shader program. */
