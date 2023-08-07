@@ -190,7 +190,7 @@ public class ShadowMap {
         Matrix4f mat = createView(light);
 
         for(ItemObject io : pSceneVertex.getItemsList()) {
-            float[] verts = io.getMesh().getVertices();
+            float[] verts = io.getMesh().getGeometry().getVertices();
             for(int i = 0; i<verts.length; i+=3) {
                 Vector4f v = new Vector4f(verts[i], verts[i+1], verts[i+2], 1);
                 Vector4f world_space = io.getWorldMatrix().transform(v);

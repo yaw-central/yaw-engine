@@ -6,7 +6,6 @@ import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.shader.ShaderManager;
-import yaw.engine.shader.ShaderProgram;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,7 +117,7 @@ public class SceneVertex {
             } else {
                 try {
                     if(notInit.contains(lMesh)){
-                        lMesh.initBuffer();
+                        lMesh.initBuffers();
                         notInit.remove(lMesh);
                     }
                     lMesh.renderAds(lItems, pCamera,shaderManager);
@@ -157,7 +156,7 @@ public class SceneVertex {
         for (Mesh lMesh : mMeshMapHelperSummit.keySet()) {
             List<ItemObject> lItems = mMeshMapHelperSummit.get(lMesh);
             try {
-                lMesh.renderHelperSummit(lItems, pCamera, shaderManager);
+                lMesh.renderHelperVertices(lItems, pCamera, shaderManager);
             } catch (Exception e) {
                 System.out.println("Erreur scene vertex Helper Summit");
             }
@@ -170,7 +169,7 @@ public class SceneVertex {
         for (Mesh lMesh : mMeshMapHelperNormal.keySet()) {
             List<ItemObject> lItems = mMeshMapHelperNormal.get(lMesh);
             try {
-                lMesh.renderHelperNormal(lItems, pCamera,shaderManager);
+                lMesh.renderHelperNormals(lItems, pCamera,shaderManager);
             } catch (Exception e) {
                 System.out.println("Erreur scene vertex Helper Normal");
             }
@@ -182,7 +181,7 @@ public class SceneVertex {
         for (Mesh lMesh : mMeshMapHelperAxesMesh.keySet()) {
             List<ItemObject> lItems = mMeshMapHelperAxesMesh.get(lMesh);
             try {
-                lMesh.renderHelperAxesMesh(lItems, pCamera,shaderManager);
+                lMesh.renderHelperAxes(lItems, pCamera,shaderManager);
             } catch (Exception e) {
                 System.out.println("Erreur scene vertex Helper AxesMesh");
             }

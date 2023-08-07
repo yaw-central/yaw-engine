@@ -74,9 +74,10 @@ public class Collision {
      */
     public static ArrayList<Vector4f> tabToListVertex(HitBox item) {
         ArrayList<Vector4f> listVertex = new ArrayList<>();
-        for (int i = 0; i < item.getMesh().getVertices().length; i += 3) {
-            Vector4f vec = new Vector4f(item.getMesh().getVertices()[i], item.getMesh().getVertices()[i + 1]
-                    , item.getMesh().getVertices()[i + 2], 1.0f);
+        float[] vertices = item.getMesh().getGeometry().getVertices();
+        for (int i = 0; i < vertices.length; i += 3) {
+            Vector4f vec = new Vector4f(vertices[i], vertices[i + 1]
+                    , vertices[i + 2], 1.0f);
             if (!isVecAlreadyAdd(listVertex, vec))
                 listVertex.add(vec);
         }

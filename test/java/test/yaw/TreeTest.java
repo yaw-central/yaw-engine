@@ -3,6 +3,7 @@ package test.yaw;
 import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
+import yaw.engine.geom.Geometry;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.ShadowMap;
@@ -124,11 +125,10 @@ public class TreeTest implements UpdateCallback {
         System.arraycopy(is, 0, nis, 0, nis.length);
         System.arraycopy(vs, 0, nvs, 0, nvs.length);
 
-        Mesh treem = new Mesh(nvs, nis);
+        Mesh treem = new Mesh(new Geometry(nvs, null, null, nis));
         treem.setDrawingStrategy(new DefaultDrawingStrategy());
         Material mat = new Material(new Vector3f(0,1,0), 0.1f);
         treem.setMaterial(mat);
-
 
         return treem;
     }

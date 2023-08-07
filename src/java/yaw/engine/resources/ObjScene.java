@@ -1,14 +1,13 @@
 package yaw.engine.resources;
 
-import yaw.engine.geom.Geometry;
+import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.mesh.Material;
-import yaw.engine.mesh.Mesh;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ObjScene {
-    private Map<String, Geometry> geometries;
+    private Map<String, GeometryBuilder> geometries;
     private Map<String, MtlMaterial> materials;
 
     private Map<String, String> materialMap;
@@ -23,7 +22,7 @@ public class ObjScene {
         return "Geom-" + Integer.toString(geometries.size() + 1);
     }
 
-    public void addGeom(String objName, Geometry geom) {
+    public void addGeom(String objName, GeometryBuilder geom) {
         geometries.put(objName, geom);
     }
 
@@ -35,9 +34,9 @@ public class ObjScene {
         materials.put(matName, material);
     }
 
-    public Geometry getGeometryByIndex(int index) {
+    public GeometryBuilder getGeometryByIndex(int index) {
         int i = 0;
-        for (Geometry geom : geometries.values()) {
+        for (GeometryBuilder geom : geometries.values()) {
             if (i == index) {
                 return geom;
             }

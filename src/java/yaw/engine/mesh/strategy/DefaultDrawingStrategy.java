@@ -12,7 +12,7 @@ public class DefaultDrawingStrategy implements MeshDrawingStrategy {
     
     public void drawMesh(Mesh pMesh) {
         // Draw the mVertices
-        glDrawElements(GL_TRIANGLES, pMesh.getIndices().length, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, pMesh.getGeometry().getIndices().length, GL_UNSIGNED_INT, 0);
     }
 
 }

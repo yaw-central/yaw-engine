@@ -1,5 +1,6 @@
 package yaw.engine.mesh;
 
+import yaw.engine.geom.Geometry;
 import yaw.engine.mesh.strategy.BoundingBoxDrawingStrategy;
 import org.joml.Vector3f;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
@@ -159,7 +160,7 @@ public class DeprecatedMeshBuilder {
                 16, 19, 18, 16, 17, 19,
                 //Right face
                 20, 22, 21, 22, 23, 21};
-        Mesh lMesh = new Mesh(vertices, textCoord, normals, indices, 8);
+        Mesh lMesh = new Mesh(new Geometry(vertices, textCoord, normals, indices));
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
@@ -200,7 +201,7 @@ public class DeprecatedMeshBuilder {
         float[] vertices = new float[]{-halfW, height, -halfL, -halfW, height, halfL, halfW, height, -halfL, halfW, height, halfL};
         float[] normals = new float[]{0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0};
         int[] indices = new int[]{0, 1, 2, 1, 3, 2};
-        Mesh lMesh = new Mesh(vertices, null, normals, indices);
+        Mesh lMesh = new Mesh(new Geometry(vertices, null, normals, indices));
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(width, length, height);
         lMesh.putOptionalAttributes(lOptionalAttributes);
@@ -259,7 +260,7 @@ public class DeprecatedMeshBuilder {
                 12, 14, 13,
                 //Right face
                 15, 16, 17};
-        Mesh lMesh = new Mesh(vertices, null, normals, indices, 6);
+        Mesh lMesh = new Mesh(new Geometry(vertices, null, normals, indices));
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
@@ -321,7 +322,7 @@ public class DeprecatedMeshBuilder {
                 9, 11, 10,
                 //Bottom Face
                 12, 13, 15, 12, 15, 14};
-        Mesh lMesh = new Mesh(vertices, null, normals, indices, 5);
+        Mesh lMesh = new Mesh(new Geometry(vertices, null, normals, indices));
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);
@@ -392,7 +393,7 @@ public class DeprecatedMeshBuilder {
                 18, 20, 19,
                 //RBB
                 21, 22, 23};
-        Mesh lMesh = new Mesh(vertices, null, normals, indices, 6);
+        Mesh lMesh = new Mesh(new Geometry(vertices, null, normals, indices));
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         return lMesh;
     }
@@ -436,7 +437,7 @@ public class DeprecatedMeshBuilder {
                 //Last Face
                 9, 10, 11};
 
-        Mesh lMesh = new Mesh(vertices, null, normals, indices, 8);
+        Mesh lMesh = new Mesh(new Geometry(vertices, null, normals, indices));
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         return lMesh;
 
@@ -481,7 +482,7 @@ public class DeprecatedMeshBuilder {
                 //Back face
                 8, 9, 9, 10, 10, 11, 11, 8};
 
-        Mesh lMesh = new Mesh(vertices, textCoord, normals, indices);
+        Mesh lMesh = new Mesh(new Geometry(vertices, textCoord, normals, indices));
         lMesh.setDrawingStrategy(new BoundingBoxDrawingStrategy(isVisible));
         Map<String, String> lOptionalAttributes = DeprecatedMeshBuilder.getPositionAttributesMap(xLength, yLength, zLength);
         lMesh.putOptionalAttributes(lOptionalAttributes);

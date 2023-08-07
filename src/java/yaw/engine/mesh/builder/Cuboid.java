@@ -2,11 +2,9 @@ package yaw.engine.mesh.builder;
 
 import yaw.engine.geom.GeomLib;
 import yaw.engine.geom.Geometry;
-import yaw.engine.mesh.DeprecatedMeshBuilder;
+import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
-
-import java.util.Map;
 
 /**
  * A builder class for Cuboid (block) meshes.
@@ -151,8 +149,8 @@ public class Cuboid implements MeshBuilder {
                 //Right face
                 20, 22, 21, 22, 23, 21};
 
-        Geometry geom = GeomLib.makeCuboid(xLength, yLength, zLength);
-        Mesh lMesh = new Mesh(geom.getVertices(), geom.getNormals(), geom.getIndices());
+        Geometry geom = GeomLib.makeCuboid(xLength, yLength, zLength).build();
+        Mesh lMesh = new Mesh(geom);
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         return lMesh;
     }

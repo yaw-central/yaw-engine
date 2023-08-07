@@ -3,6 +3,8 @@ package yaw.engine;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
+import yaw.engine.geom.Geometry;
+import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.items.HitBox;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
@@ -151,7 +153,8 @@ public class World  {
             }
             lMaterial.setTexture(lTexture);
         }
-        Mesh lMesh = new Mesh(pVertices, pTextCoords, pNormals, pIndices, pWeight);
+        Geometry geom = new Geometry(pVertices, pTextCoords, pNormals, pIndices);
+        Mesh lMesh = new Mesh(geom);
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         lMesh.setMaterial(lMaterial);
         return lMesh;
@@ -172,7 +175,7 @@ public class World  {
         }
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
         Material lMaterial = new Material(lMaterialColor);
-        Mesh lMesh = new Mesh(pVertices, pNormals, pIndices);
+        Mesh lMesh = new Mesh(new Geometry(pVertices, pNormals, pIndices));
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         lMesh.setMaterial(lMaterial);
         return lMesh;

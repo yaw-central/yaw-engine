@@ -1,6 +1,5 @@
 package test.yaw;
 
-import yaw.engine.geom.GeomLib;
 import yaw.engine.geom.Geometry;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.Texture;
@@ -96,7 +95,7 @@ public class MeshExamples {
                 0.75f,0.75f
         };
 
-        Mesh dice = new Mesh(vertices, textCoord, normals, indices,24);
+        Mesh dice = new Mesh(new Geometry(vertices, textCoord, normals, indices));
         dice.getMaterial().setTexture(new Texture("/resources/dice.png"));
         dice.setDrawingStrategy(new DefaultDrawingStrategy());
         return dice;

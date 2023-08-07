@@ -1,199 +1,100 @@
 package yaw.engine.geom;
 
-import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.joml.Vector3i;
-import yaw.engine.mesh.Mesh;
+import yaw.engine.mesh.Material;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
 
 public class Geometry {
-    private List<Vector3f> vertices;
-    private List<Vector3i> triangles;
+    private float[] vertices;//vertices
+    private float[] normals;
+    private int[] indices;
+    private float[] textCoords;
 
-    private List<Vector2f> textCoords;
-
-    private List<Vector3f> normals;
-
-
-    public Geometry() {
-        vertices = new ArrayList<>();
-        triangles = new ArrayList<>();
-        textCoords = new ArrayList<>();
-        normals = new ArrayList<>();
+    /**
+     * Construct a Geometry
+     *
+     * @param vertices   The vertices of the geometry
+     * @param normals    The normals at vertices (can be computed)
+     * @param indices   vertex indices  (for indexed rendering)
+     */
+    public Geometry(float[] vertices, float[] normals, int[] indices) {
+        this(vertices, null, normals, indices);
     }
 
-    public int addVertex(float x, float y, float z) {
-        vertices.add(new Vector3f(x, y, z));
-        return vertices.size() - 1;
+    /**
+     * Construct a Geometry
+     *
+     * @param vertices   The vertices of the geometry
+     * @param textCoords Texture coordinates (optional, for non-textured rendering)
+     * @param normals    The normals at vertices (can be computed)
+     * @param indices   vertex indices  (for indexed rendering)
+     */
+    public Geometry(float[] vertices, float[] textCoords, float[] normals, int[] indices) {
+        this.vertices = vertices;
+        this.indices = indices;
+        this.normals = normals == null ? generateNormals() : normals;
+        this.textCoords = textCoords == null ? new float[1] : textCoords;
     }
 
-    public void addVertices(float... coords) {
-        if (coords.length % 3 != 0) {
-            throw new Error("Vertex coordinates must be triples.");
-        }
-        for(int i=0; i<coords.length; i+=3) {
-            addVertex(coords[i], coords[i+1], coords[i+2]);
-        }
+    public static Vector3f getVec(float[] arr, int i) {
+        return new Vector3f(arr[i], arr[i+1], arr[i+2]);
     }
 
-    private void checkVertex(String vrefStr, int vref) {
-        if (!(0 <= vref) && (vref < vertices.size())) {
-            throw new Error("Wrong vertex " + vrefStr + " = " + Integer.toString(vref));
-        }
+    public static void setVec(float[] arr, int i, Vector3f vec) {
+        arr[i] = vec.x;
+        arr[i+1] = vec.y;
+        arr[i+2] = vec.z;
     }
 
-    public void addTriangle(int v1ref, int v2ref, int v3ref) {
-        checkVertex("v1ref", v1ref);
-        checkVertex("v2ref", v2ref);
-        checkVertex("v3ref", v3ref);
-        triangles.add(new Vector3i(v1ref, v2ref, v3ref));
-    }
+    /** Generate normals from vertices (assumes CCW ordering)
+     * @return the normals as a linearized float array.
+     */
+    public float[] generateNormals() {
+        float[] normals = new float[vertices.length];
 
-    public void addTriangles(int... vrefs) {
-        if (vrefs.length %3 != 0) {
-            throw new Error("Vertex indices must be triples.");
-        }
-        for(int i=0; i<vrefs.length; i+=3) {
-            addTriangle(vrefs[i], vrefs[i+1], vrefs[i+2]);
-        }
-    }
+        for(int i = 0; i<indices.length; i+=3) {
+            int i1 = indices[i]*3;
+            int i2 = indices[i+1]*3;
+            int i3 = indices[i+2]*3;
 
-    public float[] getVertices() {
-        if(vertices.isEmpty()) {
-            throw new Error("No vertices in geometry");
-        }
-        float[] verts = new float[vertices.size()*3];
-        int i = 0;
-        for(Vector3f v : vertices) {
-            verts[i] = v.x;
-            verts[i+1] = v.y;
-            verts[i+2] = v.z;
-            i += 3;
-        }
-        return verts;
-    }
+            Vector3f v1 = getVec(vertices, i1);
+            Vector3f v2 = getVec(vertices, i2);
+            Vector3f v3 = getVec(vertices, i3);
 
-    public int[] getIndices() {
-        if(triangles.isEmpty()) {
-            throw new Error("No triangles in geometry");
-        }
-        int[] indices = new int[triangles.size()*3];
-        int i = 0;
-        for(Vector3i tri : triangles) {
-            indices[i] = tri.get(0);
-            indices[i+1] = tri.get(1);
-            indices[i+2] = tri.get(2);
-            i += 3;
-        }
-        return indices;
-    }
-
-    public int addNormal(float x, float y, float z) {
-        normals.add(new Vector3f(x, y, z));
-        return normals.size() - 1;
-    }
-
-    public void addNormals(float... coords) {
-        if (coords.length % 3 != 0) {
-            throw new Error("Normal coordinates must be triples.");
-        }
-        for(int i=0; i<coords.length; i+=3) {
-            addNormal(coords[i], coords[i+1], coords[i+2]);
-        }
-    }
-
-    public void generateNormals() {
-        if(!normals.isEmpty()) {
-            throw new Error("Cannot generate: normals already set");
-        }
-        normals = new ArrayList<>(vertices.size());
-        for(int i=0; i<vertices.size();i++) {
-            normals.add(new Vector3f(0, 0, 0));
-        }
-
-        for(Vector3i tri : triangles) {
-            int i1 = tri.get(0);
-            int i2 = tri.get(1);
-            int i3 = tri.get(2);
-            Vector3f v1 = vertices.get(i1);
-            Vector3f v2 = vertices.get(i2);
-            Vector3f v3 = vertices.get(i3);
-
-            Vector3f n1 = normals.get(i1);
-            Vector3f n2 = normals.get(i2);
-            Vector3f n3 = normals.get(i3);
+            Vector3f n1 = getVec(normals, i1);
+            Vector3f n2 = getVec(normals, i2);
+            Vector3f n3 = getVec(normals, i3);
 
             Vector3f trinorm = v2.sub(v1).cross(v3.sub(v1)).normalize();
 
-            normals.set(i1, n1.add(trinorm));
-            normals.set(i2, n2.add(trinorm));
-            normals.set(i3, n3.add(trinorm));
+            setVec(normals, i1, n1.add(trinorm));
+            setVec(normals, i2, n2.add(trinorm));
+            setVec(normals, i3, n3.add(trinorm));
         }
 
-        // normalize everything
-        for(Vector3f normal : normals) {
-            normal.normalize();
+        for(int i = 0; i<normals.length; i+=3) {
+            Vector3f n = getVec(normals, i);
+            setVec(normals, i, n.normalize());
         }
 
+        return normals;
     }
 
-    public float[] getNormals() {
-        if (normals.isEmpty()) {
-            throw new Error("No normals in geometry");
-        }
-
-        float[] norms = new float[normals.size() * 3];
-        int i = 0;
-        for (Vector3f v : normals) {
-            norms[i] = v.x;
-            norms[i + 1] = v.y;
-            norms[i + 2] = v.z;
-            i += 3;
-        }
-        return norms;
-    }
-
-    public void addTextCoord(float tx, float ty) {
-        textCoords.add(new Vector2f(tx, ty));
+    public float[] getVertices() {
+        return vertices;
     }
 
     public float[] getTextCoords() {
-        if (textCoords.isEmpty()) {
-            throw new Error("No texture coordinates in geometry");
-        }
-        float[] tcoords = new float[textCoords.size()*2];
-        int i = 0;
-        for(Vector2f t : textCoords) {
-            tcoords[i] = t.x;
-            tcoords[i+1] = t.y;
-            i += 2;
-        }
-        return tcoords;
+        return textCoords;
     }
 
-    public Mesh buildMesh() {
-        float[] vertices = getVertices();
-        float[] uvCoords = null;
-        if(!textCoords.isEmpty()) {
-            uvCoords = getTextCoords();
-        }
-        if (normals.isEmpty()) {
-            generateNormals();
-        }
-        float[] normals = getNormals();
-
-        int[] indices = getIndices();
-
-        Mesh mesh = null;
-        if(!textCoords.isEmpty()) {
-            mesh = new Mesh(vertices, uvCoords, normals, indices);
-        } else {
-            mesh = new Mesh(vertices, normals, indices);
-        }
-        return mesh;
+    public float[] getNormals() {
+        return normals;
     }
 
+    public int[] getIndices() {
+        return indices;
+    }
 }

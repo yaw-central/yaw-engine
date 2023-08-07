@@ -243,8 +243,6 @@ public class MainLoop implements Runnable {
      */
     public synchronized void init() throws Exception {
         Window.init(initWidth, initHeight, initVSYNC);
-        // Create the rendering logic of our game.
-        mRenderer.init();
 
         if(inputCallback != null) {
             Window.getGLFWKeyCallback().registerInputCallback(inputCallback);

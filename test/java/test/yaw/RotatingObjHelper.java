@@ -6,8 +6,8 @@ import yaw.engine.InputCallback;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.geom.Geometry;
+import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.items.ItemObject;
-import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
@@ -86,13 +86,10 @@ public class RotatingObjHelper implements UpdateCallback {
             System.out.println("Errror : " + e.getMessage());
             System.exit(1);
         }
-        Geometry geom = objLoader.getScene().getGeometryByIndex(0);
-        Mesh objm = geom.buildMesh();
+        Geometry geom = objLoader.getScene().getGeometryByIndex(0).build();
 
+        Mesh objm = new Mesh(geom, objLoader.getScene().getMaterialByIndex(0));
         objm.setDrawingStrategy(new DefaultDrawingStrategy());
-        Material mat = new Material();
-        mat.setColor(new Vector3f(0.1f , 0.7f, 0.9f));
-        objm.setMaterial(objLoader.getScene().getMaterialByIndex(0));
         ItemObject obji = world.createItemObject("obj", 0f, 0f, 0f, 1.0f, objm);
         //obji.translate(2f,0f, -5f);
 

@@ -1,6 +1,6 @@
 package yaw.engine.resources;
 
-import yaw.engine.geom.Geometry;
+import yaw.engine.geom.GeometryBuilder;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -210,7 +210,7 @@ public class ObjLoader {
             }
         }
 
-        Geometry geom = new Geometry();
+        GeometryBuilder geom = new GeometryBuilder();
 
         // we may now build the Mesh geometry
         for (int i = 0; i < glVertices.size(); i++) {

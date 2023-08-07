@@ -4,8 +4,8 @@ import org.joml.Vector3f;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.geom.Geometry;
+import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.items.ItemObject;
-import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
@@ -74,8 +74,8 @@ public class RotatingObj implements UpdateCallback {
 			System.out.println("Errror : " + e.getMessage());
 			System.exit(1);
 		}
-		Geometry geom = objLoader.getScene().getGeometryByIndex(0);
-		Mesh objm = geom.buildMesh();
+		Geometry geom = objLoader.getScene().getGeometryByIndex(0).build();
+		Mesh objm = new Mesh(geom);
 
 		objm.setDrawingStrategy(new DefaultDrawingStrategy());
 		Material mat = new Material();

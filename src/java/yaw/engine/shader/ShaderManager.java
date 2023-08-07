@@ -99,11 +99,7 @@ public class ShaderManager {
     public void addShader(ShaderProgram mShaderProgram){
         shaderlist.add(mShaderProgram);
     }
-
-    public int sizeList(){
-        return shaderlist.size();
-    }
-
+    
     public ShaderProgram getShaderProgram(int id){
         return shaderlist.get(id);
     }

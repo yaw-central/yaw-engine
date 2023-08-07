@@ -1,20 +1,23 @@
 package yaw.engine.mesh;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
+import yaw.engine.camera.Camera;
+import yaw.engine.geom.Geometry;
 import yaw.engine.helper.HelperAxesShaders;
 import yaw.engine.helper.HelperNormalsShaders;
 import yaw.engine.helper.HelperVerticesShaders;
-import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
-import yaw.engine.shader.*;
-import org.lwjgl.BufferUtils;
+import yaw.engine.shader.ShaderManager;
+import yaw.engine.shader.ShaderProgramADS;
 import yaw.engine.util.LoggerYAW;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -24,97 +27,74 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
+ * A Mesh is the visual component of a 3D object. It comprises :
  *
+ *   - a geometry with vertices, normals, etc.
+ *   - a material
+ *
+ *   The class is responsible for the rendering of an object, but
+ *   several objects can share the same Mesh.
  */
 public class Mesh {
     private final List<Integer> vboIdList;
     //reference to the VAO(wrapper)
-    private int mVaoId;
-    //VBO's ID
-    //VBO
-    private float[] mVertices;//mVertices
-    private float[] mNormals;
-    private int[] mIndices; //order into which  mVertices should be drawn by referring to their  position
-    private float[] mTextCoords;
-    private int mWeight;  // the mWeight of an object in a group (e.g. a mass in a group planets)
-    private Material mMaterial;
-    private Map<String, String> mOptionalAttributes;
+    private int vaoId;
+
+    private Geometry geometry;
+
+    private Material material;
+
+    private final Map<String, String> attributes;
+
     //strategy when we draw the elements
-    private MeshDrawingStrategy mDrawingStrategy;
-    private ShaderProgramADS mShaderProgram;
-    private HelperVerticesShaders mHelperVerticesShaders;
+    private MeshDrawingStrategy drawingStrategy;
+    private ShaderProgramADS shaderProgram;
+    private HelperVerticesShaders helperVerticesShaders;
     private HelperNormalsShaders helperNormalsShaders;
     private HelperAxesShaders helperAxesShaders;
-    private boolean drawAds;
-    private boolean drawHelperSummit;
-    private boolean drawHelperNormal;
-    private boolean drawHelperAxesMesh;
-
+    private boolean drawADS;
+    private boolean showHelperVertices;
+    private boolean showHelperNormals;
+    private boolean showHelperAxes;
 
     /**
-     * Construct a Mesh with the specified mMaterial , mVertices, mNormals , mTextureCoordinate and mIndices.
-     *
-     * @param pVertices   Vertex array
-     * @param pTextCoords texture coodinate
-     * @param pNormals    mNormals
-     * @param pIndices    order into which  mVertices should be drawn by referring to their  position
+     * Construct a Mesh with a default (solid, unicolor) material
      */
-    public Mesh(float[] pVertices, float[] pTextCoords, float[] pNormals, int[] pIndices) {
-        this(pVertices, pTextCoords, pNormals, pIndices, pVertices.length);
+    public Mesh(Geometry geometry) {
+        this(geometry, new Material());
     }
 
     /**
-     * Construct a Mesh with the specified mVertices, mNormals and mIndices.
+     * Construct a Mesh
      *
-     * @param pVertices   Vertex array
-     * @param pNormals    Normal vectors
-     * @param pIndices    Triangles
+     * @param geometry    The Geometry of the Mesh
+     * @param material    The Material of the Mesh
      */
-    public Mesh(float[] pVertices, float[] pNormals, int[] pIndices) {
-        this(pVertices, null, pNormals, pIndices, pVertices.length);
-    }
-
-    public Mesh(float[] pVertices, int[] pIndices) {
-        this(pVertices, null, null, pIndices, pVertices.length);
-    }
-
-    /**
-     * Construct a Mesh with the specified  mVertices, mNormals, mIndices , mTextureCoordinate and mWeight
-     *
-     * @param pVertices   Vertex array
-     * @param pTextCoords texture coodinate
-     * @param pNormals    mNormals
-     * @param pIndices    order into which  mVertices should be drawn by referring to their  position
-     * @param pWeight     mWeight numbre of vertices
-     */
-    public Mesh(float[] pVertices, float[] pTextCoords, float[] pNormals, int[] pIndices, int pWeight) {
-        this.mMaterial = new Material();
-        this.mVertices = pVertices;
-        this.mIndices = pIndices;
-        this.mNormals = pNormals == null ? generateNormals() : pNormals;
-        this.mWeight = pWeight;
-        this.mTextCoords = pTextCoords == null ? new float[1] : pTextCoords;
-        this.mOptionalAttributes = new HashMap<>();
+    public Mesh(Geometry geometry, Material material) {
+        this.geometry = geometry;
+        this.material = material;
+        this.attributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
-        this.drawHelperSummit = false;
-        this.drawHelperNormal = false;
-        this.drawHelperAxesMesh = false;
-        this.drawAds = false;
+        this.showHelperVertices = false;
+        this.showHelperNormals = false;
+        this.showHelperAxes = false;
+        this.drawADS = false;
     }
 
     /**
      * Initialize  vertex, mNormals, mIndices and mTextureCoordinate buffer
      */
-    public void initBuffer() {
+    public void initBuffers() {
         //initialization order is important do not change unless you know what to do
-        mVaoId = glGenVertexArrays();
-        glBindVertexArray(mVaoId);
+        vaoId = glGenVertexArrays();
+        glBindVertexArray(vaoId);
 
         //Initialization of VBO
 
         //VBO of vertex layout 0 in vertShader.vs
-        FloatBuffer verticeBuffer = BufferUtils.createFloatBuffer(mVertices.length);
-        verticeBuffer.put(mVertices).flip();
+        float[] vertices = geometry.getVertices();
+        FloatBuffer verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
+        verticeBuffer.put(vertices).flip();
         int lVboVertexId = glGenBuffers();
         vboIdList.add(lVboVertexId);
         glBindBuffer(GL_ARRAY_BUFFER, lVboVertexId);
@@ -126,15 +106,17 @@ public class Mesh {
         // Texture coordinates VBO
         int lVboCoordTextureId = glGenBuffers();
         vboIdList.add(lVboCoordTextureId);
-        FloatBuffer textCoordsBuffer = BufferUtils.createFloatBuffer(mTextCoords.length);
-        textCoordsBuffer.put(mTextCoords).flip();
+        float[] textCoords = geometry.getTextCoords();
+        FloatBuffer textCoordsBuffer = BufferUtils.createFloatBuffer(textCoords.length);
+        textCoordsBuffer.put(textCoords).flip();
         glBindBuffer(GL_ARRAY_BUFFER, lVboCoordTextureId);
         glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
         glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 
         //VBO of mNormals layout 2 in vertShader.vs
-        FloatBuffer normBuffer = BufferUtils.createFloatBuffer(mNormals.length);
-        normBuffer.put(mNormals).flip();
+        float[] normals = geometry.getNormals();
+        FloatBuffer normBuffer = BufferUtils.createFloatBuffer(normals.length);
+        normBuffer.put(normals).flip();
         int lVboNormId = glGenBuffers();
         vboIdList.add(lVboNormId);
         glBindBuffer(GL_ARRAY_BUFFER, lVboNormId);
@@ -144,8 +126,9 @@ public class Mesh {
         glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
         //VBO of mIndices
-        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(mIndices.length);
-        indicesBuffer.put(mIndices).flip();
+        int[] indices = geometry.getIndices();
+        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+        indicesBuffer.put(indices).flip();
         int lVboIndicesId = glGenBuffers();
         vboIdList.add(lVboIndicesId);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lVboIndicesId);
@@ -155,36 +138,35 @@ public class Mesh {
         glBindVertexArray(0);
 
 
-
     }
 
     /**
-     * Render the specified items
+     * Render the specified items using this Mesh
      *
-     * @param pItems         item
+     * @param items item
      */
-    public void renderAds(List<ItemObject> pItems, Camera pCamera, ShaderManager shaderManager) {
+    public void renderAds(List<ItemObject> items, Camera pCamera, ShaderManager shaderManager) {
         //initRender
-        mShaderProgram = shaderManager.getShaderProgramAds();
+        shaderProgram = shaderManager.getShaderProgramAds();
         initRender();
-        mShaderProgram.bind();
+        shaderProgram.bind();
         /* Set the camera to render. */
-        mShaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
-        mShaderProgram.setUniform("texture_sampler", 0);
-        mShaderProgram.setUniform("camera_pos", pCamera.getPosition());
+        shaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        shaderProgram.setUniform("texture_sampler", 0);
+        shaderProgram.setUniform("camera_pos", pCamera.getPosition());
         Matrix4f viewMat = pCamera.getViewMat();
-        mShaderProgram.setUniform("viewMatrix", viewMat);
+        shaderProgram.setUniform("viewMatrix", viewMat);
 
-        mShaderProgram.setUniform("material", mMaterial);
-        for (ItemObject lItem : pItems) {
+        shaderProgram.setUniform("material", material);
+        for (ItemObject lItem : items) {
 
             //can be moved to Item class
             //Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
 
-            mShaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
-            if (mDrawingStrategy != null) {
+            shaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
+            if (drawingStrategy != null) {
                 //delegate the drawing
-                mDrawingStrategy.drawMesh(this);
+                drawingStrategy.drawMesh(this);
             } else {
                 LoggerYAW.getLogger().severe("No drawing strategy has been set for the mesh");
                 throw new RuntimeException("No drawing strategy has been set for the mesh");
@@ -194,34 +176,32 @@ public class Mesh {
         }
         //end render
 
-        mShaderProgram.unbind();
+        shaderProgram.unbind();
         endRender();
 
 
     }
 
-    public void renderHelperSummit(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager) {
-
-
+    public void renderHelperVertices(List<ItemObject> pItems, Camera pCamera, ShaderManager shaderManager) {
         //initRender
-        mHelperVerticesShaders = shaderManager.getShaderProgramHelperSummit();
+        helperVerticesShaders = shaderManager.getShaderProgramHelperSummit();
         initRender();
 
-        mHelperVerticesShaders.bind();
-        mHelperVerticesShaders.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        helperVerticesShaders.bind();
+        helperVerticesShaders.setUniform("projectionMatrix", pCamera.getProjectionMat());
         Matrix4f viewMat = pCamera.getViewMat();
-        mHelperVerticesShaders.setUniform("viewMatrix", viewMat);
+        helperVerticesShaders.setUniform("viewMatrix", viewMat);
         for (ItemObject lItem : pItems) {
-            mHelperVerticesShaders.setUniform("modelMatrix", lItem.getWorldMatrix());
-            glDrawElements(GL_POINTS, this.getIndices().length, GL_UNSIGNED_INT, 0);
+            helperVerticesShaders.setUniform("modelMatrix", lItem.getWorldMatrix());
+            glDrawElements(GL_POINTS, geometry.getIndices().length, GL_UNSIGNED_INT, 0);
         }
 
-        mHelperVerticesShaders.unbind();
+        helperVerticesShaders.unbind();
         endRender();
 
     }
 
-    public void renderHelperNormal(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager) {
+    public void renderHelperNormals(List<ItemObject> pItems, Camera pCamera, ShaderManager shaderManager) {
         //initRender
         helperNormalsShaders = shaderManager.getShaderProgramHelperNormals();
         initRender();
@@ -232,7 +212,7 @@ public class Mesh {
         helperNormalsShaders.setUniform("viewMatrix", viewMat);
         for (ItemObject lItem : pItems) {
             helperNormalsShaders.setUniform("modelMatrix", lItem.getWorldMatrix());
-            glDrawElements(GL_POINTS, this.getIndices().length, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_POINTS, geometry.getIndices().length, GL_UNSIGNED_INT, 0);
         }
 
         helperNormalsShaders.unbind();
@@ -240,7 +220,7 @@ public class Mesh {
 
     }
 
-    public void renderHelperAxesMesh(List<ItemObject> pItems,Camera pCamera,  ShaderManager shaderManager){
+    public void renderHelperAxes(List<ItemObject> pItems, Camera pCamera, ShaderManager shaderManager) {
         helperAxesShaders = shaderManager.getShaderProgramHelperAxesMesh();
         initRender();
         helperAxesShaders.bind();
@@ -251,13 +231,12 @@ public class Mesh {
         for (ItemObject lItem : pItems) {
             helperAxesShaders.setUniform("center", lItem.getPosition());
             helperAxesShaders.setUniform("modelMatrix", lItem.getWorldMatrix());
-            glDrawElements(GL_LINES, this.getIndices().length, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_LINES, geometry.getIndices().length, GL_UNSIGNED_INT, 0);
         }
 
         helperAxesShaders.unbind();
         endRender();
     }
-
 
 
     public void cleanUp() {
@@ -269,14 +248,13 @@ public class Mesh {
         for (int vboId : vboIdList) {
             glDeleteBuffers(vboId);
         }
-        Texture texture = mMaterial.getTexture();
+        Texture texture = material.getTexture();
         if (texture != null) {
             texture.cleanup();
         }
         // Delete the VAO
         glBindVertexArray(0);
-        glDeleteVertexArrays(mVaoId);
-
+        glDeleteVertexArrays(vaoId);
 
 
     }
@@ -289,7 +267,7 @@ public class Mesh {
      * @return the corresponding value if exist null otherwise
      */
     public Object getAttribute(String pAttributeName) {
-        return this.mOptionalAttributes.get(pAttributeName);
+        return this.attributes.get(pAttributeName);
     }
 
     /**
@@ -301,7 +279,7 @@ public class Mesh {
      * @param pOptionalAttributes mappings to be stored in this map
      */
     public void putOptionalAttributes(Map<String, String> pOptionalAttributes) {
-        this.mOptionalAttributes.putAll(pOptionalAttributes);
+        this.attributes.putAll(pOptionalAttributes);
     }
 
     public void initRender() {
@@ -309,7 +287,7 @@ public class Mesh {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        Texture texture = mMaterial != null ? mMaterial.getTexture() : null;
+        Texture texture = material != null ? material.getTexture() : null;
         if (texture != null) {
             //load the texture if needed
             if (!texture.isActivated()) {
@@ -324,7 +302,7 @@ public class Mesh {
         }
 
         // Draw the mesh
-        glBindVertexArray(mVaoId);
+        glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
@@ -341,91 +319,51 @@ public class Mesh {
         //glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    public static Vector3f getVec(float[] arr, int i) {
-        return new Vector3f(arr[i], arr[i+1], arr[i+2]);
-    }
-
-    public static void setVec(float[] arr, int i, Vector3f vec) {
-        arr[i] = vec.x;
-        arr[i+1] = vec.y;
-        arr[i+2] = vec.z;
-    }
-
-    public float[] generateNormals() {
-        float[] normals = new float[mVertices.length];
-
-        for(int i = 0; i<mIndices.length; i+=3) {
-            int i1 = mIndices[i]*3;
-            int i2 = mIndices[i+1]*3;
-            int i3 = mIndices[i+2]*3;
-
-            Vector3f v1 = getVec(mVertices, i1);
-            Vector3f v2 = getVec(mVertices, i2);
-            Vector3f v3 = getVec(mVertices, i3);
-
-            Vector3f n1 = getVec(normals, i1);
-            Vector3f n2 = getVec(normals, i2);
-            Vector3f n3 = getVec(normals, i3);
-
-            Vector3f trinorm = v2.sub(v1).cross(v3.sub(v1)).normalize();
-
-            setVec(normals, i1, n1.add(trinorm));
-            setVec(normals, i2, n2.add(trinorm));
-            setVec(normals, i3, n3.add(trinorm));
-        }
-
-        for(int i = 0; i<normals.length; i+=3) {
-            Vector3f n = getVec(normals, i);
-            setVec(normals, i, n.normalize());
-        }
-
-        return normals;
-    }
-
-    public float[] getVertices() {
-        return mVertices;
-    }
-
     public Material getMaterial() {
-        return mMaterial;
+        return material;
     }
 
     public void setMaterial(Material pMaterial) {
-        this.mMaterial = pMaterial;
-    }
-
-    public float[] getNormals() {
-        return mNormals;
-    }
-
-    public int[] getIndices() {
-        return mIndices;
-    }
-
-    public int getWeight() {
-        return mWeight;
+        this.material = pMaterial;
     }
 
     public void setDrawingStrategy(MeshDrawingStrategy pDrawingStrategy) {
-        mDrawingStrategy = pDrawingStrategy;
+        drawingStrategy = pDrawingStrategy;
     }
 
-    public void setTextCoords(float[] pTextCoord) {
-        mTextCoords = pTextCoord;
+    public boolean getDrawHelperSummit() {
+        return showHelperVertices;
     }
 
-    public void setDrawHelperSummit(boolean bool){drawHelperSummit = bool;}
-    public void setDrawHelperNormal(boolean bool){drawHelperNormal = bool;}
-    public void setDrawAds(boolean bool){drawAds = bool;}
-    public void setDrawHelperAxesMesh(boolean bool){ drawHelperAxesMesh = bool;}
+    public void setDrawHelperSummit(boolean bool) {
+        showHelperVertices = bool;
+    }
 
-    public boolean getDrawHelperSummit(){ return drawHelperSummit; }
-    public boolean getDrawHelperNormal(){ return drawHelperNormal; }
-    public boolean getDrawAds(){ return drawAds; }
-    public boolean getDrawHelperAxesMesh(){ return drawHelperAxesMesh;}
+    public boolean getDrawHelperNormal() {
+        return showHelperNormals;
+    }
 
+    public void setDrawHelperNormal(boolean bool) {
+        showHelperNormals = bool;
+    }
 
+    public boolean getDrawAds() {
+        return drawADS;
+    }
 
+    public void setDrawAds(boolean bool) {
+        drawADS = bool;
+    }
 
+    public boolean getDrawHelperAxesMesh() {
+        return showHelperAxes;
+    }
 
+    public void setDrawHelperAxesMesh(boolean bool) {
+        showHelperAxes = bool;
+    }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
 }

@@ -3,6 +3,7 @@ package yaw.engine.mesh;
 import org.joml.Vector3f;
 import yaw.engine.geom.GeomLib;
 import yaw.engine.geom.Geometry;
+import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 
 public class MeshLib {
@@ -121,8 +122,8 @@ public class MeshLib {
                 //Right face
                 20, 22, 21, 22, 23, 21};
 
-        Geometry geom = GeomLib.makeCuboid(xLength, yLength, zLength);
-        Mesh lMesh = new Mesh(geom.getVertices(), geom.getNormals(), geom.getIndices());
+        Geometry geom = GeomLib.makeCuboid(xLength, yLength, zLength).build();
+        Mesh lMesh = new Mesh(geom);
         lMesh.getMaterial().setColor(color);
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         return lMesh;
