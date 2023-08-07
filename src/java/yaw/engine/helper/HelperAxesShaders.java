@@ -3,7 +3,7 @@ package yaw.engine.helper;
 import yaw.engine.shader.ShaderCode;
 import yaw.engine.shader.ShaderProgram;
 
-public class HelperAxesShaders extends ShaderProgram{
+public class HelperAxesShaders extends ShaderProgram {
     private ShaderCode gs;
     /**
      * Constructor throws exception if the program could not create the shader

@@ -56,22 +56,6 @@ public class SceneVertex {
 
     }
 
-    // REFACTORING TEST
-
-    /*public synchronized void add(ItemObject pItem) {
-        itemAdded = true;
-        //retrieve the stored mesh in the item
-        MeshOld lMesh = pItem.getMesh();
-        List<ItemObject> lItems = mMeshMap.get(lMesh);
-        if (lItems == null) {
-            lItems = new ArrayList<>();
-            mMeshMap.put(lMesh, lItems);
-            notInit.add(lMesh);
-        }
-        lItems.add(pItem);
-
-    }*/
-
     /**
      * Remove the specified item from the mMeshMap
      *
@@ -109,42 +93,50 @@ public class SceneVertex {
      */
 
     public void render(Camera pCamera, ShaderManager shaderManager) {
-        List<Mesh> lRmListe = new ArrayList<>();
+        List<Mesh> meshesToRemove = new ArrayList<>();
+
+
         for (Mesh lMesh : mMeshMap.keySet()) {
             List<ItemObject> lItems = mMeshMap.get(lMesh);
+            List<ItemObject> vertexHelpers = new ArrayList<>();
+            List<ItemObject> normalHelpers = new ArrayList<>();
+            List<ItemObject> axisHelpers = new ArrayList<>();
             if (lItems.isEmpty()) {
-                lRmListe.add(lMesh);
+                meshesToRemove.add(lMesh);
             } else {
                 try {
                     if(notInit.contains(lMesh)){
                         lMesh.initBuffers();
                         notInit.remove(lMesh);
                     }
-                    lMesh.renderAds(lItems, pCamera,shaderManager);
+                    lMesh.renderSetup(pCamera, shaderManager);
+                    for (ItemObject item : lItems) {
+                        lMesh.renderItem(item, shaderManager);
+                        if (item.showVertexHelpers()) {
+                            vertexHelpers.add(item);
+                        }
+                        if (item.showNormalHelpers()) {
+                            normalHelpers.add(item);
+                        }
+                        if (item.showAxisHelpers()) {
+                            axisHelpers.add(item);
+                        }
+                    }
 
-                    if (lMesh.getDrawHelperSummit()){
-                        mMeshMapHelperSummit.put(lMesh, lItems);
-                    }else {
-                        mMeshMapHelperSummit.remove(lMesh);
-                    }
-                    if (lMesh.getDrawHelperNormal()) {
-                        mMeshMapHelperNormal.put(lMesh, lItems);
-                    }else{
-                        mMeshMapHelperNormal.remove(lMesh);
-                    }
-                    if (lMesh.getDrawHelperAxesMesh()){
-                        mMeshMapHelperAxesMesh.put(lMesh, lItems);
-                    }else{
-                        mMeshMapHelperAxesMesh.remove(lMesh);
-                    }
+                    lMesh.renderCleanup(shaderManager);
+
+                    lMesh.renderHelperVertices(vertexHelpers, pCamera, shaderManager);
+                    lMesh.renderHelperNormals(vertexHelpers, pCamera, shaderManager);
+                    lMesh.renderHelperAxes(vertexHelpers, pCamera, shaderManager);
 
                 } catch (Exception e) {
-                    System.out.println("Erreur scene vertex");
+                    System.err.println("Scene vertex rendering error");
+                    System.err.println(e);
                 }
             }
         }
         /*Clean then remove*/
-        for (Mesh lMesh : lRmListe) {
+        for (Mesh lMesh : meshesToRemove) {
             lMesh.cleanUp();
             mMeshMap.remove(lMesh);
         }

@@ -140,13 +140,7 @@ public class Mesh {
 
     }
 
-    /**
-     * Render the specified items using this Mesh
-     *
-     * @param items item
-     */
-    public void renderAds(List<ItemObject> items, Camera pCamera, ShaderManager shaderManager) {
-        //initRender
+    public void renderSetup(Camera pCamera, ShaderManager shaderManager) {
         shaderProgram = shaderManager.getShaderProgramAds();
         initRender();
         shaderProgram.bind();
@@ -158,28 +152,24 @@ public class Mesh {
         shaderProgram.setUniform("viewMatrix", viewMat);
 
         shaderProgram.setUniform("material", material);
-        for (ItemObject lItem : items) {
+    }
 
-            //can be moved to Item class
-            //Matrix4f modelViewMat = new Matrix4f(pViewMatrix).mul(lItem.getWorldMatrix());
-
-            shaderProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
-            if (drawingStrategy != null) {
-                //delegate the drawing
-                drawingStrategy.drawMesh(this);
-            } else {
-                LoggerYAW.getLogger().severe("No drawing strategy has been set for the mesh");
-                throw new RuntimeException("No drawing strategy has been set for the mesh");
-            }
-            // glDrawElements(GL_TRIANGLES, this.getIndices().length, GL_UNSIGNED_INT, 0);
-
+    public void renderItem(ItemObject item, ShaderManager shaderManager) {
+        shaderProgram = shaderManager.getShaderProgramAds();
+        shaderProgram.setUniform("modelMatrix", item.getWorldMatrix());
+        if (drawingStrategy != null) {
+            //delegate the drawing
+            drawingStrategy.drawMesh(this);
+        } else {
+            LoggerYAW.getLogger().severe("No drawing strategy has been set for the mesh");
+            throw new RuntimeException("No drawing strategy has been set for the mesh");
         }
-        //end render
+    }
 
+    public void renderCleanup(ShaderManager shaderManager) {
+        shaderProgram = shaderManager.getShaderProgramAds();
         shaderProgram.unbind();
         endRender();
-
-
     }
 
     public void renderHelperVertices(List<ItemObject> pItems, Camera pCamera, ShaderManager shaderManager) {
@@ -331,19 +321,19 @@ public class Mesh {
         drawingStrategy = pDrawingStrategy;
     }
 
-    public boolean getDrawHelperSummit() {
+    public boolean showHelperVertices() {
         return showHelperVertices;
     }
 
-    public void setDrawHelperSummit(boolean bool) {
+    public void toggleHelperVertices(boolean bool) {
         showHelperVertices = bool;
     }
 
-    public boolean getDrawHelperNormal() {
+    public boolean showHelperNormals() {
         return showHelperNormals;
     }
 
-    public void setDrawHelperNormal(boolean bool) {
+    public void toggleHelperNormals(boolean bool) {
         showHelperNormals = bool;
     }
 
@@ -355,11 +345,11 @@ public class Mesh {
         drawADS = bool;
     }
 
-    public boolean getDrawHelperAxesMesh() {
+    public boolean showHelperAxes() {
         return showHelperAxes;
     }
 
-    public void setDrawHelperAxesMesh(boolean bool) {
+    public void toggleHelperAxes(boolean bool) {
         showHelperAxes = bool;
     }
 
