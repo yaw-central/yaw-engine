@@ -61,7 +61,8 @@ public class Skybox {
      */
     public void init() throws Exception {
         //if the last compile operation on shader was unsuccessful then an exception is launched
-        shaderProg = new ShaderProgram();
+        // WARNING: SKYBOX ARE NOT SUPPORTED
+        shaderProg = null; // new ShaderProgram();
 
         shaderProg.createVertexShader(skyboxVertexShader.SHADER_STRING);
         shaderProg.createFragmentShader(skyboxFragmentShader.SHADER_STRING);

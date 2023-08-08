@@ -5,7 +5,6 @@ import yaw.engine.mesh.Material;
 
 public class ShaderProgramADS extends ShaderProgram {
     public ShaderProgramADS() {
-        super();
     }
 
     /**
@@ -17,7 +16,6 @@ public class ShaderProgramADS extends ShaderProgram {
         createUniform(uniformName + ".color");
         createUniform(uniformName + ".hasTexture");
         createUniform(uniformName + ".reflectance");
-
     }
 
     /**
@@ -33,7 +31,6 @@ public class ShaderProgramADS extends ShaderProgram {
     }
 
     public void init() {
-        System.out.println("HERE 2");
         /* Initialization of the shader program. */
         createVertexShader(vertShader.SHADER_STRING);
         createFragmentShader(fragShader.SHADER_STRING);

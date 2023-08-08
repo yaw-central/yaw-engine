@@ -23,9 +23,6 @@ public class Scene {
     //old code from a previous attempt to manage a group of scene vertex
     private boolean itemAdded = false;
     private final HashMap<Mesh, List<ItemObject>> mMeshMap;
-    private final HashMap<Mesh, List<ItemObject>> mMeshMapHelperSummit;
-    private final HashMap<Mesh, List<ItemObject>> mMeshMapHelperNormal;
-    private final HashMap<Mesh, List<ItemObject>> mMeshMapHelperAxesMesh;
     private final ArrayList<Mesh> notInit;
 
     private final LightModel lightModel;
@@ -33,9 +30,6 @@ public class Scene {
 
     public Scene(LightModel lightModel) {
         mMeshMap = new HashMap<>();
-        mMeshMapHelperSummit = new HashMap<>();
-        mMeshMapHelperNormal = new HashMap<>();
-        mMeshMapHelperAxesMesh = new HashMap<>();
         notInit = new ArrayList<>();
         this.lightModel = lightModel;
 
@@ -136,9 +130,9 @@ public class Scene {
 
                 lMesh.renderCleanup(shaderProgram);
 
-                lMesh.renderHelperVertices(vertexHelpers, pCamera, shaderManager);
-                lMesh.renderHelperNormals(vertexHelpers, pCamera, shaderManager);
-                lMesh.renderHelperAxes(vertexHelpers, pCamera, shaderManager);
+                lMesh.renderHelperVertices(vertexHelpers, pCamera, shaderManager.fetch("VertexHelper"));
+                lMesh.renderHelperNormals(normalHelpers, pCamera, shaderManager.fetch("NormalHelper"));
+                lMesh.renderHelperAxes(axisHelpers, pCamera, shaderManager.fetch("AxisHelper"));
             }
         }
         /*Clean then remove*/
@@ -147,44 +141,6 @@ public class Scene {
             mMeshMap.remove(lMesh);
         }
 
-    }
-
-    public void renderHelperSummit(Camera pCamera, ShaderManager shaderManager) {
-
-        for (Mesh lMesh : mMeshMapHelperSummit.keySet()) {
-            List<ItemObject> lItems = mMeshMapHelperSummit.get(lMesh);
-            try {
-                lMesh.renderHelperVertices(lItems, pCamera, shaderManager);
-            } catch (Exception e) {
-                System.out.println("Erreur scene vertex Helper Summit");
-            }
-
-        }
-
-    }
-
-    public void renderHelperNormal(Camera pCamera, ShaderManager shaderManager) {
-        for (Mesh lMesh : mMeshMapHelperNormal.keySet()) {
-            List<ItemObject> lItems = mMeshMapHelperNormal.get(lMesh);
-            try {
-                lMesh.renderHelperNormals(lItems, pCamera, shaderManager);
-            } catch (Exception e) {
-                System.out.println("Erreur scene vertex Helper Normal");
-            }
-
-        }
-    }
-
-    public void renderHelperAxesMesh(Camera pCamera, ShaderManager shaderManager) {
-        for (Mesh lMesh : mMeshMapHelperAxesMesh.keySet()) {
-            List<ItemObject> lItems = mMeshMapHelperAxesMesh.get(lMesh);
-            try {
-                lMesh.renderHelperAxes(lItems, pCamera, shaderManager);
-            } catch (Exception e) {
-                System.out.println("Erreur scene vertex Helper AxesMesh");
-            }
-
-        }
     }
 
     /**

@@ -2,11 +2,15 @@ package yaw.engine;
 
 import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
+import yaw.engine.helper.HelperAxesShaders;
+import yaw.engine.helper.HelperNormalsShaders;
+import yaw.engine.helper.HelperVerticesShaders;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Texture;
 import yaw.engine.shader.ShaderManager;
+import yaw.engine.shader.ShaderProgram;
 import yaw.engine.shader.ShaderProgramADS;
 import yaw.engine.skybox.Skybox;
 
@@ -25,9 +29,6 @@ public class GameLoop implements Runnable {
     private Camera mCamera;
     private Vector<Camera> mCamerasList;
     private Renderer mRenderer;
-    private RendererHelperSummit mRendererHelperSummit;
-    private RendererHelperNormal mRendererHelperNormal;
-    private RendererHelperAxesMesh mRendererHelperAxesMesh;
     private Vector<ItemGroup> mItemGroupArrayList;
     private Skybox mSkybox = null;
     private ConcurrentHashMap<String, Texture> mStringTextureConcurrentHashMap;
@@ -86,9 +87,6 @@ public class GameLoop implements Runnable {
 
     public GameLoop() {
         this.mRenderer = new Renderer();
-        this.mRendererHelperSummit = new RendererHelperSummit();
-        this.mRendererHelperNormal = new RendererHelperNormal();
-        this.mRendererHelperAxesMesh = new RendererHelperAxesMesh();
         this.mCamerasList = new Vector<>();
         this.mCamera = new Camera();
         mCamerasList.add(mCamera);
@@ -296,9 +294,6 @@ public class GameLoop implements Runnable {
             synchronized (mScene) {
                 mScene.getLightModel().renderShadowMap(mScene, mCamera, shaderManager);
                 mRenderer.render(mScene, isResized, mCamera, mSkybox, shaderManager);
-                mRendererHelperSummit.render(mScene, mCamera, shaderManager);
-                mRendererHelperNormal.render(mScene, mCamera, shaderManager);
-                mRendererHelperAxesMesh.render(mScene, mCamera, shaderManager);
             }
 
            /*  Rendered with vSync (vertical Synchronization)
@@ -313,6 +308,16 @@ public class GameLoop implements Runnable {
         ShaderProgramADS shaderProgram = new ShaderProgramADS();
         shaderProgram.init();
         shaderManager.register("ADS", shaderProgram);
+        // register helpers
+        ShaderProgram helper = new HelperVerticesShaders();
+        helper.init();
+        shaderManager.register("VertexHelper", helper);
+        helper = new HelperNormalsShaders();
+        helper.init();
+        shaderManager.register("NormalHelper", helper);
+        helper = new HelperAxesShaders();
+        helper.init();
+        shaderManager.register("AxisHelper", helper);
     }
 
     public void installScene(Scene scene) {

@@ -29,6 +29,8 @@ public class ShadowMap {
             super();
         }
 
+        public void init() {}
+
         @Override
         public void setUniform(String uniformName, Material material) {
             // Don't do anything as there is no material

@@ -16,11 +16,9 @@ import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL32.*;
 
 
-public class ShaderProgram {
+public abstract class ShaderProgram {
     private final int mProgramId;
     private final HashMap<String, Integer> mUniformsList = new HashMap<>();
-    protected ShaderCode vs;
-    protected ShaderCode fs;
     private int mVertexShaderId;
     private int mFragmentShaderId;
     private int mGeometryShaderId;
@@ -36,6 +34,8 @@ public class ShaderProgram {
         }
     }
 
+    public abstract void init();
+
     /**
      * Create a vertex type shader
      *
@@ -45,6 +45,9 @@ public class ShaderProgram {
         mVertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER);
     }
 
+    public void createVertexShader(ShaderCode code) {
+        createVertexShader(code.toString());
+    }
     /**
      * Create a fragment shader
      *
@@ -54,6 +57,10 @@ public class ShaderProgram {
         mFragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
     }
 
+    public void createFragmentShader(ShaderCode shaderCode) {
+        createFragmentShader(shaderCode.toString());
+    }
+
     /**
      * Create a geometry shader
      *
@@ -61,6 +68,10 @@ public class ShaderProgram {
      */
     public void createGeometryShader(String shaderCode) {
         mGeometryShaderId = createShader(shaderCode, GL_GEOMETRY_SHADER);
+    }
+
+    public void createGeometryShader(ShaderCode shaderCode) {
+        createGeometryShader(shaderCode.toString());
     }
 
     /**
@@ -407,14 +418,6 @@ public class ShaderProgram {
 
     public int getId() {
         return mProgramId;
-    }
-
-    public String getVs() {
-        return vs.code.toString();
-    }
-
-    public String getFs() {
-        return fs.code.toString();
     }
 
 }
