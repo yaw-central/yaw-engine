@@ -130,9 +130,15 @@ public class Scene {
 
                 lMesh.renderCleanup(shaderProgram);
 
-                lMesh.renderHelperVertices(vertexHelpers, pCamera, shaderManager.fetch("VertexHelper"));
-                lMesh.renderHelperNormals(normalHelpers, pCamera, shaderManager.fetch("NormalHelper"));
-                lMesh.renderHelperAxes(axisHelpers, pCamera, shaderManager.fetch("AxisHelper"));
+                if (!vertexHelpers.isEmpty()) {
+                    lMesh.renderHelperVertices(vertexHelpers, pCamera, shaderManager.fetch("VertexHelper"));
+                }
+                if (!normalHelpers.isEmpty()) {
+                    lMesh.renderHelperNormals(normalHelpers, pCamera, shaderManager.fetch("NormalHelper"));
+                }
+                if (!axisHelpers.isEmpty()) {
+                    lMesh.renderHelperAxes(axisHelpers, pCamera, shaderManager.fetch("AxisHelper"));
+                }
             }
         }
         /*Clean then remove*/

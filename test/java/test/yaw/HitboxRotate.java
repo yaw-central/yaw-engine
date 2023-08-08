@@ -1,6 +1,7 @@
 package test.yaw;
 
 import org.joml.Vector3f;
+import yaw.engine.Scene;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.HitBox;
@@ -8,6 +9,7 @@ import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.mesh.builder.Cuboid;
@@ -79,6 +81,7 @@ public class HitboxRotate implements UpdateCallback {
         Configuration.DEBUG_STREAM.set(true);*/
         //LoggerYAW.getInstance().activateConsoleMode();
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
+        world.installScene(new Scene(new LightModel()));
         //THE WORLD IS NOW INIT IN THE THREAD
         //testing texture here
         /*Float[] f = new Float[]{0.f, 0.f, -2.f};
@@ -117,7 +120,7 @@ public class HitboxRotate implements UpdateCallback {
         //world.sc.add(GroundGenerator.generate(400,400,-2,new Material(new Vector3f(1,1,1))));
 
         /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
-        world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0,0,0)));
+        //world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0,0,0)));
 
 
         HitboxRotate mBb = new HitboxRotate(gr1);

@@ -184,6 +184,8 @@ public class ItemObject extends Item {
         vertexHelpers = false;
     }
 
+    public void toggleVertexHelpers() { vertexHelpers = !vertexHelpers; }
+
     public boolean showNormalHelpers() { return normalHelpers; }
 
     public void enableNormalHelpers() {
@@ -194,6 +196,8 @@ public class ItemObject extends Item {
         normalHelpers = false;
     }
 
+    public void toggleNormalHelpers() { normalHelpers = !normalHelpers; }
+
     public boolean showAxisHelpers() { return axisHelpers; }
 
     public void enableAxisHelpers() {
@@ -203,6 +207,9 @@ public class ItemObject extends Item {
     public void disableAxisHelpers() {
         axisHelpers = false;
     }
+
+    public void toggleAxisHelpers() { axisHelpers = !axisHelpers; }
+
 
     public boolean doesCastShadows() {
         return castShadows;

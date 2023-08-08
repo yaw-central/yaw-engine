@@ -1,10 +1,12 @@
 package test.yaw;
 
+import yaw.engine.Scene;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.HitBox;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.skybox.Skybox;
@@ -70,6 +72,7 @@ public class IncludedHitBoxTest implements UpdateCallback {
         Configuration.DEBUG_STREAM.set(true);*/
         //LoggerYAW.getInstance().activateConsoleMode();
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
+        world.installScene(new Scene(new LightModel()));
         //THE WORLD IS NOW INIT IN THE THREAD
 
 
@@ -93,10 +96,6 @@ public class IncludedHitBoxTest implements UpdateCallback {
         world.getSceneLight().setAmbient(new AmbientLight(0.5f));
 
         //world.sc.add(GroundGenerator.generate(400,400,-2,new Material(new Vector3f(1,1,1))));
-
-        /* A skybox will allow us to set a background to give the illusion that our 3D world is bigger. */
-        world.setSkybox(new Skybox(500, 500, 500, new Vector3f(0,0,0)));
-
 
         IncludedHitBoxTest mBb = new IncludedHitBoxTest(i, j);
         //i.translate(-2,0,0);

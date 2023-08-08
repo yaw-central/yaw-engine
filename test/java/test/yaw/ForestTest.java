@@ -1,10 +1,12 @@
 package test.yaw;
 
 import org.joml.Vector3f;
+import yaw.engine.Scene;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.DirectionalLight;
+import yaw.engine.light.LightModel;
 import yaw.engine.light.ShadowMap;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
@@ -29,6 +31,7 @@ public class ForestTest implements UpdateCallback {
         LoggerYAW.getInstance().activateConsoleMode();
 
         world = new World(0, 0, 800, 600);
+        world.installScene(new Scene(new LightModel()));
         world.getCamera().lookAt(new Vector3f(-1,3,3).add(center), new Vector3f(0,1f,0).add(center), new Vector3f(0,1,0));
 
         world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));

@@ -1,10 +1,12 @@
 package test.yaw;
 
 import org.joml.Math;
+import yaw.engine.Scene;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.*;
 import yaw.engine.mesh.builder.Cuboid;
 
@@ -62,6 +64,7 @@ public class MovingCameraOnZ implements UpdateCallback {
 
     public static void main(String[] args) {
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
+        world.installScene(new Scene(new LightModel()));
 
         float[] f = new float[]{0.f, 0.f, 0.f};
 

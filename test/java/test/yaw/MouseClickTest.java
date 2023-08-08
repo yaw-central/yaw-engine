@@ -3,9 +3,11 @@ package test.yaw;
 import org.joml.Vector3f;
 import yaw.engine.Mouse3DClickCallBack;
 import yaw.engine.RayCaster;
+import yaw.engine.Scene;
 import yaw.engine.World;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.HitBox;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.DeprecatedMeshBuilder;
 
@@ -70,7 +72,7 @@ public class MouseClickTest implements Mouse3DClickCallBack {
 
     public static void main(String[] args){
         World world = new World(0, 0, 800, 600);
-
+        world.installScene(new Scene(new LightModel()));
 
         HitBox h = world.createHitBox("cube", 5f, 0f, -25f, 4f, 1, 1, 1, true);
         HitBox h2 = world.createHitBox("cube2", -5f, 0f, -25f, 4f, 1, 1, 1, true);

@@ -50,9 +50,6 @@ public class Mesh {
     //strategy when we draw the elements
     private MeshDrawingStrategy drawingStrategy;
     private boolean drawADS;
-    private boolean showHelperVertices;
-    private boolean showHelperNormals;
-    private boolean showHelperAxes;
 
     /**
      * Construct a Mesh with a default (solid, unicolor) material
@@ -72,9 +69,6 @@ public class Mesh {
         this.material = material;
         this.attributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
-        this.showHelperVertices = false;
-        this.showHelperNormals = false;
-        this.showHelperAxes = false;
         this.drawADS = false;
     }
 
@@ -167,6 +161,7 @@ public class Mesh {
     }
 
     public void renderHelperVertices(List<ItemObject> pItems, Camera pCamera, ShaderProgram helperProgram) {
+        System.out.println("Vertex helpers : number to draw = " + pItems.size());
         //initRender
         initRender();
         helperProgram.bind();
@@ -308,38 +303,6 @@ public class Mesh {
 
     public void setDrawingStrategy(MeshDrawingStrategy pDrawingStrategy) {
         drawingStrategy = pDrawingStrategy;
-    }
-
-    public boolean showHelperVertices() {
-        return showHelperVertices;
-    }
-
-    public void toggleHelperVertices(boolean bool) {
-        showHelperVertices = bool;
-    }
-
-    public boolean showHelperNormals() {
-        return showHelperNormals;
-    }
-
-    public void toggleHelperNormals(boolean bool) {
-        showHelperNormals = bool;
-    }
-
-    public boolean getDrawAds() {
-        return drawADS;
-    }
-
-    public void setDrawAds(boolean bool) {
-        drawADS = bool;
-    }
-
-    public boolean showHelperAxes() {
-        return showHelperAxes;
-    }
-
-    public void toggleHelperAxes(boolean bool) {
-        showHelperAxes = bool;
     }
 
     public Geometry getGeometry() {

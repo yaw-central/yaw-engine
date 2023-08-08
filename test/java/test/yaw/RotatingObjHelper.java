@@ -25,9 +25,9 @@ public class RotatingObjHelper implements UpdateCallback {
     private ItemObject cube ;
     private float speed = 0.1f;
 
-    public boolean actifSummit = false;
-    public boolean actifNormal = false;
-    public boolean actifAxesMesh = false;
+    public boolean vertexHelpersEnabled = false;
+    public boolean normalHelpersEnabled = false;
+    public boolean axisHelpersEnabled = false;
 
     public RotatingObjHelper(ItemObject cube) {
         this.cube = cube;
@@ -69,7 +69,6 @@ public class RotatingObjHelper implements UpdateCallback {
 
 
     public static void main(String[] args) {
-
         World world = new World(0, 0, 800, 600);
         world.installScene(new Scene(new LightModel()));
         world.getSceneLight().setSun(new DirectionalLight());
@@ -80,7 +79,7 @@ public class RotatingObjHelper implements UpdateCallback {
         try {
             objLoader.parseFromResource("/resources/models/icosphere.obj");
         } catch (IOException e) {
-            System.out.println("Errror : " + e.getMessage());
+            System.out.println("Error : " + e.getMessage());
             System.exit(1);
         }
         Geometry geom = objLoader.getScene().getGeometryByIndex(0).build();
@@ -101,31 +100,15 @@ public class RotatingObjHelper implements UpdateCallback {
             public void sendKey(int key, int scancode, int action, int mods) {
                 if (action == GLFW_PRESS)
                     switch (key){
-                        case GLFW_KEY_S:
-                            rObj.actifSummit = !rObj.actifSummit;
-                            obji.getMesh().toggleHelperVertices(rObj.actifSummit);
+                        case GLFW_KEY_V:
+                            obji.toggleVertexHelpers();
                             break;
                         case GLFW_KEY_N:
-                            rObj.actifNormal = !rObj.actifNormal;
-                            obji.getMesh().toggleHelperNormals(rObj.actifNormal);
+                            obji.toggleNormalHelpers();
                             break;
                         case GLFW_KEY_Q :
-                            rObj.actifAxesMesh = !rObj.actifAxesMesh;
-                            obji.getMesh().toggleHelperAxes(rObj.actifAxesMesh);
+                            obji.toggleAxisHelpers();
                             break;
-                        case GLFW_KEY_H:
-                            if (rObj.actifNormal == rObj.actifSummit){
-                                rObj.actifSummit = !rObj.actifSummit;
-                                rObj.actifNormal = !rObj.actifNormal;
-                                obji.getMesh().toggleHelperVertices(rObj.actifSummit);
-                                obji.getMesh().toggleHelperNormals(rObj.actifNormal);
-
-                            } else {
-                                rObj.actifSummit = true;
-                                rObj.actifNormal = true;
-                                obji.getMesh().toggleHelperVertices(rObj.actifSummit);
-                                obji.getMesh().toggleHelperNormals(rObj.actifNormal);
-                            }
                     }
             }
         };

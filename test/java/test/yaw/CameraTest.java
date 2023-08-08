@@ -1,8 +1,10 @@
 package test.yaw;
 
+import yaw.engine.Scene;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.LightModel;
 import yaw.engine.light.SpotLight;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.DeprecatedMeshBuilder;
@@ -22,6 +24,7 @@ public class CameraTest implements UpdateCallback {
     public CameraTest() {
 
         world = new World(0, 0, 800, 600);
+        world.installScene(new Scene(new LightModel()));
         world.getCamera().setPosition(0,0,5);
 
         //world.getSceneLight().getSpotTable()[0] = new SpotLight(0, 255, 0, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -5, 10f);
