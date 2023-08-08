@@ -1,5 +1,6 @@
 package yaw.engine.shader;
 
+import yaw.engine.light.SceneLight;
 import yaw.engine.mesh.Material;
 
 public class ShaderProgramADS extends ShaderProgram {
@@ -34,6 +35,34 @@ public class ShaderProgramADS extends ShaderProgram {
 
         setUniform(uniformName + ".reflectance", material.getReflectance());
     }
+
+    public void init(SceneLight scenelight) {
+         /* Initialization of the shader program. */
+        createVertexShader(vertShader.SHADER_STRING);
+            mShaderProgram.createFragmentShader(fragShader.SHADER_STRING);
+
+            /* Binds the code and checks that everything has been done correctly. */
+            mShaderProgram.link();
+
+            mShaderProgram.createUniform("projectionMatrix");
+            mShaderProgram.createUniform("viewMatrix");
+            mShaderProgram.createUniform("modelMatrix");
+
+            /* Initialization of the shadow map matrix uniform. */
+            mShaderProgram.createUniform("directionalShadowMatrix");
+
+            /* Create uniform for material. */
+            mShaderProgram.createMaterialUniform("material");
+            mShaderProgram.createUniform("texture_sampler");
+            /* Initialization of the light's uniform. */
+            mShaderProgram.createUniform("camera_pos");
+            mShaderProgram.createUniform("specularPower");
+            mShaderProgram.createUniform("ambientLight");
+            mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
+            mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
+            mShaderProgram.createDirectionalLightUniform("directionalLight");
+            mShaderProgram.createUniform("shadowMapSampler");
+            mShaderProgram.createUniform("bias");
 }
 
 

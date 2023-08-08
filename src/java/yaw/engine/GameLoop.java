@@ -19,7 +19,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
  *
  * */
 public class GameLoop implements Runnable {
-    private final SceneVertex mSceneVertex;
+    private SceneVertex mSceneVertex;
     private final Vector<Skybox> mSkyboxToBeRemoved;
     private Camera mCamera;
     private Vector<Camera> mCamerasList;
@@ -308,14 +308,32 @@ public class GameLoop implements Runnable {
         }
     }
 
+    public void installScene(SceneVertex sceneVertex) {
+        if (sceneVertex != null) {
+            throw new Error("Scene already installed, uninstall first.");
+        }
+        if (shaderManager != null) {
+            throw new Error("shaderManager non-null (please report)");
+        }
+        shaderManager = new ShaderManager();
+        mSceneVertex = sceneVertex;
+    }
+
+    private void cleanupScene() {
+        mSceneVertex.cleanUp(shaderManager);
+        shaderManager.cleanUp();
+        mSceneVertex = null;
+        shaderManager = null;
+    }
+
     /**
      * Deallocates the resources used by the world
      */
     private void cleanup() {
         /* Deallocations renderer, SceneVertex and Skybox. */
         //mRenderer.cleanUp();
-        mSceneVertex.cleanUp(shaderManager);
-        shaderManager.cleanUp();
+        cleanupScene();
+
         if (mSkybox != null) mSkybox.cleanUp();
         /* Deallocation of the window's resources. */
         Window.cleanUp();
