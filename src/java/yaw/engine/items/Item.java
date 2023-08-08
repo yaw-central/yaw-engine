@@ -165,6 +165,7 @@ public abstract class Item {
     public abstract void rotateXYZAround(float angleX, float angleY, float angleZ, Vector3f center) ;
 
 
+
     // XXX : use this ?
     //public abstract void repelBy(Vector3f center, float dist);
 

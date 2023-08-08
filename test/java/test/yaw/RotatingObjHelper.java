@@ -1,15 +1,11 @@
 package test.yaw;
 
 import org.joml.Vector3f;
-import yaw.engine.Input;
-import yaw.engine.InputCallback;
-import yaw.engine.UpdateCallback;
-import yaw.engine.World;
+import yaw.engine.*;
 import yaw.engine.geom.Geometry;
-import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.DirectionalLight;
-import yaw.engine.mesh.Material;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 import yaw.engine.resources.ObjLoader;
@@ -75,6 +71,7 @@ public class RotatingObjHelper implements UpdateCallback {
     public static void main(String[] args) {
 
         World world = new World(0, 0, 800, 600);
+        world.installScene(new Scene(new LightModel()));
         world.getSceneLight().setSun(new DirectionalLight());
         //world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
         world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
@@ -106,28 +103,28 @@ public class RotatingObjHelper implements UpdateCallback {
                     switch (key){
                         case GLFW_KEY_S:
                             rObj.actifSummit = !rObj.actifSummit;
-                            obji.getMesh().setDrawHelperSummit(rObj.actifSummit);
+                            obji.getMesh().toggleHelperVertices(rObj.actifSummit);
                             break;
                         case GLFW_KEY_N:
                             rObj.actifNormal = !rObj.actifNormal;
-                            obji.getMesh().setDrawHelperNormal(rObj.actifNormal);
+                            obji.getMesh().toggleHelperNormals(rObj.actifNormal);
                             break;
                         case GLFW_KEY_Q :
                             rObj.actifAxesMesh = !rObj.actifAxesMesh;
-                            obji.getMesh().setDrawHelperAxesMesh(rObj.actifAxesMesh);
+                            obji.getMesh().toggleHelperAxes(rObj.actifAxesMesh);
                             break;
                         case GLFW_KEY_H:
                             if (rObj.actifNormal == rObj.actifSummit){
                                 rObj.actifSummit = !rObj.actifSummit;
                                 rObj.actifNormal = !rObj.actifNormal;
-                                obji.getMesh().setDrawHelperSummit(rObj.actifSummit);
-                                obji.getMesh().setDrawHelperNormal(rObj.actifNormal);
+                                obji.getMesh().toggleHelperVertices(rObj.actifSummit);
+                                obji.getMesh().toggleHelperNormals(rObj.actifNormal);
 
                             } else {
                                 rObj.actifSummit = true;
                                 rObj.actifNormal = true;
-                                obji.getMesh().setDrawHelperSummit(rObj.actifSummit);
-                                obji.getMesh().setDrawHelperNormal(rObj.actifNormal);
+                                obji.getMesh().toggleHelperVertices(rObj.actifSummit);
+                                obji.getMesh().toggleHelperNormals(rObj.actifNormal);
                             }
                     }
             }

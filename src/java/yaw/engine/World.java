@@ -4,11 +4,10 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
 import yaw.engine.geom.Geometry;
-import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.items.HitBox;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
-import yaw.engine.light.SceneLight;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.Texture;
@@ -24,9 +23,10 @@ import java.util.Vector;
  *
  */
 public class World  {
-    private MainLoop mainLoop;
+    private GameLoop gameLoop;
     private Thread mloopThread = null;
     private boolean isRunning = false;
+    private boolean sceneInstalled = false;
 
     /**
      * Initializes the elements to create the window
@@ -38,7 +38,7 @@ public class World  {
      * @param pInitVSYNC  initVSYNC
      */
     public World(int pInitX, int pInitY, int pInitWidth, int pInitHeight, boolean pInitVSYNC) {
-        this.mainLoop = new MainLoop(pInitX, pInitY, pInitWidth, pInitHeight, pInitVSYNC);
+        this.gameLoop = new GameLoop(pInitX, pInitY, pInitWidth, pInitHeight, pInitVSYNC);
     }
 
     /**
@@ -50,23 +50,29 @@ public class World  {
      * @param pInitHeight initHeight
      */
     public World(int pInitX, int pInitY, int pInitWidth, int pInitHeight) {
-        this.mainLoop = new MainLoop(pInitX, pInitY, pInitWidth, pInitHeight);
+        this.gameLoop = new GameLoop(pInitX, pInitY, pInitWidth, pInitHeight);
     }
 
     public World() {
-        this.mainLoop = new MainLoop();
+        this.gameLoop = new GameLoop();
     }
 
     public void launchAsync() {
+        if (!sceneInstalled) {
+            throw new Error("Scene is not installed, cannot launch.");
+        }
         if(isRunning) {
             throw new Error("World is already running (multiple calls to launch...() method)");
         }
         isRunning = true;
-        mloopThread = new Thread(mainLoop);
+        mloopThread = new Thread(gameLoop);
         mloopThread.start();
     }
 
     public void launchWithContinuation(Runnable cont) {
+        if (!sceneInstalled) {
+            throw new Error("Scene is not installed, cannot launch.");
+        }
         if(isRunning) {
             throw new Error("World is already running (multiple calls to launch...() method)");
         }
@@ -74,16 +80,19 @@ public class World  {
         mloopThread = Thread.currentThread();
         Thread contThread = new Thread(cont);
         contThread.start();
-        mainLoop.run();
+        gameLoop.run();
     }
 
     public void launchSync() {
+        if (!sceneInstalled) {
+            throw new Error("Scene is not installed, cannot launch.");
+        }
         if(isRunning) {
             throw new Error("World is already running (multiple calls to launch...() method)");
         }
         isRunning = true;
         mloopThread = Thread.currentThread();
-        mainLoop.run();
+        gameLoop.run();
     }
 
     /**
@@ -91,7 +100,7 @@ public class World  {
      * Stop the game loop and stop the thread that manage the world.
      */
     public void terminate() throws InterruptedException {
-        mainLoop.close();
+        gameLoop.close();
     }
 
     public void waitFortermination() {
@@ -101,6 +110,11 @@ public class World  {
             e.printStackTrace();
         }
 
+    }
+
+    public void installScene(Scene scene) {
+        gameLoop.installScene(scene);
+        sceneInstalled = true;
     }
 
     /**
@@ -118,7 +132,7 @@ public class World  {
         ItemObject lItem = new ItemObject(id, new Vector3f(x, y, z)
                 , new Quaternionf(), pScale, pMesh);
 
-        mainLoop.addToScene(lItem);
+        gameLoop.addToScene(lItem);
         return lItem;
     }
 
@@ -145,7 +159,7 @@ public class World  {
         
         //Texture part
         if (pTextureName != null && !(pTextureName.matches("Material.*") || pTextureName.isEmpty())) {
-            Texture lTexture = mainLoop.fetchTexture(pTextureName);
+            Texture lTexture = gameLoop.fetchTexture(pTextureName);
             if (lTexture == null) {
                 lTexture = new Texture(pTextureName);
             } else {
@@ -195,7 +209,7 @@ public class World  {
      */
     public HitBox createHitBox(String id, float x, float y, float z, float pScale, float xLength, float yLength, float zLength, boolean isVisible){
         HitBox hb = new HitBox(id, new Vector3f(x, y, z), new Quaternionf(), pScale, xLength, yLength, zLength, isVisible);
-        mainLoop.addToScene(hb);
+        gameLoop.addToScene(hb);
         return hb;
 
     }
@@ -206,7 +220,7 @@ public class World  {
      * @param pItem the item
      */
     public void removeItem(ItemObject pItem) {
-        mainLoop.removeFromScene(pItem);
+        gameLoop.removeFromScene(pItem);
     }
 
     public boolean isInCollision(HitBox hb1, HitBox hb2) {
@@ -214,16 +228,16 @@ public class World  {
     }
 
     public void registerUpdateCallback(UpdateCallback cb) {
-        mainLoop.registerUpdateCallback(cb);
+        gameLoop.registerUpdateCallback(cb);
     }
 
     public void registerInputCallback(InputCallback callback) {
-        mainLoop.registerInputCallback(callback);
+        gameLoop.registerInputCallback(callback);
     }
 
     //3D click
     public void registerMouseCallback(Mouse3DClickCallBack callback) {
-        mainLoop.registerMouse3DClickCallBack(callback);
+        gameLoop.registerMouse3DClickCallBack(callback);
     }
 
 
@@ -233,7 +247,7 @@ public class World  {
      * Gets an empty camera list
      */
     public void clearCameras() {
-        mainLoop.clearCameras();
+        gameLoop.clearCameras();
     }
 
     /**
@@ -243,19 +257,19 @@ public class World  {
      * @param pCamera camera
      */
     public void addCamera(int pIndex, Camera pCamera) {
-        mainLoop.addCamera(pIndex, pCamera);
+        gameLoop.addCamera(pIndex, pCamera);
     }
 
     public Camera getCamera() {
-        return mainLoop.getCamera();
+        return gameLoop.getCamera();
     }
 
     public void setCamera(Camera pCamera) {
-        mainLoop.setCamera(pCamera);
+        gameLoop.setCamera(pCamera);
     }
 
     public Vector<Camera> getCamerasList() {
-        return mainLoop.getCamerasList();
+        return gameLoop.getCamerasList();
     }
 
     /**
@@ -264,7 +278,7 @@ public class World  {
      * @return group of item
      */
     public ItemGroup createGroup(String id) {
-        return mainLoop.createGroup(id);
+        return gameLoop.createGroup(id);
     }
 
     /**
@@ -273,15 +287,18 @@ public class World  {
      * @param pGroup the specified group
      */
     public void removeGroup(ItemGroup pGroup) {
-        mainLoop.removeGroup(pGroup);
+        gameLoop.removeGroup(pGroup);
     }
 
     public Vector<ItemGroup> getItemGroupArrayList() {
-        return mainLoop.getItemGroupArrayList();
+        return gameLoop.getItemGroupArrayList();
     }
 
-    public SceneLight getSceneLight() {
-        return mainLoop.getSceneLight();
+    public LightModel getSceneLight() {
+        if (!sceneInstalled) {
+            throw new Error("Scene is not installed");
+        }
+        return gameLoop.getSceneLight();
     }
 
     /**
@@ -300,11 +317,11 @@ public class World  {
     }
 
     public void removeSkybox() {
-        mainLoop.removeSkybox();
+        gameLoop.removeSkybox();
     }
 
     public Skybox getSkybox() {
-        return mainLoop.getSkybox();
+        return gameLoop.getSkybox();
     }
 
     /**
@@ -314,7 +331,7 @@ public class World  {
      * @param pSkybox skybox
      */
     public void setSkybox(Skybox pSkybox) {
-        mainLoop.setSkybox(pSkybox);
+        gameLoop.setSkybox(pSkybox);
     }
 
 }

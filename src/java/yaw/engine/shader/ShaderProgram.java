@@ -1,91 +1,92 @@
 package yaw.engine.shader;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
 import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.PointLight;
 import yaw.engine.light.SpotLight;
 import yaw.engine.mesh.Material;
-import yaw.engine.util.LoggerYAW;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL32.*;
-import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 
-public class ShaderProgram {
-
+public abstract class ShaderProgram {
     private final int mProgramId;
     private final HashMap<String, Integer> mUniformsList = new HashMap<>();
     private int mVertexShaderId;
     private int mFragmentShaderId;
     private int mGeometryShaderId;
 
-    protected ShaderCode vs;
-    protected ShaderCode fs;
-
 
     /**
-     * Constructor throws exception if the program could not create the shader
-     *
-     * @throws Exception the exception
+     * Create a new shader program
      */
-    public ShaderProgram() throws Exception {
+    public ShaderProgram() {
         mProgramId = glCreateProgram();
         if (!glIsProgram(mProgramId)) {
-            throw new Exception("Could not create Shader");
+            throw new Error("Could not create Shader program");
         }
     }
+
+    public abstract void init();
 
     /**
      * Create a vertex type shader
      *
      * @param shaderCode source code for the shader
-     * @throws Exception the exception
      */
-    public void createVertexShader(String shaderCode) throws Exception {
+    public void createVertexShader(String shaderCode) {
         mVertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER);
     }
 
+    public void createVertexShader(ShaderCode code) {
+        createVertexShader(code.toString());
+    }
     /**
      * Create a fragment shader
      *
      * @param shaderCode source code for the shader
-     * @throws Exception the exception \o
      */
-    public void createFragmentShader(String shaderCode) throws Exception {
+    public void createFragmentShader(String shaderCode) {
         mFragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
+    }
+
+    public void createFragmentShader(ShaderCode shaderCode) {
+        createFragmentShader(shaderCode.toString());
     }
 
     /**
      * Create a geometry shader
      *
      * @param shaderCode source code for the shader
-     * @throws Exception the exception \o
      */
-    public void createGeometryShader(String shaderCode) throws Exception {
+    public void createGeometryShader(String shaderCode) {
         mGeometryShaderId = createShader(shaderCode, GL_GEOMETRY_SHADER);
+    }
+
+    public void createGeometryShader(ShaderCode shaderCode) {
+        createGeometryShader(shaderCode.toString());
     }
 
     /**
      * Links the program object.
      *
-     * @throws Exception the exception \o/
      */
-    public void link() throws Exception {
+    public void link()  {
         glLinkProgram(mProgramId);
         if (glGetProgrami(mProgramId, GL_LINK_STATUS) == 0) {
-            throw new Exception("Error linking Shader code: " + glGetShaderInfoLog(mProgramId, 1024));
+            throw new Error("Error linking Shader code: " + glGetShaderInfoLog(mProgramId, 1024));
         }
 
         glValidateProgram(mProgramId);
         if (glGetProgrami(mProgramId, GL_VALIDATE_STATUS) == 0) {
-            throw new Exception("Error validating Shader code: " + glGetShaderInfoLog(mProgramId, 1024));
+            throw new Error("Error validating Shader code: " + glGetShaderInfoLog(mProgramId, 1024));
         }
 
     }
@@ -106,18 +107,18 @@ public class ShaderProgram {
         unbind();
         if (mProgramId != 0) {
             if (mVertexShaderId != 0) {
-             /*   Detaches a shader object from a program object to which it is attached*/
+                /*   Detaches a shader object from a program object to which it is attached*/
                 glDetachShader(mProgramId, mVertexShaderId);
             }
             if (mFragmentShaderId != 0) {
                 /*Detaches a shader object from a program object to which it is attached*/
                 glDetachShader(mProgramId, mFragmentShaderId);
             }
-            if(mGeometryShaderId != 0){
+            if (mGeometryShaderId != 0) {
                 /*Detaches a shader object from a program object to which it is attached*/
                 glDetachShader(mProgramId, mGeometryShaderId);
             }
-           /*Deletes a program object*/
+            /*Deletes a program object*/
             glDeleteProgram(mProgramId);
         }
     }
@@ -136,10 +137,8 @@ public class ShaderProgram {
      *
      * @param uniformName uniform name
      * @param size        size
-     * @throws Exception the exception
      */
-    public void createPointLightListUniform(String uniformName, int size) throws Exception {
-        LoggerYAW.logOpenGl();
+    public void createPointLightListUniform(String uniformName, int size)  {
         for (int i = 0; i < size; i++) {
             createPointLightUniform(uniformName + "[" + i + "]");
         }
@@ -150,13 +149,11 @@ public class ShaderProgram {
      *
      * @param uniformName Points to a null terminated string containing the name of the uniform variable whose location is to be queried.
      * @return the location
-     * @throws Exception the exception
      */
-    public int createUniform(String uniformName) throws Exception {
+    public int createUniform(String uniformName) {
         int res = glGetUniformLocation(mProgramId, uniformName);
         if (res < 0) {
-
-            throw new Exception("Uniform creation error: " + uniformName);
+            throw new Error("Uniform creation error: " + uniformName);
         }
         mUniformsList.put(uniformName, res);
         return res;
@@ -167,9 +164,8 @@ public class ShaderProgram {
      *
      * @param uniformName uniform name
      * @param size        the size
-     * @throws Exception the exception
      */
-    public void createSpotLightUniformList(String uniformName, int size) throws Exception {
+    public void createSpotLightUniformList(String uniformName, int size) {
         for (int i = 0; i < size; i++) {
             createSpotLightUniform(uniformName + "[" + i + "]");
         }
@@ -179,9 +175,8 @@ public class ShaderProgram {
      * Create uniform for each attribute of the directional light
      *
      * @param uniformName uniform name
-     * @throws Exception the exception
      */
-    public void createDirectionalLightUniform(String uniformName) throws Exception {
+    public void createDirectionalLightUniform(String uniformName) {
         createUniform(uniformName + ".color");
         createUniform(uniformName + ".direction");
         createUniform(uniformName + ".intensity");
@@ -191,9 +186,8 @@ public class ShaderProgram {
      * Create uniform for each attribute of the material
      *
      * @param uniformName uniform name
-     * @throws Exception the exception
      */
-    public void createMaterialUniform(String uniformName) throws Exception {
+    public void createMaterialUniform(String uniformName) {
         createUniform(uniformName + ".color");
         createUniform(uniformName + ".hasTexture");
         createUniform(uniformName + ".reflectance");
@@ -234,7 +228,7 @@ public class ShaderProgram {
 
         setUniform(uniformName + ".color", material.getColor());
 
-        setUniform(uniformName + ".hasTexture", (int) (material.isTextured() ? 1 : 0));
+        setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
 
         setUniform(uniformName + ".reflectance", material.getReflectance());
     }
@@ -347,15 +341,13 @@ public class ShaderProgram {
      *                   VERTEX_SHADER	FRAGMENT_SHADER	GEOMETRY_SHADER	TESS_CONTROL_SHADER
      *                   TESS_EVALUATION_SHADER
      * @return the id of the shader
-     * @throws Exception the exception o/
      */
-    private int createShader(String shaderCode, int shaderType) throws Exception {
+    private int createShader(String shaderCode, int shaderType) {
         /*the shader object whose source code is to be replaced*/
         int shaderId = glCreateShader(shaderType);
-        System.out.println(glGetShaderInfoLog(shaderId));
         /*can't use glIsShader here because it alwayse return false and we don't know why */
         if (shaderId == GL_FALSE) {
-            throw new Exception("Error creating shader. Code: " + shaderId);
+            throw new Error("Error creating shader. Code: shader id = " + shaderId + "\n ==> " + glGetShaderInfoLog(shaderId));
         }
         /*Sets the source code in shader to the source code in the array of strings specified by strings.*/
         glShaderSource(shaderId, shaderCode);
@@ -363,7 +355,7 @@ public class ShaderProgram {
         glCompileShader(shaderId);
 
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == GL_FALSE) {
-            throw new Exception("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
+            throw new Error("Error compiling Shader code: shader id = " + shaderId + "\n ==>" + glGetShaderInfoLog(shaderId, 1024));
         }
 
         /*void function */
@@ -376,9 +368,8 @@ public class ShaderProgram {
      * Create uniform for each attribute of the point light
      *
      * @param uniformName uniform name
-     * @throws Exception the exception
      */
-    private void createPointLightUniform(String uniformName) throws Exception {
+    private void createPointLightUniform(String uniformName) {
         createUniform(uniformName + ".color");
         createUniform(uniformName + ".position");
         createUniform(uniformName + ".intensity");
@@ -391,9 +382,8 @@ public class ShaderProgram {
      * Create uniform for each attribute of the spot light
      *
      * @param uniformName uniform name
-     * @throws Exception the exception
      */
-    private void createSpotLightUniform(String uniformName) throws Exception {
+    private void createSpotLightUniform(String uniformName) {
         createPointLightUniform(uniformName + ".pl");
         createUniform(uniformName + ".conedir");
         createUniform(uniformName + ".cutoff");
@@ -428,14 +418,6 @@ public class ShaderProgram {
 
     public int getId() {
         return mProgramId;
-    }
-
-    public String getVs() {
-        return vs.code.toString();
-    }
-
-    public String getFs(){
-        return fs.code.toString();
     }
 
 }

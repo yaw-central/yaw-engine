@@ -1,6 +1,7 @@
 package yaw.engine.light;
 
 import org.joml.Vector3f;
+import yaw.engine.shader.ShaderProgram;
 
 /**
 * Point light is a type of light models a light source that’s emitted uniformly form a point in space in all directions.
@@ -136,6 +137,13 @@ public class PointLight {
     public void setQuadraticAtt(float att){
 	this.mQuadraticAtt=att;
     }
-	
-	
+
+    private void createPointLightUniform(ShaderProgram shader, String uniformName) {
+        shader.createUniform(uniformName + "pointLights.color");
+        shader.createUniform(uniformName + ".position");
+        shader.createUniform(uniformName + ".intensity");
+        shader.createUniform(uniformName + ".att_constant");
+        shader.createUniform(uniformName + ".att_linear");
+        shader.createUniform(uniformName + ".att_exponent");
+    }
 }

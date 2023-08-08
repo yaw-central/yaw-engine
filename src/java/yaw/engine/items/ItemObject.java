@@ -15,6 +15,10 @@ public class ItemObject extends Item {
     /** The transformation matrix to world coordinates */
     private Matrix4f worldMatrix;
 
+    private boolean vertexHelpers;
+    private boolean normalHelpers;
+    private boolean axisHelpers;
+
     private boolean castShadows = true;
 
     public ItemObject(String id, Vector3f position, Quaternionf orientation, float scale, Mesh mesh){
@@ -22,6 +26,9 @@ public class ItemObject extends Item {
         this.mesh= mesh;
         worldMatrix = new Matrix4f();
         invalidate();
+        vertexHelpers = false;
+        normalHelpers = false;
+        axisHelpers = false;
     }
 
     public void buildWorldMatrix() {
@@ -167,6 +174,35 @@ public class ItemObject extends Item {
         }
     }
 
+    public boolean showVertexHelpers() { return vertexHelpers; }
+
+    public void enableVertexHelpers() {
+        vertexHelpers = true;
+    }
+
+    public void disableVertexHelpers() {
+        vertexHelpers = false;
+    }
+
+    public boolean showNormalHelpers() { return normalHelpers; }
+
+    public void enableNormalHelpers() {
+        normalHelpers = true;
+    }
+
+    public void disableNormalHelpers() {
+        normalHelpers = false;
+    }
+
+    public boolean showAxisHelpers() { return axisHelpers; }
+
+    public void enableAxisHelpers() {
+        axisHelpers = true;
+    }
+
+    public void disableAxisHelpers() {
+        axisHelpers = false;
+    }
 
     public boolean doesCastShadows() {
         return castShadows;
@@ -175,4 +211,6 @@ public class ItemObject extends Item {
     public void setCastShadows(boolean castShadows) {
         this.castShadows = castShadows;
     }
+
+
 }

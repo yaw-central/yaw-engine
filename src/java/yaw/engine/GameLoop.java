@@ -2,11 +2,16 @@ package yaw.engine;
 
 import org.joml.Vector3f;
 import yaw.engine.camera.Camera;
+import yaw.engine.helper.HelperAxesShaders;
+import yaw.engine.helper.HelperNormalsShaders;
+import yaw.engine.helper.HelperVerticesShaders;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
-import yaw.engine.light.SceneLight;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Texture;
 import yaw.engine.shader.ShaderManager;
+import yaw.engine.shader.ShaderProgram;
+import yaw.engine.shader.ShaderProgramADS;
 import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
@@ -18,16 +23,12 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
  * This the main loop controlled by the World facade.
  *
  * */
-public class MainLoop implements Runnable {
-    private final SceneVertex mSceneVertex;
+public class GameLoop implements Runnable {
+    private Scene mScene;
     private final Vector<Skybox> mSkyboxToBeRemoved;
     private Camera mCamera;
     private Vector<Camera> mCamerasList;
     private Renderer mRenderer;
-    private RendererHelperSummit mRendererHelperSummit;
-    private RendererHelperNormal mRendererHelperNormal;
-    private RendererHelperAxesMesh mRendererHelperAxesMesh;
-    private SceneLight mSceneLight;
     private Vector<ItemGroup> mItemGroupArrayList;
     private Skybox mSkybox = null;
     private ConcurrentHashMap<String, Texture> mStringTextureConcurrentHashMap;
@@ -63,10 +64,9 @@ public class MainLoop implements Runnable {
      * @param pInitHeight initHeight
      * @param pInitVSYNC  initVSYNC
      */
-    public MainLoop(int pInitX, int pInitY, int pInitWidth, int pInitHeight, boolean pInitVSYNC) {
+    public GameLoop(int pInitX, int pInitY, int pInitWidth, int pInitHeight, boolean pInitVSYNC) {
         this(pInitX, pInitY, pInitWidth, pInitHeight);
         this.initVSYNC = pInitVSYNC;
-        this.initialized = false;
     }
 
     /**
@@ -77,7 +77,7 @@ public class MainLoop implements Runnable {
      * @param pInitWidth  initWidth
      * @param pInitHeight initHeight
      */
-    public MainLoop(int pInitX, int pInitY, int pInitWidth, int pInitHeight) {
+    public GameLoop(int pInitX, int pInitY, int pInitWidth, int pInitHeight) {
         this();
         this.initX = pInitX;
         this.initY = pInitY;
@@ -85,31 +85,28 @@ public class MainLoop implements Runnable {
         this.initHeight = pInitHeight;
     }
 
-    public MainLoop() {
+    public GameLoop() {
         this.mRenderer = new Renderer();
-        this.mRendererHelperSummit = new RendererHelperSummit();
-        this.mRendererHelperNormal = new RendererHelperNormal();
-        this.mRendererHelperAxesMesh = new RendererHelperAxesMesh();
         this.mCamerasList = new Vector<>();
         this.mCamera = new Camera();
         mCamerasList.add(mCamera);
-        this.mSceneVertex = new SceneVertex();
-        this.mSceneLight = new SceneLight();
+        this.mScene = null;
         this.mItemGroupArrayList = new Vector<>();
         this.mSkyboxToBeRemoved = new Vector<>();
-        this.mLoop = true;
+        this.mLoop = false;
         this.initVSYNC = true;
         this.mStringTextureConcurrentHashMap = new ConcurrentHashMap<>();
         this.updateCallback = null;
         this.inputCallback = null;
+        initialized = false;
     }
 
     /* package */ synchronized void addToScene(ItemObject itemObj) {
-        mSceneVertex.add(itemObj);
+        mScene.add(itemObj);
     }
 
     /* package */ synchronized void removeFromScene(ItemObject pItem) {
-        mSceneVertex.removeItem(pItem);
+        mScene.removeItem(pItem);
     }
 
     /* package */ synchronized ItemGroup createGroup(String id) {
@@ -127,8 +124,8 @@ public class MainLoop implements Runnable {
         return mItemGroupArrayList;
     }
 
-    /* package */ synchronized SceneLight getSceneLight() {
-        return mSceneLight;
+    /* package */ synchronized LightModel getSceneLight() {
+        return mScene.getLightModel();
     }
 
     /* package */ synchronized Texture fetchTexture(String textureName) {
@@ -251,7 +248,7 @@ public class MainLoop implements Runnable {
         if(mouseCallback != null) {
             Window.getGLFWMouseCallback().registerMouseCallback(mouseCallback);
         }
-        this.shaderManager = new ShaderManager();
+        initShaderManager();
         initialized = true;
     }
 
@@ -261,6 +258,7 @@ public class MainLoop implements Runnable {
         double dt = 0.01; // Update Rate: 1 ~= 2 fps | 0.001 ~= 1000 fps
         double beforeTime = glfwGetTime();
         double lag = 0d;
+        mLoop = true;
         while (!Window.windowShouldClose() && mLoop) { /* Check if the window has not been closed. */
             double nowTime = glfwGetTime();
             double framet = nowTime - beforeTime;
@@ -293,12 +291,9 @@ public class MainLoop implements Runnable {
 
            /*  Input of critical section, allows to protect the creation of our logic of Game .
                1 Maximum thread in Synchronize -> mutual exclusion.*/
-            synchronized (mSceneVertex) {
-                mSceneLight.renderShadowMap(mSceneVertex, mCamera, shaderManager);
-                mRenderer.render(mSceneVertex, mSceneLight, isResized, mCamera, mSkybox, shaderManager);
-                mRendererHelperSummit.render(mSceneVertex, mCamera, shaderManager);
-                mRendererHelperNormal.render(mSceneVertex, mCamera, shaderManager);
-                mRendererHelperAxesMesh.render(mSceneVertex, mCamera, shaderManager);
+            synchronized (mScene) {
+                mScene.getLightModel().renderShadowMap(mScene, mCamera, shaderManager);
+                mRenderer.render(mScene, isResized, mCamera, mSkybox, shaderManager);
             }
 
            /*  Rendered with vSync (vertical Synchronization)
@@ -308,14 +303,52 @@ public class MainLoop implements Runnable {
         }
     }
 
+    private void initShaderManager() {
+        shaderManager = new ShaderManager();
+        ShaderProgramADS shaderProgram = new ShaderProgramADS();
+        shaderProgram.init();
+        shaderManager.register("ADS", shaderProgram);
+        // register helpers
+        ShaderProgram helper = new HelperVerticesShaders();
+        helper.init();
+        shaderManager.register("VertexHelper", helper);
+        helper = new HelperNormalsShaders();
+        helper.init();
+        shaderManager.register("NormalHelper", helper);
+        helper = new HelperAxesShaders();
+        helper.init();
+        shaderManager.register("AxisHelper", helper);
+    }
+
+    public void installScene(Scene scene) {
+        if (mScene != null) {
+            throw new Error("Scene already installed, uninstall first.");
+        }
+        if (shaderManager != null) {
+            throw new Error("shaderManager non-null (please report)");
+        }
+        mScene = scene;
+        if (mLoop) {
+            // XXX: risky ?    (for scene uninstall/install ...)
+            initShaderManager();
+        }
+    }
+
+    private void cleanupScene() {
+        mScene.cleanUp(shaderManager);
+        shaderManager.cleanUp();
+        mScene = null;
+        shaderManager = null;
+    }
+
     /**
      * Deallocates the resources used by the world
      */
     private void cleanup() {
         /* Deallocations renderer, SceneVertex and Skybox. */
         //mRenderer.cleanUp();
-        mSceneVertex.cleanUp(shaderManager);
-        shaderManager.cleanUp();
+        cleanupScene();
+
         if (mSkybox != null) mSkybox.cleanUp();
         /* Deallocation of the window's resources. */
         Window.cleanUp();
