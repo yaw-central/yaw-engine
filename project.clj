@@ -16,7 +16,7 @@
 (def LWJGL_NS "org.lwjgl")
 
 ;; Edit this to change the version.
-(def LWJGL_VERSION "3.3.1")
+(def LWJGL_VERSION "3.3.2")
 
 ;; Edit this to add/remove packages.
 (def LWJGL_MODULES ["lwjgl"
@@ -84,7 +84,7 @@
      ;;(print spec)
      spec)))
 
-(defproject yaw-engine "0.6.0-SNAPSHOT"
+(defproject yaw-engine "0.7.0-SNAPSHOT"
   :description "A simple 3D programming world (LWJGL engine)."
   :url "https://github.com/yaw-central/yaw-engine"
   :license {:name "The MIT License"
