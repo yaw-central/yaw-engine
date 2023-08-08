@@ -9,6 +9,7 @@ import yaw.engine.helper.HelperNormalsShaders;
 import yaw.engine.helper.HelperVerticesShaders;
 import yaw.engine.items.ItemObject;
 import yaw.engine.shader.ShaderManager;
+import yaw.engine.shader.ShaderProgram;
 import yaw.engine.shader.ShaderProgramADS;
 import yaw.engine.util.LoggerYAW;
 
@@ -48,7 +49,6 @@ public class Mesh {
 
     //strategy when we draw the elements
     private MeshDrawingStrategy drawingStrategy;
-    private ShaderProgramADS shaderProgram;
     private HelperVerticesShaders helperVerticesShaders;
     private HelperNormalsShaders helperNormalsShaders;
     private HelperAxesShaders helperAxesShaders;
@@ -140,8 +140,7 @@ public class Mesh {
 
     }
 
-    public void renderSetup(Camera pCamera, ShaderManager shaderManager) {
-        shaderProgram = shaderManager.getShaderProgramAds();
+    public void renderSetup(Camera pCamera, ShaderProgram shaderProgram) {
         initRender();
         shaderProgram.bind();
         /* Set the camera to render. */
@@ -154,8 +153,7 @@ public class Mesh {
         shaderProgram.setUniform("material", material);
     }
 
-    public void renderItem(ItemObject item, ShaderManager shaderManager) {
-        shaderProgram = shaderManager.getShaderProgramAds();
+    public void renderItem(ItemObject item, ShaderProgram shaderProgram) {
         shaderProgram.setUniform("modelMatrix", item.getWorldMatrix());
         if (drawingStrategy != null) {
             //delegate the drawing
@@ -166,8 +164,7 @@ public class Mesh {
         }
     }
 
-    public void renderCleanup(ShaderManager shaderManager) {
-        shaderProgram = shaderManager.getShaderProgramAds();
+    public void renderCleanup(ShaderProgram shaderProgram) {
         shaderProgram.unbind();
         endRender();
     }

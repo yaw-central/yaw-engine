@@ -20,7 +20,6 @@ public class Renderer {
      * Which are passed by arguments
      *
      * @param pScene  sceneVertex
-     * @param pSceneLight   sceneLight
      * @param isResized     isResized
      * @param pCamera       camera
      * @param pSkybox       skybox
@@ -49,9 +48,6 @@ public class Renderer {
         glDisable(GL_BLEND);
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-        /* Rendering of lights */
-        pScene.getLightModel().setupShader(new Matrix4f().identity(), shaderManager);
 
         /* Rendering of the scene */
         pScene.render(pCamera, shaderManager);

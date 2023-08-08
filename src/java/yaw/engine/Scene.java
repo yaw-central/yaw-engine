@@ -1,12 +1,13 @@
 package yaw.engine;
 
 
-
+import org.joml.Matrix4f;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.shader.ShaderManager;
+import yaw.engine.shader.ShaderProgram;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,13 +22,13 @@ import java.util.List;
 public class Scene {
     //old code from a previous attempt to manage a group of scene vertex
     private boolean itemAdded = false;
-    private HashMap<Mesh, List<ItemObject>> mMeshMap;
-    private HashMap<Mesh, List<ItemObject>> mMeshMapHelperSummit;
-    private HashMap<Mesh, List<ItemObject>> mMeshMapHelperNormal;
-    private HashMap<Mesh, List<ItemObject>> mMeshMapHelperAxesMesh;
-    private ArrayList<Mesh> notInit;
+    private final HashMap<Mesh, List<ItemObject>> mMeshMap;
+    private final HashMap<Mesh, List<ItemObject>> mMeshMapHelperSummit;
+    private final HashMap<Mesh, List<ItemObject>> mMeshMapHelperNormal;
+    private final HashMap<Mesh, List<ItemObject>> mMeshMapHelperAxesMesh;
+    private final ArrayList<Mesh> notInit;
 
-    private LightModel lightModel;
+    private final LightModel lightModel;
 
 
     public Scene(LightModel lightModel) {
@@ -97,8 +98,15 @@ public class Scene {
      */
 
     public void render(Camera pCamera, ShaderManager shaderManager) {
-        List<Mesh> meshesToRemove = new ArrayList<>();
+        ShaderProgram shaderProgram = shaderManager.fetch("ADS");
 
+        /* Setup lights */
+        lightModel.setupShader(new Matrix4f().identity(), shaderProgram);
+
+        /* Rendering of meshes */
+
+        //ShaderProgram shaderProgram =shaderManager.fetch("ADS");
+        List<Mesh> meshesToRemove = new ArrayList<>();
 
         for (Mesh lMesh : mMeshMap.keySet()) {
             List<ItemObject> lItems = mMeshMap.get(lMesh);
@@ -108,35 +116,29 @@ public class Scene {
             if (lItems.isEmpty()) {
                 meshesToRemove.add(lMesh);
             } else {
-                try {
-                    if(notInit.contains(lMesh)){
-                        lMesh.initBuffers();
-                        notInit.remove(lMesh);
-                    }
-                    lMesh.renderSetup(pCamera, shaderManager);
-                    for (ItemObject item : lItems) {
-                        lMesh.renderItem(item, shaderManager);
-                        if (item.showVertexHelpers()) {
-                            vertexHelpers.add(item);
-                        }
-                        if (item.showNormalHelpers()) {
-                            normalHelpers.add(item);
-                        }
-                        if (item.showAxisHelpers()) {
-                            axisHelpers.add(item);
-                        }
-                    }
-
-                    lMesh.renderCleanup(shaderManager);
-
-                    lMesh.renderHelperVertices(vertexHelpers, pCamera, shaderManager);
-                    lMesh.renderHelperNormals(vertexHelpers, pCamera, shaderManager);
-                    lMesh.renderHelperAxes(vertexHelpers, pCamera, shaderManager);
-
-                } catch (Exception e) {
-                    System.err.println("Scene vertex rendering error");
-                    System.err.println(e);
+                if (notInit.contains(lMesh)) {
+                    lMesh.initBuffers();
+                    notInit.remove(lMesh);
                 }
+                lMesh.renderSetup(pCamera, shaderProgram);
+                for (ItemObject item : lItems) {
+                    lMesh.renderItem(item, shaderProgram);
+                    if (item.showVertexHelpers()) {
+                        vertexHelpers.add(item);
+                    }
+                    if (item.showNormalHelpers()) {
+                        normalHelpers.add(item);
+                    }
+                    if (item.showAxisHelpers()) {
+                        axisHelpers.add(item);
+                    }
+                }
+
+                lMesh.renderCleanup(shaderProgram);
+
+                lMesh.renderHelperVertices(vertexHelpers, pCamera, shaderManager);
+                lMesh.renderHelperNormals(vertexHelpers, pCamera, shaderManager);
+                lMesh.renderHelperAxes(vertexHelpers, pCamera, shaderManager);
             }
         }
         /*Clean then remove*/
@@ -147,7 +149,7 @@ public class Scene {
 
     }
 
-    public void renderHelperSummit(Camera pCamera, ShaderManager shaderManager){
+    public void renderHelperSummit(Camera pCamera, ShaderManager shaderManager) {
 
         for (Mesh lMesh : mMeshMapHelperSummit.keySet()) {
             List<ItemObject> lItems = mMeshMapHelperSummit.get(lMesh);
@@ -161,11 +163,11 @@ public class Scene {
 
     }
 
-    public void renderHelperNormal(Camera pCamera, ShaderManager shaderManager){
+    public void renderHelperNormal(Camera pCamera, ShaderManager shaderManager) {
         for (Mesh lMesh : mMeshMapHelperNormal.keySet()) {
             List<ItemObject> lItems = mMeshMapHelperNormal.get(lMesh);
             try {
-                lMesh.renderHelperNormals(lItems, pCamera,shaderManager);
+                lMesh.renderHelperNormals(lItems, pCamera, shaderManager);
             } catch (Exception e) {
                 System.out.println("Erreur scene vertex Helper Normal");
             }
@@ -173,11 +175,11 @@ public class Scene {
         }
     }
 
-    public void renderHelperAxesMesh(Camera pCamera, ShaderManager shaderManager){
+    public void renderHelperAxesMesh(Camera pCamera, ShaderManager shaderManager) {
         for (Mesh lMesh : mMeshMapHelperAxesMesh.keySet()) {
             List<ItemObject> lItems = mMeshMapHelperAxesMesh.get(lMesh);
             try {
-                lMesh.renderHelperAxes(lItems, pCamera,shaderManager);
+                lMesh.renderHelperAxes(lItems, pCamera, shaderManager);
             } catch (Exception e) {
                 System.out.println("Erreur scene vertex Helper AxesMesh");
             }

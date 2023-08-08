@@ -18,7 +18,6 @@ public class LightModel {
     private DirectionalLight mSun;
     private PointLight[] mPointTable;
     private SpotLight[] mSpotTable;
-    private ShaderProgramADS mShaderProgram;
     private boolean isInit;
     /**
      * Constructor without parameters, it used to create the maximum of point light and spot light.
@@ -59,12 +58,10 @@ public class LightModel {
      *
      * @param viewMatrix viewMatrix
      */
-    public void setupShader(Matrix4f viewMatrix, ShaderManager shaderManager) {
-
-        mShaderProgram = (ShaderProgramADS) shaderManager.getShaderProgram(0);
-        mShaderProgram.bind();
-        mShaderProgram.setUniform("ambientLight", mAmbient);
-        mShaderProgram.setUniform("specularPower", mSpecularPower);
+    public void setupShader(Matrix4f viewMatrix, ShaderProgram shaderProgram) {
+        shaderProgram.bind();
+        shaderProgram.setUniform("ambientLight", mAmbient);
+        shaderProgram.setUniform("specularPower", mSpecularPower);
 
         // Process Point Lights
         for (int i = 0; i < MAX_POINTLIGHT; i++) {
@@ -80,7 +77,7 @@ public class LightModel {
             //Bug correction
             currPointLight.setPosition(lightPos);
 
-            mShaderProgram.setUniform("pointLights", currPointLight, i);
+            shaderProgram.setUniform("pointLights", currPointLight, i);
         }
 
         // Process Spot Ligths
@@ -101,8 +98,7 @@ public class LightModel {
             //Bug Correction
             currSpotLight.setPosition(lightPos);
 
-            mShaderProgram.setUniform("spotLights", currSpotLight, i);
-
+            shaderProgram.setUniform("spotLights", currSpotLight, i);
         }
 
         // Get a copy of the directional light object and transform its position to view coordinates
@@ -110,8 +106,8 @@ public class LightModel {
         Vector4f dir = new Vector4f(currDirLight.mDirection, 0);
         dir.mul(viewMatrix);
         currDirLight.mDirection = new Vector3f(dir.x, dir.y, dir.z);
-        mShaderProgram.setUniform("directionalLight", currDirLight);
-        mSun.bindShadowMap(mShaderProgram);
+        shaderProgram.setUniform("directionalLight", currDirLight);
+        mSun.bindShadowMap(shaderProgram);
 
     }
 

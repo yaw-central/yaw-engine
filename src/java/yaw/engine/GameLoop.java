@@ -310,7 +310,9 @@ public class GameLoop implements Runnable {
 
     private void initShaderManager() {
         shaderManager = new ShaderManager();
-        shaderManager.register("ADS", new ShaderProgramADS());
+        ShaderProgramADS shaderProgram = new ShaderProgramADS();
+        shaderProgram.init();
+        shaderManager.register("ADS", shaderProgram);
     }
 
     public void installScene(Scene scene) {

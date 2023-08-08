@@ -34,10 +34,10 @@ public class ShaderManager {
     public ShaderManager() {
         shaderMap = new HashMap<>();
         shaderlist = new ArrayList<>();
-        init(null);
+        //init();
     }
 
-    public void init(LightModel scenelight) {
+    public void init() {
 
         try {
             /* Initialization of the shader program. */

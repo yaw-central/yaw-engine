@@ -32,7 +32,8 @@ public class ShaderProgramADS extends ShaderProgram {
         setUniform(uniformName + ".reflectance", material.getReflectance());
     }
 
-    public void init(LightModel scenelight) {
+    public void init() {
+        System.out.println("HERE 2");
         /* Initialization of the shader program. */
         createVertexShader(vertShader.SHADER_STRING);
         createFragmentShader(fragShader.SHADER_STRING);
