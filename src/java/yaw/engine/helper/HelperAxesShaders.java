@@ -6,11 +6,9 @@ import yaw.engine.shader.ShaderProgram;
 public class HelperAxesShaders extends ShaderProgram {
     private ShaderCode gs;
     /**
-     * Constructor throws exception if the program could not create the shader
-     *
-     * @throws Exception the exception
+     * Create a draw helper for axes
      */
-    public HelperAxesShaders() throws Exception {
+    public HelperAxesShaders() {
         super();
         vs = new ShaderCode("330", true)
                 .cmt("Uniforms")

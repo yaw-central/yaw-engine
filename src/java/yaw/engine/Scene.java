@@ -4,6 +4,7 @@ package yaw.engine;
 
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.shader.ShaderManager;
 
@@ -17,7 +18,7 @@ import java.util.List;
  * the first one (notInit) represent the mesh that must not be rendered ( we remove them from the gpu) unless we want to
  * and the second is a map where each mesh has a list of items
  */
-public class SceneVertex {
+public class Scene {
     //old code from a previous attempt to manage a group of scene vertex
     private boolean itemAdded = false;
     private HashMap<Mesh, List<ItemObject>> mMeshMap;
@@ -26,13 +27,16 @@ public class SceneVertex {
     private HashMap<Mesh, List<ItemObject>> mMeshMapHelperAxesMesh;
     private ArrayList<Mesh> notInit;
 
+    private LightModel lightModel;
 
-    public SceneVertex() {
+
+    public Scene(LightModel lightModel) {
         mMeshMap = new HashMap<>();
         mMeshMapHelperSummit = new HashMap<>();
         mMeshMapHelperNormal = new HashMap<>();
         mMeshMapHelperAxesMesh = new HashMap<>();
         notInit = new ArrayList<>();
+        this.lightModel = lightModel;
 
     }
 
@@ -200,4 +204,7 @@ public class SceneVertex {
         return mMeshMap;
     }
 
+    public LightModel getLightModel() {
+        return lightModel;
+    }
 }

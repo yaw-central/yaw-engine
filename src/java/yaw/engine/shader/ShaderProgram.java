@@ -27,7 +27,7 @@ public class ShaderProgram {
 
 
     /**
-     * Constructor throws exception if the program could not create the shader
+     * Create a new shader program
      */
     public ShaderProgram() {
         mProgramId = glCreateProgram();
@@ -126,9 +126,8 @@ public class ShaderProgram {
      *
      * @param uniformName uniform name
      * @param size        size
-     * @throws Exception the exception
      */
-    public void createPointLightListUniform(String uniformName, int size) throws Exception {
+    public void createPointLightListUniform(String uniformName, int size)  {
         for (int i = 0; i < size; i++) {
             createPointLightUniform(uniformName + "[" + i + "]");
         }
@@ -165,7 +164,6 @@ public class ShaderProgram {
      * Create uniform for each attribute of the directional light
      *
      * @param uniformName uniform name
-     * @throws Exception the exception
      */
     public void createDirectionalLightUniform(String uniformName) {
         createUniform(uniformName + ".color");
@@ -177,7 +175,6 @@ public class ShaderProgram {
      * Create uniform for each attribute of the material
      *
      * @param uniformName uniform name
-     * @throws Exception the exception
      */
     public void createMaterialUniform(String uniformName) {
         createUniform(uniformName + ".color");

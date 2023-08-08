@@ -3,16 +3,13 @@ package yaw.engine;
 import yaw.engine.camera.Camera;
 import yaw.engine.shader.ShaderManager;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-
 public class RendererHelperNormal {
     /**
      * HelperNormal rendering.
      */
 
 
-    public void render(SceneVertex pSceneVertex, Camera pCamera, ShaderManager shaderManager) {
+    public void render(Scene pScene, Camera pCamera, ShaderManager shaderManager) {
         //Debug
         /*  int err = GL11.GL_NO_ERROR;
         if ((err = GL11.glGetError()) != GL11.GL_NO_ERROR) {
@@ -24,7 +21,7 @@ public class RendererHelperNormal {
 
 
 
-        pSceneVertex.renderHelperNormal(pCamera, shaderManager);
+        pScene.renderHelperNormal(pCamera, shaderManager);
 
     }
 }

@@ -5,7 +5,7 @@ import yaw.engine.shader.ShaderManager;
 
 public class RendererHelperAxesMesh {
 
-    public void render(SceneVertex pSceneVertex, Camera pCamera, ShaderManager shaderManager) {
-        pSceneVertex.renderHelperAxesMesh(pCamera, shaderManager);
+    public void render(Scene pScene, Camera pCamera, ShaderManager shaderManager) {
+        pScene.renderHelperAxesMesh(pCamera, shaderManager);
     }
 }

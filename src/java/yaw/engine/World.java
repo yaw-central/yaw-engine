@@ -7,7 +7,7 @@ import yaw.engine.geom.Geometry;
 import yaw.engine.items.HitBox;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
-import yaw.engine.light.SceneLight;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.Texture;
@@ -26,6 +26,7 @@ public class World  {
     private GameLoop gameLoop;
     private Thread mloopThread = null;
     private boolean isRunning = false;
+    private boolean sceneInstalled = false;
 
     /**
      * Initializes the elements to create the window
@@ -57,6 +58,9 @@ public class World  {
     }
 
     public void launchAsync() {
+        if (!sceneInstalled) {
+            throw new Error("Scene is not installed, cannot launch.");
+        }
         if(isRunning) {
             throw new Error("World is already running (multiple calls to launch...() method)");
         }
@@ -66,6 +70,9 @@ public class World  {
     }
 
     public void launchWithContinuation(Runnable cont) {
+        if (!sceneInstalled) {
+            throw new Error("Scene is not installed, cannot launch.");
+        }
         if(isRunning) {
             throw new Error("World is already running (multiple calls to launch...() method)");
         }
@@ -77,6 +84,9 @@ public class World  {
     }
 
     public void launchSync() {
+        if (!sceneInstalled) {
+            throw new Error("Scene is not installed, cannot launch.");
+        }
         if(isRunning) {
             throw new Error("World is already running (multiple calls to launch...() method)");
         }
@@ -100,6 +110,11 @@ public class World  {
             e.printStackTrace();
         }
 
+    }
+
+    public void installScene(Scene scene) {
+        gameLoop.installScene(scene);
+        sceneInstalled = true;
     }
 
     /**
@@ -279,7 +294,10 @@ public class World  {
         return gameLoop.getItemGroupArrayList();
     }
 
-    public SceneLight getSceneLight() {
+    public LightModel getSceneLight() {
+        if (!sceneInstalled) {
+            throw new Error("Scene is not installed");
+        }
         return gameLoop.getSceneLight();
     }
 

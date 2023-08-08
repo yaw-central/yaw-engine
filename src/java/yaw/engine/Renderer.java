@@ -2,7 +2,6 @@ package yaw.engine;
 
 import org.joml.Matrix4f;
 import yaw.engine.camera.Camera;
-import yaw.engine.light.SceneLight;
 import yaw.engine.shader.ShaderManager;
 import yaw.engine.skybox.Skybox;
 
@@ -20,17 +19,17 @@ public class Renderer {
      * Configuring rendering with the absorption, the diffusion of the light, the texture to be used, the reflections of the objects, the shading,
      * Which are passed by arguments
      *
-     * @param pSceneVertex  sceneVertex
+     * @param pScene  sceneVertex
      * @param pSceneLight   sceneLight
      * @param isResized     isResized
      * @param pCamera       camera
      * @param pSkybox       skybox
      * @param shaderManager shaderManager
      */
-    public void render(SceneVertex pSceneVertex, SceneLight pSceneLight, boolean isResized, Camera pCamera, Skybox pSkybox, ShaderManager shaderManager) {
+    public void render(Scene pScene, boolean isResized, Camera pCamera, Skybox pSkybox, ShaderManager shaderManager) {
 
         //Preparation of the camera
-        if (isResized || pSceneVertex.isItemAdded()) {
+        if (isResized || pScene.isItemAdded()) {
             pCamera.updateProjectionMat();
         }
 
@@ -52,10 +51,10 @@ public class Renderer {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         /* Rendering of lights */
-        pSceneLight.setupShader(new Matrix4f().identity(), shaderManager);
+        pScene.getLightModel().setupShader(new Matrix4f().identity(), shaderManager);
 
         /* Rendering of the scene */
-        pSceneVertex.render(pCamera, shaderManager);
+        pScene.render(pCamera, shaderManager);
 
         /* skybox */
         if (pSkybox != null) {

@@ -1,7 +1,7 @@
 package yaw.engine.shader;
 
 import yaw.engine.helper.*;
-import yaw.engine.light.SceneLight;
+import yaw.engine.light.LightModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class ShaderManager {
         init(null);
     }
 
-    public void init(SceneLight scenelight) {
+    public void init(LightModel scenelight) {
 
         try {
             /* Initialization of the shader program. */
@@ -62,8 +62,8 @@ public class ShaderManager {
             mShaderProgram.createUniform("camera_pos");
             mShaderProgram.createUniform("specularPower");
             mShaderProgram.createUniform("ambientLight");
-            mShaderProgram.createPointLightListUniform("pointLights", SceneLight.MAX_POINTLIGHT);
-            mShaderProgram.createSpotLightUniformList("spotLights", SceneLight.MAX_SPOTLIGHT);
+            mShaderProgram.createPointLightListUniform("pointLights", LightModel.MAX_POINTLIGHT);
+            mShaderProgram.createSpotLightUniformList("spotLights", LightModel.MAX_SPOTLIGHT);
             mShaderProgram.createDirectionalLightUniform("directionalLight");
             mShaderProgram.createUniform("shadowMapSampler");
             mShaderProgram.createUniform("bias");
@@ -120,6 +120,28 @@ public class ShaderManager {
         }catch(Exception e){
             System.out.println("Erreur constructeur ShaderManager");
         }
+    }
+
+    public void register(String key, ShaderProgram shaderProgram) {
+        if (shaderMap.containsKey(key)) {
+            throw new Error("ShaderProgram '" + key + "' already registered");
+        }
+        shaderMap.put(key, shaderProgram);
+    }
+
+    public void unregister(String key) {
+        if(!shaderMap.containsKey(key)) {
+            throw new Error("No such shader program: '" + key + "'");
+        }
+        shaderMap.remove(key);
+    }
+
+    public ShaderProgram fetch(String key) {
+        ShaderProgram prog = shaderMap.get(key);
+        if (prog == null) {
+            throw new Error("No such shader program: '" + key + "'");
+        }
+        return prog;
     }
 
     public void addShader(ShaderProgram mShaderProgram){
