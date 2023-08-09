@@ -72,7 +72,8 @@ public class RotatingObj implements UpdateCallback {
 
 		ObjLoader objLoader = new ObjLoader();
 		try {
-			objLoader.parseFromResource("/resources/models/icosphere.obj");
+			//objLoader.parseFromResource("/resources/models/icosphere.obj");
+			objLoader.parseFromResource("/resources/models/chair/chair.obj");
 		} catch (IOException e) {
 			System.out.println("Errror : " + e.getMessage());
 			System.exit(1);
