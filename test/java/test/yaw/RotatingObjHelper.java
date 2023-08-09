@@ -84,7 +84,7 @@ public class RotatingObjHelper implements UpdateCallback {
         }
         Geometry geom = objLoader.getScene().getGeometryByIndex(0).build();
 
-        Mesh objm = new Mesh(geom, objLoader.getScene().getMaterialByIndex(0));
+        Mesh objm = new Mesh(geom, objLoader.getScene().getMaterialByIndex(0).getMaterial());
         objm.setDrawingStrategy(new DefaultDrawingStrategy());
         ItemObject obji = world.createItemObject("obj", 0f, 0f, 0f, 1.0f, objm);
         //obji.translate(2f,0f, -5f);

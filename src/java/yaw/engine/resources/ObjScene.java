@@ -3,18 +3,25 @@ package yaw.engine.resources;
 import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.mesh.Material;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ObjScene {
     private Map<String, GeometryBuilder> geometries;
-    private Map<String, MtlMaterial> materials;
+    private List<String> geometryIds;
 
+    private Map<String, MtlMaterial> materials;
+    private List<String> materialIds;
     private Map<String, String> materialMap;
+
 
     public ObjScene() {
         geometries = new HashMap<>();
+        geometryIds = new ArrayList<>();
         materials = new HashMap<>();
+        materialIds = new ArrayList<>();
         materialMap = new HashMap<>();
     }
 
@@ -23,44 +30,37 @@ public class ObjScene {
     }
 
     public void addGeom(String objName, GeometryBuilder geom) {
+        if (geometries.containsKey(objName)) {
+            throw new Error("Object '" + objName + "' already added.");
+        }
+        geometryIds.add(objName);
         geometries.put(objName, geom);
+    }
+
+    public void addMaterial(String matName, MtlMaterial material) {
+        if (materials.containsKey(matName)) {
+            throw new Error("Material '" + matName + "' already added.");
+        }
+        materialIds.add(matName);
+        materials.put(matName, material);
     }
 
     public void assignMaterial(String objName, String matName) {
         materialMap.put(objName, matName);
     }
 
-    public void addMaterial(String matName, MtlMaterial material) {
-        materials.put(matName, material);
+    public int nbGeometries() {
+        return geometryIds.size();
     }
 
     public GeometryBuilder getGeometryByIndex(int index) {
-        int i = 0;
-        for (GeometryBuilder geom : geometries.values()) {
-            if (i == index) {
-                return geom;
-            }
-        }
-        return null;
+        String geomName = geometryIds.get(index);
+        return geometries.get(geomName);
     }
 
-    public MtlMaterial getMtlMaterialByIndex(int index) {
-        int i = 0;
-        for (MtlMaterial mat : materials.values()) {
-            if (i == index) {
-                return mat;
-            }
-        }
-        return null;
+    public MtlMaterial getMaterialByIndex(int index) {
+        String matName = materialIds.get(index);
+        return materials.get(matName);
     }
 
-    public Material getMaterialByIndex(int index) {
-        int i = 0;
-        for (MtlMaterial mat : materials.values()) {
-            if (i == index) {
-                return mat.getMaterial();
-            }
-        }
-        return null;
-    }
 }
