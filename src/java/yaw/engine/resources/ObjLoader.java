@@ -14,6 +14,10 @@ public class ObjLoader {
     private ObjScene objScene;
     private String currentObject = null;
 
+    private int vertexCount;
+    private int textCount;
+    private int normalCount;
+
     public ObjLoader() {
         objScene = new ObjScene();
     }
@@ -49,6 +53,12 @@ public class ObjLoader {
     }
 
     public void parseFromLines(String[] lines) {
+        // In OBJ files vertices, texture coordinates and normals
+        // are counted globally and are not reset before each object
+        vertexCount = 0;
+        textCount = 0;
+        normalCount = 0;
+
         int linepos = 0;
 
         while (linepos < lines.length - 1) {
@@ -127,11 +137,13 @@ public class ObjLoader {
                         matName = ((UseMtlEntry) entry).matName;
                     } else {
                         // a new material is specified, we end the geometry
+                        linepos--;
                         cont = false;
                     }
                     break;
                 case MTLLIB:
                     // somewhat unexpected, we end the geometry
+                    linepos--;
                     cont = false;
                     break;
                 case OBJNAME:
@@ -139,6 +151,7 @@ public class ObjLoader {
                         objName = ((ObjNameEntry) entry).objName;
                     } else {
                         // a new object will start, we end the geometry
+                        linepos--;
                         cont = false;
                     }
                     break;
@@ -158,14 +171,14 @@ public class ObjLoader {
             int[] triIndices = new int[faceEntry.face.length];
             for (int i = 0; i < faceEntry.face.length; i++) {
                 FaceVertex faceVert = faceEntry.face[i];
-                VertexEntry vertexEntry = vertexEntries.get(faceVert.vertexId - 1);
+                VertexEntry vertexEntry = vertexEntries.get(faceVert.vertexId - vertexCount - 1);
                 TextureEntry textureEntry = null;
                 if (faceVert.textId != 0) {
-                    textureEntry = textureEntries.get(faceVert.textId - 1);
+                    textureEntry = textureEntries.get(faceVert.textId - textCount - 1);
                 }
                 NormalEntry normalEntry = null;
                 if (faceVert.normId != 0) {
-                    normalEntry = normalEntries.get(faceVert.normId - 1);
+                    normalEntry = normalEntries.get(faceVert.normId - normalCount - 1);
                 }
                 float[] positions = new float[3];
                 positions[0] = vertexEntry.x;
@@ -210,6 +223,11 @@ public class ObjLoader {
             }
         }
 
+        // update counts
+        vertexCount += vertexEntries.size();
+        textCount += textureEntries.size();
+        normalCount += normalEntries.size();
+
         GeometryBuilder geom = new GeometryBuilder();
 
         // we may now build the Mesh geometry
@@ -234,6 +252,7 @@ public class ObjLoader {
         if (matName != null) {
             objScene.assignMaterial(objName, matName);
         }
+
         return linepos;
     }
 
