@@ -11,7 +11,7 @@ import java.util.Map;
 public class ObjLoader {
     private LoadMode loadMode = LoadMode.LOAD_UNDEFINED;
     private String loadPath = null;
-    private ObjScene objScene;
+    private ObjModel objModel;
     private String currentObject = null;
 
     private int vertexCount;
@@ -19,17 +19,17 @@ public class ObjLoader {
     private int normalCount;
 
     public ObjLoader() {
-        objScene = new ObjScene();
+        objModel = null;
     }
 
-    public ObjScene getScene() {
-        return objScene;
+    public ObjModel getScene() {
+        return objModel;
     }
 
     public void parseFromFile(String filename) throws IOException {
         loadMode = LoadMode.LOAD_FROM_FILE;
         loadPath = filename;
-        objScene = new ObjScene();
+        objModel = new ObjModel(filename);
         currentObject = null;
         parseFromBufferedReader(new BufferedReader(new FileReader(filename)));
     }
@@ -42,7 +42,7 @@ public class ObjLoader {
         BufferedReader reader = new BufferedReader(new InputStreamReader(istream));
         loadMode = LoadMode.LOAD_FROM_RESOURCE;
         loadPath = name;
-        objScene = new ObjScene();
+        objModel = new ObjModel(name);
         currentObject = null;
         parseFromBufferedReader(reader);
     }
@@ -66,7 +66,7 @@ public class ObjLoader {
             ObjEntry entry = parseLine(linepos, lines[linepos - 1]);
             switch (entry.getType()) {
                 case MTLLIB:
-                    MtlLoader mtlLoader = new MtlLoader(objScene);
+                    MtlLoader mtlLoader = new MtlLoader(objModel);
                     switch (loadMode) {
                         case LOAD_FROM_FILE: {
                             String mtlName = Utils.fetchRelativeName(loadPath, ((MtlLibEntry) entry).mtllib);
@@ -246,11 +246,11 @@ public class ObjLoader {
         }
 
         if (objName == null) {
-            objName = objScene.getFreshGeomName();
+            objName = objModel.getFreshGeomName();
         }
-        objScene.addGeom(objName, geom);
+        objModel.addGeom(objName, geom);
         if (matName != null) {
-            objScene.assignMaterial(objName, matName);
+            objModel.assignMaterial(objName, matName);
         }
 
         return linepos;

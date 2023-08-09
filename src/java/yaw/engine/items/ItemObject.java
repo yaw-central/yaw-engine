@@ -21,7 +21,7 @@ public class ItemObject extends Item {
 
     private boolean castShadows = true;
 
-    public ItemObject(String id, Vector3f position, Quaternionf orientation, float scale, Mesh mesh){
+    public ItemObject(String id, Vector3f position, Quaternionf orientation, float scale, Mesh mesh) {
         super(id, position, orientation, scale);
         this.mesh= mesh;
         worldMatrix = new Matrix4f();
@@ -29,6 +29,26 @@ public class ItemObject extends Item {
         vertexHelpers = false;
         normalHelpers = false;
         axisHelpers = false;
+    }
+
+    public ItemObject(String id, Vector3f position, Quaternionf orientation, Mesh mesh) {
+        this(id, position, orientation, 1.0f, mesh);
+    }
+
+    public ItemObject(String id, Vector3f position, float scale, Mesh mesh) {
+        this(id, position, new Quaternionf(), scale, mesh);
+    }
+
+    public ItemObject(String id, Vector3f position, Mesh mesh) {
+        this(id, position, 1.0f, mesh);
+    }
+
+    public ItemObject(String id, float scale, Mesh mesh) {
+        this(id, new Vector3f(0.0f, 0.0f, 0.0f), scale, mesh);
+    }
+
+    public ItemObject(String id, Mesh mesh) {
+        this(id, 1.0f, mesh);
     }
 
     public void buildWorldMatrix() {

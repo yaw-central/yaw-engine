@@ -8,6 +8,7 @@ import yaw.engine.helper.HelperAxesShaders;
 import yaw.engine.helper.HelperNormalsShaders;
 import yaw.engine.helper.HelperVerticesShaders;
 import yaw.engine.items.ItemObject;
+import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 import yaw.engine.shader.ShaderManager;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.shader.ShaderProgramADS;
@@ -70,6 +71,7 @@ public class Mesh {
         this.attributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
         this.drawADS = false;
+        drawingStrategy = new DefaultDrawingStrategy();
     }
 
     /**
@@ -161,7 +163,6 @@ public class Mesh {
     }
 
     public void renderHelperVertices(List<ItemObject> pItems, Camera pCamera, ShaderProgram helperProgram) {
-        System.out.println("Vertex helpers : number to draw = " + pItems.size());
         //initRender
         initRender();
         helperProgram.bind();

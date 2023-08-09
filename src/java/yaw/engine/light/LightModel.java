@@ -1,6 +1,6 @@
 package yaw.engine.light;
 
-import yaw.engine.Scene;
+import yaw.engine.SceneRenderer;
 import yaw.engine.camera.Camera;
 import yaw.engine.shader.*;
 import org.joml.Matrix4f;
@@ -48,8 +48,8 @@ public class LightModel {
 
 
 
-    public void renderShadowMap(Scene pScene, Camera pCamera, ShaderManager shaderManager) {
-        mSun.renderShadowMap(pScene, pCamera, shaderManager);
+    public void renderShadowMap(SceneRenderer pSceneRenderer, Camera pCamera, ShaderManager shaderManager) {
+        mSun.renderShadowMap(pSceneRenderer, pCamera, shaderManager);
     }
 
 

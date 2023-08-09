@@ -1,7 +1,7 @@
 package yaw.engine.light;
 
 import org.joml.Vector3f;
-import yaw.engine.Scene;
+import yaw.engine.SceneRenderer;
 import yaw.engine.camera.Camera;
 import yaw.engine.shader.ShaderManager;
 import yaw.engine.shader.ShaderProgram;
@@ -70,9 +70,9 @@ public class DirectionalLight extends AmbientLight {
         mDirection = new Vector3f(0f,-1f,0f);
     }
 
-    public void renderShadowMap(Scene pScene, Camera pCamera, ShaderManager shaderManager) {
+    public void renderShadowMap(SceneRenderer pSceneRenderer, Camera pCamera, ShaderManager shaderManager) {
         if (mShadowMap != null) {
-            mShadowMap.render(pScene, this, pCamera, shaderManager);
+            mShadowMap.render(pSceneRenderer, this, pCamera, shaderManager);
         }
     }
 

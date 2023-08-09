@@ -1,14 +1,12 @@
 package test.yaw;
 
-import yaw.engine.Scene;
+import yaw.engine.SceneRenderer;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.Item;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.mesh.Texture;
-import yaw.engine.mesh.builder.Cuboid;
 
 public class TextureTest implements UpdateCallback {
     private int nbUpdates = 0;
@@ -43,7 +41,7 @@ public class TextureTest implements UpdateCallback {
 
     public static void main(String[] args) {
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
-        world.installScene(new Scene(new LightModel()));
+        world.installScene(new SceneRenderer(new LightModel()));
         Mesh mesh = MeshExamples.makeDice(1);
 
         ItemObject item = world.createItemObject("item",0,0,-5,1.25f, mesh);

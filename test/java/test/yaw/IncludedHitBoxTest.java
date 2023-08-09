@@ -1,6 +1,6 @@
 package test.yaw;
 
-import yaw.engine.Scene;
+import yaw.engine.SceneRenderer;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.HitBox;
@@ -9,7 +9,6 @@ import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.DeprecatedMeshBuilder;
-import yaw.engine.skybox.Skybox;
 import org.joml.Vector3f;
 
 /**
@@ -72,7 +71,7 @@ public class IncludedHitBoxTest implements UpdateCallback {
         Configuration.DEBUG_STREAM.set(true);*/
         //LoggerYAW.getInstance().activateConsoleMode();
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
-        world.installScene(new Scene(new LightModel()));
+        world.installScene(new SceneRenderer(new LightModel()));
         //THE WORLD IS NOW INIT IN THE THREAD
 
 

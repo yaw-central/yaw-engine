@@ -19,7 +19,7 @@ import java.util.List;
  * the first one (notInit) represent the mesh that must not be rendered ( we remove them from the gpu) unless we want to
  * and the second is a map where each mesh has a list of items
  */
-public class Scene {
+public class SceneRenderer {
     //old code from a previous attempt to manage a group of scene vertex
     private boolean itemAdded = false;
     private final HashMap<Mesh, List<ItemObject>> mMeshMap;
@@ -28,7 +28,7 @@ public class Scene {
     private final LightModel lightModel;
 
 
-    public Scene(LightModel lightModel) {
+    public SceneRenderer(LightModel lightModel) {
         mMeshMap = new HashMap<>();
         notInit = new ArrayList<>();
         this.lightModel = lightModel;

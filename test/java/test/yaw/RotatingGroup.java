@@ -2,14 +2,13 @@ package test.yaw;
 
 import org.joml.Vector3f;
 import yaw.engine.ColorLib;
-import yaw.engine.Scene;
+import yaw.engine.SceneRenderer;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemGroup;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.LightModel;
 import yaw.engine.light.PointLight;
-import yaw.engine.light.SpotLight;
 import yaw.engine.mesh.*;
 import yaw.engine.mesh.builder.Cuboid;
 
@@ -63,7 +62,7 @@ public class RotatingGroup implements UpdateCallback {
 
     public static void main(String[] args) {
         World world = new World(0, 0, 800, 600);
-        world.installScene(new Scene(new LightModel()));
+        world.installScene(new SceneRenderer(new LightModel()));
 
         world.getCamera().setPosition(0,0,0);
         //world.getSceneLight().setSpotLight(new SpotLight(1, 200, 1, 0, 0, 10, 1f, 0, 0.1f, 0, 0, 0, -.1f, 10f), 1);

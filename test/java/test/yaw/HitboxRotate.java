@@ -1,7 +1,7 @@
 package test.yaw;
 
 import org.joml.Vector3f;
-import yaw.engine.Scene;
+import yaw.engine.SceneRenderer;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.HitBox;
@@ -13,7 +13,6 @@ import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.DeprecatedMeshBuilder;
 import yaw.engine.mesh.builder.Cuboid;
-import yaw.engine.skybox.Skybox;
 
 /**
  * Test class for Hit boxes: rotations, colllision, multi-bounding-box hitboxes
@@ -81,7 +80,7 @@ public class HitboxRotate implements UpdateCallback {
         Configuration.DEBUG_STREAM.set(true);*/
         //LoggerYAW.getInstance().activateConsoleMode();
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
-        world.installScene(new Scene(new LightModel()));
+        world.installScene(new SceneRenderer(new LightModel()));
         //THE WORLD IS NOW INIT IN THE THREAD
         //testing texture here
         /*Float[] f = new Float[]{0.f, 0.f, -2.f};

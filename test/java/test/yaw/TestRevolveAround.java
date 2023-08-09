@@ -1,7 +1,7 @@
 package test.yaw;
 
 import org.joml.Vector3f;
-import yaw.engine.Scene;
+import yaw.engine.SceneRenderer;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
@@ -55,7 +55,7 @@ public class TestRevolveAround implements UpdateCallback {
 
     public static void main(String[] args) {
         World world = new World(0, 0, 800, 600);
-        world.installScene(new Scene(new LightModel()));
+        world.installScene(new SceneRenderer(new LightModel()));
         world.getCamera().setPosition(0,0,6);
         ItemObject cube = world.createItemObject("cube", 0f, 0f, -2f, 1.0f, new Cuboid(1).generate());
         cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));

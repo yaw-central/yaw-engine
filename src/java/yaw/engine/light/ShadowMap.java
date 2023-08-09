@@ -3,7 +3,7 @@ package yaw.engine.light;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import yaw.engine.Scene;
+import yaw.engine.SceneRenderer;
 import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Material;
@@ -108,7 +108,7 @@ public class ShadowMap {
 
     }
 
-    public void render(Scene pScene, DirectionalLight light, Camera pCamera, ShaderManager shaderManager) {
+    public void render(SceneRenderer pSceneRenderer, DirectionalLight light, Camera pCamera, ShaderManager shaderManager) {
 
         if(!initialized) {
             try {
@@ -130,7 +130,7 @@ public class ShadowMap {
         glDisable(GL_CULL_FACE); // if geometry isn't always enclosed
         glCullFace(GL_FRONT);
 
-        if(autoPlace) autoPlace(pScene, light);
+        if(autoPlace) autoPlace(pSceneRenderer, light);
 
         createView(light);
         createProjection();
@@ -139,7 +139,7 @@ public class ShadowMap {
         mShaderProgram.setUniform("projectionMatrix", projection);
         mShaderProgram.setUniform("viewMatrix", view);
 
-        Map<Mesh, List<ItemObject>> meshMap = pScene.getMeshMap();
+        Map<Mesh, List<ItemObject>> meshMap = pSceneRenderer.getMeshMap();
 
         for (Mesh lMesh : meshMap.keySet()) {
             List<ItemObject> lItems = meshMap.get(lMesh);
@@ -183,7 +183,7 @@ public class ShadowMap {
 
     }
 
-    public void autoPlace(Scene pScene, DirectionalLight light) {
+    public void autoPlace(SceneRenderer pSceneRenderer, DirectionalLight light) {
 
         left = Float.MAX_VALUE;
         right = -Float.MAX_VALUE;
@@ -196,7 +196,7 @@ public class ShadowMap {
 
         Matrix4f mat = createView(light);
 
-        for(ItemObject io : pScene.getItemsList()) {
+        for(ItemObject io : pSceneRenderer.getItemsList()) {
             float[] verts = io.getMesh().getGeometry().getVertices();
             for(int i = 0; i<verts.length; i+=3) {
                 Vector4f v = new Vector4f(verts[i], verts[i+1], verts[i+2], 1);

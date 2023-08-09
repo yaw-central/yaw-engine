@@ -70,7 +70,7 @@ public class RotatingObjHelper implements UpdateCallback {
 
     public static void main(String[] args) {
         World world = new World(0, 0, 800, 600);
-        world.installScene(new Scene(new LightModel()));
+        world.installScene(new SceneRenderer(new LightModel()));
         world.getSceneLight().setSun(new DirectionalLight());
         //world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
         world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));

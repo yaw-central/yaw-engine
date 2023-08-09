@@ -16,6 +16,8 @@ import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
 
+import static org.lwjgl.opengl.GL11.glClearColor;
+
 /**
  * This is the facade of the engine, most Clojure calls are
  * made on an instance of this object. The stateful part
@@ -112,8 +114,8 @@ public class World  {
 
     }
 
-    public void installScene(Scene scene) {
-        gameLoop.installScene(scene);
+    public void installScene(SceneRenderer sceneRenderer) {
+        gameLoop.installScene(sceneRenderer);
         sceneInstalled = true;
     }
 
@@ -225,6 +227,10 @@ public class World  {
 
     public boolean isInCollision(HitBox hb1, HitBox hb2) {
         return hb1.collidesWith(hb2);
+    }
+
+    public void setBackgroundColor(float red, float green, float blue) {
+        gameLoop.setBackgroundColor(red, green, blue);
     }
 
     public void registerUpdateCallback(UpdateCallback cb) {

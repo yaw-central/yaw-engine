@@ -8,10 +8,10 @@ public class MtlLoader {
     private LoadMode loadMode = LoadMode.LOAD_UNDEFINED;
     private String loadPath = null;
     private MtlMaterial currentMaterial = null;
-    private ObjScene objScene;
+    private ObjModel objModel;
 
-    public MtlLoader(ObjScene objScene) {
-        this.objScene = objScene;
+    public MtlLoader(ObjModel objModel) {
+        this.objModel = objModel;
     }
 
     public MtlLoader() {
@@ -70,7 +70,7 @@ public class MtlLoader {
             }
             String matName = parts[1];
             MtlMaterial material = new MtlMaterial(matName);
-            objScene.addMaterial(matName, material);
+            objModel.addMaterial(matName, material);
             currentMaterial = material;
         } else if (parts[0].equals("Ns")) {
             float shininess = parseMaterialFloat("shininess", parts, linepos);

@@ -18,13 +18,14 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
+import static org.lwjgl.opengl.GL11.glClearColor;
 
 /**
  * This the main loop controlled by the World facade.
  *
  * */
 public class GameLoop implements Runnable {
-    private Scene mScene;
+    private SceneRenderer mSceneRenderer;
     private final Vector<Skybox> mSkyboxToBeRemoved;
     private Camera mCamera;
     private Vector<Camera> mCamerasList;
@@ -37,6 +38,9 @@ public class GameLoop implements Runnable {
     private boolean initVSYNC;
     private ShaderManager shaderManager;
 
+    private float bgndBlue;
+    private float bgndGreen;
+    private float bgndRed;
 
     //3D click
 
@@ -90,7 +94,7 @@ public class GameLoop implements Runnable {
         this.mCamerasList = new Vector<>();
         this.mCamera = new Camera();
         mCamerasList.add(mCamera);
-        this.mScene = null;
+        this.mSceneRenderer = null;
         this.mItemGroupArrayList = new Vector<>();
         this.mSkyboxToBeRemoved = new Vector<>();
         this.mLoop = false;
@@ -99,14 +103,19 @@ public class GameLoop implements Runnable {
         this.updateCallback = null;
         this.inputCallback = null;
         initialized = false;
+        bgndRed = 0; bgndGreen = 0; bgndBlue = 0;
+    }
+
+    public void setBackgroundColor(float red, float green, float blue) {
+        bgndRed = red; bgndGreen = green; bgndBlue = blue;
     }
 
     /* package */ synchronized void addToScene(ItemObject itemObj) {
-        mScene.add(itemObj);
+        mSceneRenderer.add(itemObj);
     }
 
     /* package */ synchronized void removeFromScene(ItemObject pItem) {
-        mScene.removeItem(pItem);
+        mSceneRenderer.removeItem(pItem);
     }
 
     /* package */ synchronized ItemGroup createGroup(String id) {
@@ -125,7 +134,7 @@ public class GameLoop implements Runnable {
     }
 
     /* package */ synchronized LightModel getSceneLight() {
-        return mScene.getLightModel();
+        return mSceneRenderer.getLightModel();
     }
 
     /* package */ synchronized Texture fetchTexture(String textureName) {
@@ -288,12 +297,13 @@ public class GameLoop implements Runnable {
             }
             mSkyboxToBeRemoved.clear();
 
+            glClearColor(bgndRed, bgndGreen, bgndBlue, 0.0f);
 
            /*  Input of critical section, allows to protect the creation of our logic of Game .
                1 Maximum thread in Synchronize -> mutual exclusion.*/
-            synchronized (mScene) {
-                mScene.getLightModel().renderShadowMap(mScene, mCamera, shaderManager);
-                mRenderer.render(mScene, isResized, mCamera, mSkybox, shaderManager);
+            synchronized (mSceneRenderer) {
+                mSceneRenderer.getLightModel().renderShadowMap(mSceneRenderer, mCamera, shaderManager);
+                mRenderer.render(mSceneRenderer, isResized, mCamera, mSkybox, shaderManager);
             }
 
            /*  Rendered with vSync (vertical Synchronization)
@@ -320,14 +330,14 @@ public class GameLoop implements Runnable {
         shaderManager.register("AxisHelper", helper);
     }
 
-    public void installScene(Scene scene) {
-        if (mScene != null) {
+    public void installScene(SceneRenderer sceneRenderer) {
+        if (mSceneRenderer != null) {
             throw new Error("Scene already installed, uninstall first.");
         }
         if (shaderManager != null) {
             throw new Error("shaderManager non-null (please report)");
         }
-        mScene = scene;
+        mSceneRenderer = sceneRenderer;
         if (mLoop) {
             // XXX: risky ?    (for scene uninstall/install ...)
             initShaderManager();
@@ -335,9 +345,9 @@ public class GameLoop implements Runnable {
     }
 
     private void cleanupScene() {
-        mScene.cleanUp(shaderManager);
+        mSceneRenderer.cleanUp(shaderManager);
         shaderManager.cleanUp();
-        mScene = null;
+        mSceneRenderer = null;
         shaderManager = null;
     }
 
