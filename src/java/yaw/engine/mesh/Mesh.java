@@ -1,17 +1,13 @@
 package yaw.engine.mesh;
 
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import yaw.engine.camera.Camera;
 import yaw.engine.geom.Geometry;
-import yaw.engine.helper.HelperAxesShaders;
-import yaw.engine.helper.HelperNormalsShaders;
-import yaw.engine.helper.HelperVerticesShaders;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
-import yaw.engine.shader.ShaderManager;
 import yaw.engine.shader.ShaderProgram;
-import yaw.engine.shader.ShaderProgramADS;
 import yaw.engine.util.LoggerYAW;
 
 import java.nio.FloatBuffer;
@@ -137,17 +133,18 @@ public class Mesh {
         initRender();
         shaderProgram.bind();
         /* Set the camera to render. */
-        shaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
+        shaderProgram.setUniform("worldMatrix", pCamera.getWorldMat());
         shaderProgram.setUniform("texture_sampler", 0);
         shaderProgram.setUniform("camera_pos", pCamera.getPosition());
-        Matrix4f viewMat = pCamera.getViewMat();
-        shaderProgram.setUniform("viewMatrix", viewMat);
 
         shaderProgram.setUniform("material", material);
     }
 
     public void renderItem(ItemObject item, ShaderProgram shaderProgram) {
-        shaderProgram.setUniform("modelMatrix", item.getWorldMatrix());
+        shaderProgram.setUniform("modelMatrix", item.getModelMatrix());
+        Matrix3f normalMatrix = new Matrix3f(item.getModelMatrix());
+        normalMatrix.invert().transpose();
+        shaderProgram.setUniform("normalMatrix", normalMatrix);
         if (drawingStrategy != null) {
             //delegate the drawing
             drawingStrategy.drawMesh(this);
@@ -170,7 +167,7 @@ public class Mesh {
         Matrix4f viewMat = pCamera.getViewMat();
         helperProgram.setUniform("viewMatrix", viewMat);
         for (ItemObject lItem : pItems) {
-            helperProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
+            helperProgram.setUniform("modelMatrix", lItem.getModelMatrix());
             glDrawElements(GL_POINTS, geometry.getIndices().length, GL_UNSIGNED_INT, 0);
         }
 
@@ -188,7 +185,7 @@ public class Mesh {
         Matrix4f viewMat = pCamera.getViewMat();
         helperProgram.setUniform("viewMatrix", viewMat);
         for (ItemObject lItem : pItems) {
-            helperProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
+            helperProgram.setUniform("modelMatrix", lItem.getModelMatrix());
             glDrawElements(GL_POINTS, geometry.getIndices().length, GL_UNSIGNED_INT, 0);
         }
 
@@ -205,7 +202,7 @@ public class Mesh {
         helperProgram.setUniform("viewMatrix", viewMat);
         for (ItemObject lItem : pItems) {
             helperProgram.setUniform("center", lItem.getPosition());
-            helperProgram.setUniform("modelMatrix", lItem.getWorldMatrix());
+            helperProgram.setUniform("modelMatrix", lItem.getModelMatrix());
             glDrawElements(GL_LINES, geometry.getIndices().length, GL_UNSIGNED_INT, 0);
         }
 

@@ -3,7 +3,6 @@ package yaw.engine.collision;
 import yaw.engine.items.HitBox;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import yaw.engine.items.ItemObject;
 
 import java.util.ArrayList;
 
@@ -84,7 +83,7 @@ public class Collision {
 
         //get Real position of vertex after rotation or translation
         for (int i = 0; i < listVertex.size(); i++)
-            listVertex.set(i, listVertex.get(i).mul(item.getWorldMatrix()));
+            listVertex.set(i, listVertex.get(i).mul(item.getModelMatrix()));
 
 
         return listVertex;

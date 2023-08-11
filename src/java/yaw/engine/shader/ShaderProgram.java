@@ -1,5 +1,6 @@
 package yaw.engine.shader;
 
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -216,6 +217,14 @@ public abstract class ShaderProgram {
         value.get(fb);
         /*Warning can cause nullpointer exception*/
         glUniformMatrix4fv(mUniformsList.get(uniformName), false, fb);
+    }
+
+    public void setUniform(String uniformName, Matrix3f value) {
+        FloatBuffer fb = BufferUtils.createFloatBuffer(16);
+        /*load the value in th floatbuffer*/
+        value.get(fb);
+        /*Warning can cause nullpointer exception*/
+        glUniformMatrix3fv(mUniformsList.get(uniformName), false, fb);
     }
 
     /**

@@ -208,4 +208,10 @@ public class Camera {
         this.fieldOfView = fov;
         updateProjectionMat();
     }
+
+    public Matrix4f getWorldMat() {
+        Matrix4f worldMatrix = new Matrix4f(projectionMat);
+        worldMatrix.mul(getViewMat());
+        return worldMatrix;
+    }
 }

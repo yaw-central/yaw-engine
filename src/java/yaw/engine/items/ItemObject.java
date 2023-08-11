@@ -2,7 +2,6 @@ package yaw.engine.items;
 
 import org.joml.*;
 import yaw.engine.mesh.Mesh;
-import java.lang.Math;
 
 /**
  * An ItemObject is a concrete 3D item associated to a Mesh
@@ -13,7 +12,7 @@ public class ItemObject extends Item {
     private Mesh mesh;
 
     /** The transformation matrix to world coordinates */
-    private Matrix4f worldMatrix;
+    private Matrix4f modelMatrix;
 
     private boolean vertexHelpers;
     private boolean normalHelpers;
@@ -24,7 +23,7 @@ public class ItemObject extends Item {
     public ItemObject(String id, Vector3f position, Quaternionf orientation, float scale, Mesh mesh) {
         super(id, position, orientation, scale);
         this.mesh= mesh;
-        worldMatrix = new Matrix4f();
+        modelMatrix = new Matrix4f();
         invalidate();
         vertexHelpers = false;
         normalHelpers = false;
@@ -52,14 +51,14 @@ public class ItemObject extends Item {
     }
 
     public void buildWorldMatrix() {
-        worldMatrix.identity()
+        modelMatrix.identity()
                 .translate(getPosition())
                 .rotate(getOrientation())
                 .scale(getScale());
     }
 
-    public Matrix4f getWorldMatrix() {
-        return worldMatrix;
+    public Matrix4f getModelMatrix() {
+        return modelMatrix;
     }
 
     @Override
