@@ -34,7 +34,7 @@ public class ShaderCode {
 
     public ShaderCode cmt(String comment) {
         mkIndent();
-        code.append("/* "); code.append(comment); code.append("*/\n");
+        code.append("/* "); code.append(comment); code.append(" */\n");
         return this;
     }
 

@@ -137,17 +137,21 @@ public class Mesh {
         initRender();
         shaderProgram.bind();
         /* Set the camera to render. */
-        shaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
-        //shaderProgram.setUniform("texture_sampler", 0);
-        //shaderProgram.setUniform("camera_pos", pCamera.getPosition());
-        Matrix4f viewMat = pCamera.getViewMat();
-        shaderProgram.setUniform("viewMatrix", viewMat);
+        Matrix4f worldMat = pCamera.getWorldMat();
+        shaderProgram.setUniform("worldMatrix", pCamera.getWorldMat());
+        shaderProgram.setUniform("texture_sampler", 0);
+        shaderProgram.setUniform("camera_pos", pCamera.getPosition());
 
         shaderProgram.setUniform("material", material);
     }
 
     public void renderItem(ItemObject item, ShaderProgram shaderProgram) {
         shaderProgram.setUniform("modelMatrix", item.getWorldMatrix());
+        Matrix4f normalMatrix = new Matrix4f();
+        item.getWorldMatrix().invert(normalMatrix);
+        normalMatrix.transpose();
+        normalMatrix.invert().transpose();
+        shaderProgram.setUniform("normalMatrix", normalMatrix);
         if (drawingStrategy != null) {
             //delegate the drawing
             drawingStrategy.drawMesh(this);
