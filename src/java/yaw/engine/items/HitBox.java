@@ -89,7 +89,7 @@ public class HitBox extends ItemObject {
 
         //get Real position of vertex after rotation or translation
         for (int i = 0; i < listVertex.size(); i++)
-            listVertex.set(i, listVertex.get(i).mul(item.getWorldMatrix()));
+            listVertex.set(i, listVertex.get(i).mul(item.getModelMatrix()));
 
 
         return listVertex;

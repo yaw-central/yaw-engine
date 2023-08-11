@@ -200,7 +200,7 @@ public class ShadowMap {
             float[] verts = io.getMesh().getGeometry().getVertices();
             for(int i = 0; i<verts.length; i+=3) {
                 Vector4f v = new Vector4f(verts[i], verts[i+1], verts[i+2], 1);
-                Vector4f world_space = io.getWorldMatrix().transform(v);
+                Vector4f world_space = io.getModelMatrix().transform(v);
                 Vector4f light_space = mat.transform(world_space);
 
                 if(io.doesCastShadows()) {
