@@ -138,8 +138,8 @@ public class Mesh {
         shaderProgram.bind();
         /* Set the camera to render. */
         shaderProgram.setUniform("projectionMatrix", pCamera.getProjectionMat());
-        shaderProgram.setUniform("texture_sampler", 0);
-        shaderProgram.setUniform("camera_pos", pCamera.getPosition());
+        //shaderProgram.setUniform("texture_sampler", 0);
+        //shaderProgram.setUniform("camera_pos", pCamera.getPosition());
         Matrix4f viewMat = pCamera.getViewMat();
         shaderProgram.setUniform("viewMatrix", viewMat);
 
