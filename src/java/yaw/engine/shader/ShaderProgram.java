@@ -13,7 +13,6 @@ import yaw.engine.mesh.Material;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 
-import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL32.*;
 
 

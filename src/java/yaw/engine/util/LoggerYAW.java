@@ -9,19 +9,19 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.logging.*;
 
-/**
- * Example of use :
- * <p>
- * I) For OpenGl and Java to put : LoggerYAW logger = LoggerYAW.getInstance(Level.INFO);
- * <p>
- * // 1.  -> For OpenGl :
- * logger.activateFileMode(); // or logger.activateConsoleMode()
- * GLUtil.setupDebugMessageCallback(logger);
- * <p>
- * // 2. -> For Java :
- * <p>
- * logger.activateFileMode(); // or logger.activateConsoleMode()
- * logger.fine("error");
+/*
+  Example of use :
+  <p>
+  I) For OpenGl and Java to put : LoggerYAW logger = LoggerYAW.getInstance(Level.INFO);
+  <p>
+  // 1.  -> For OpenGl :
+  logger.activateFileMode(); // or logger.activateConsoleMode()
+  GLUtil.setupDebugMessageCallback(logger);
+  <p>
+  // 2. -> For Java :
+  <p>
+  logger.activateFileMode(); // or logger.activateConsoleMode()
+  logger.fine("error");
  */
 
 
@@ -81,7 +81,7 @@ public class LoggerYAW extends PrintStream {
 
     private LoggerYAW(OutputStream out) {
         super(out);
-        /** Allows to initialize the internal logger  */
+        /* Allows to initialize the internal logger  */
         init("loggerYAW");
     }
 

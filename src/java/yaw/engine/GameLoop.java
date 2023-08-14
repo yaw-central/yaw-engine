@@ -245,9 +245,8 @@ public class GameLoop implements Runnable {
     /**
      * Allows to initialize the parameters of the class World.
      *
-     * @throws Exception Exception
      */
-    public synchronized void init() throws Exception {
+    public synchronized void init() {
         Window.init(initWidth, initHeight, initVSYNC);
 
         if(inputCallback != null) {
@@ -263,7 +262,7 @@ public class GameLoop implements Runnable {
 
     // UpdateRate: FIXED
     // FrameRate: VARIABLE
-    private void loop() throws InterruptedException {
+    private void loop() {
         double dt = 0.01; // Update Rate: 1 ~= 2 fps | 0.001 ~= 1000 fps
         double beforeTime = glfwGetTime();
         double lag = 0d;

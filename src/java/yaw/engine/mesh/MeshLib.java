@@ -3,7 +3,6 @@ package yaw.engine.mesh;
 import org.joml.Vector3f;
 import yaw.engine.geom.GeomLib;
 import yaw.engine.geom.Geometry;
-import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 
 public class MeshLib {

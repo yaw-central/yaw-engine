@@ -1,7 +1,6 @@
 package yaw.engine.shader;
 
 import yaw.engine.helper.*;
-import yaw.engine.light.LightModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

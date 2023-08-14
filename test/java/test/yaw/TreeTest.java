@@ -73,7 +73,7 @@ public class TreeTest implements UpdateCallback {
     }
 
     private interface ConeOperator {
-        public void cone(float bh, float r, int n);
+        void cone(float bh, float r, int n);
     }
 
     public static Mesh generateTreeMesh(int layers, float size, double rand) {

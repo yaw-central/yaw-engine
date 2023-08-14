@@ -2,7 +2,6 @@ package yaw.engine.mesh.builder;
 
 import yaw.engine.geom.GeomLib;
 import yaw.engine.geom.Geometry;
-import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 

@@ -49,7 +49,7 @@ public class TestHitBoxDifferentPlan implements UpdateCallback {
         long currentMillis = System.currentTimeMillis();
         if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
             double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
+            System.out.println("Average deltaTime = " + avgDeltaTime +" s ("+nbUpdates+")");
             nbUpdates = 0;
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;

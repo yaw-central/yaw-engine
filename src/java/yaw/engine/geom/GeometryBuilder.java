@@ -39,7 +39,7 @@ public class GeometryBuilder {
 
     private void checkVertex(String vrefStr, int vref) {
         if (!(0 <= vref) && (vref < vertices.size())) {
-            throw new Error("Wrong vertex " + vrefStr + " = " + Integer.toString(vref));
+            throw new Error("Wrong vertex " + vrefStr + " = " + vref);
         }
     }
 
@@ -185,7 +185,7 @@ public class GeometryBuilder {
 
         int[] indices = getIndices();
 
-        Geometry geom = null;
+        Geometry geom;
         if(!textCoords.isEmpty()) {
             geom = new Geometry(vertices, uvCoords, normals, indices);
         } else {

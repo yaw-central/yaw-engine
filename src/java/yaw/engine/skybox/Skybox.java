@@ -9,9 +9,6 @@ import org.lwjgl.BufferUtils;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 public class Skybox {
@@ -56,10 +53,8 @@ public class Skybox {
     /**
      * initialize the skybox shadders and vbo
      *
-     * @throws Exception if the last compile operation on shader was unsuccessful or an
-     *                   error occured during the shadder creation
      */
-    public void init() throws Exception {
+    public void init() {
         //if the last compile operation on shader was unsuccessful then an exception is launched
         // WARNING: SKYBOX ARE NOT SUPPORTED
         shaderProg = null; // new ShaderProgram();

@@ -12,7 +12,7 @@ public class KeyCallback {
     HashMap<Integer, ArrayList<Object>> map;
 
     public KeyCallback() {
-        map = new HashMap<Integer, ArrayList<Object>>();
+        map = new HashMap<>();
     }
 
     /**
@@ -23,7 +23,7 @@ public class KeyCallback {
      */
     public void registerCallback(String s, Object o) {
         if (map.get(StringToKeyCode(s)) == null)
-            map.put(StringToKeyCode(s), new ArrayList<Object>());
+            map.put(StringToKeyCode(s), new ArrayList<>());
         map.get(StringToKeyCode(s)).add(o);
     }
 

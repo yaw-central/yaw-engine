@@ -1,6 +1,5 @@
 package yaw.engine.resources;
 
-import clojure.core.Vec;
 import org.joml.Vector3f;
 import yaw.engine.mesh.Material;
 

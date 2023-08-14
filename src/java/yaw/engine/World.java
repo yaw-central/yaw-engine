@@ -16,8 +16,6 @@ import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
 
-import static org.lwjgl.opengl.GL11.glClearColor;
-
 /**
  * This is the facade of the engine, most Clojure calls are
  * made on an instance of this object. The stateful part

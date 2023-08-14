@@ -6,7 +6,6 @@ import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.Item;
 import yaw.engine.items.ItemGroup;
-import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;

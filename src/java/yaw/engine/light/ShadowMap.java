@@ -25,7 +25,7 @@ public class ShadowMap {
 
     private class ShadowShaderProgram extends ShaderProgram {
 
-        public ShadowShaderProgram() throws Exception {
+        public ShadowShaderProgram() {
             super();
         }
 
@@ -96,7 +96,7 @@ public class ShadowMap {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         //float borderColor[] = { 0,0,0,0 };
-        float borderColor[] = { 1,1,1,1 };
+        float[] borderColor = { 1,1,1,1 };
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
         framebuffer = glGenFramebuffers();
