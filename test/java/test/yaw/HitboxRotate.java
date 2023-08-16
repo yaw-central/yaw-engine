@@ -114,7 +114,7 @@ public class HitboxRotate implements UpdateCallback {
 
         /* Creating Light for Our World */
         world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1, 1, 1), 1, new Vector3f(0, -1, 1)));
-        world.getSceneLight().setAmbient(new AmbientLight(0.5f));
+        world.getSceneLight().setAmbientLight(new AmbientLight(0.5f));
 
         //world.sc.add(GroundGenerator.generate(400,400,-2,new Material(new Vector3f(1,1,1))));
 

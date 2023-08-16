@@ -121,7 +121,6 @@ public class Mesh {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-
     }
 
     public void renderSetup(Camera pCamera, ShaderProgram shaderProgram) {

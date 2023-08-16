@@ -197,7 +197,7 @@ public class ShaderProgramADS extends ShaderProgram {
         if (maxSpotLights == 0) {
             code.cmt("No spot light");
         } else {
-            code.l("const int MAX_SPOT_LIGHTS = " + maxPointLights);
+            code.l("const int MAX_SPOT_LIGHTS = " + maxSpotLights);
         }
 
         code.l().cmt("Input values")
@@ -265,10 +265,12 @@ public class ShaderProgramADS extends ShaderProgram {
 
         if (maxPointLights > 0) {
             code.l("uniform PointLight pointLights[MAX_POINT_LIGHTS]");
+            code.l("uniform int nbPointLights");
         }
 
         if (maxSpotLights > 0) {
             code.l("uniform SpotLight spotLights[MAX_SPOT_LIGHTS]");
+            code.l("uniform int nbSpotLights");
         }
 
         if (withShadows) {
@@ -317,7 +319,7 @@ public class ShaderProgramADS extends ShaderProgram {
         }
 
         if (maxPointLights > 0) {
-            code.beginFor("int i = 0", "i < MAX_POINT_LIGHTS", "i++")
+            code.beginFor("int i = 0", "i < nbPointLights", "i++")
                     .beginIf("pointLights[i].intensity > 0")
                     .l("totalLight += computePointLight(pointLights[i], vPos, normal)")
                     .endIf();
@@ -325,7 +327,7 @@ public class ShaderProgramADS extends ShaderProgram {
         }
 
         if (maxSpotLights > 0) {
-            code.beginFor("int i = 0", "i < MAX_SPOT_LIGHTS", "i++")
+            code.beginFor("int i = 0", "i < nbSpotLights", "i++")
                     .beginIf("spotLights[i].intensity > 0")
                     .l("totalLight += computeSpotLight(spotLights[i], vPos, normal)")
                     .endIf();

@@ -314,9 +314,6 @@ public class GameLoop implements Runnable {
 
     private void initShaderManager() {
         shaderManager = new ShaderManager();
-        ShaderProgramADS shaderProgram = new ShaderProgramADS();
-        shaderProgram.init();
-        shaderManager.register("ADS", shaderProgram);
         // register helpers
         ShaderProgram helper = new HelperVerticesShaders();
         helper.init();
@@ -337,10 +334,6 @@ public class GameLoop implements Runnable {
             throw new Error("shaderManager non-null (please report)");
         }
         mSceneRenderer = sceneRenderer;
-        if (mLoop) {
-            // XXX: risky ?    (for scene uninstall/install ...)
-            initShaderManager();
-        }
     }
 
     private void cleanupScene() {
