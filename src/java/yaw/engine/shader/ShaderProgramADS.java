@@ -16,6 +16,116 @@ public class ShaderProgramADS extends ShaderProgram {
         this("330", true);
     }
 
+    public static ShaderCode computeLight(ShaderCode code) {
+        code.function("Compute diffuse and specular components of lights.",
+                "vec4", "computeLight", new String[][]{{"vec3", "light_color"},
+                        {"float", "light_intensity"},
+                        {"vec3", "position"},
+                        {"vec3", "to_light-dir"},
+                        {"vec3", "normal"}});
+
+        code.l("vec4 diffusecolor = vec4(0, 0, 0, 0)")
+                .l("vec4 speccolor = vec4(0, 0, 0, 0)");
+
+        code.l().cmt("Diffuse color")
+                .l("float diffuseFactor = max(dot(normal, to_light_dir), 0.0)")
+                .l("diffusecolor = vec4(light_color, 1.0) * light_intensity * diffuseFactor * material.diffuse");
+
+        code.l().cmt("Specular color")
+                .l("vec3 camera_direction = normalize(camera_pos - position)")
+                .l("vec3 from_light_dir = -to_light_dir")
+                .l("vec3 reflected_light = normalize(reflect(from_light_dir , normal))")
+                .l("float specularFactor = max( dot(camera_direction, reflected_light), 0.0)")
+                .l("specularFactor = pow(specularFactor, material.shineness)")
+                .l("speccolor = light_intensity  * specularFactor * material.specular * vec4(light_color, 1.0)");
+
+        code.l().l("return (diffusecolor + speccolor)");
+
+        return code.endFunction();
+    }
+
+    public static ShaderCode computeShadow(ShaderCode code) {
+        code.function("Computation of shadowmap (only for directional lights, for now ...)",
+                "float", "computeShadow", new String[][] {{"vec4", "lightSpace"}, {"vec3", "to_light_dir"}, {"vec3", "normal"}});
+
+        code.l().l("vec3 projCoords = lightSpace.xyz / lightSpace.w")
+                .l("projCoords = projCoords * 0.5 + 0.5")
+                .l("float currentDepth = projCoords.z");
+
+        code.l().l("if(currentDepth > 1.0) currentDepth = 0.0");
+
+        code.l().l("float cosTheta = clamp(dot(normal, to_light_dir), 0, 1)")
+                .l("float rbias = shadowBias*tan(acos(cosTheta))")
+                .l("rbias = clamp(rbias, 0,0.01)");
+
+        code.l().l("float shadow = 0.0")
+                .l("vec2 texelSize = 1.0 / textureSize(shadowMapSampler, 0")
+                .beginFor("int x = -1", "x <= 1", "++x")
+                   .beginFor("int y = -1", "y <= 1", "++y")
+                      .l("float pcfDepth = texture(shadowMapSampler, projCoords.xy + vec2(x, y) * texelSize).r")
+                      .l("shadow += currentDepth-rbias > pcfDepth ? 1.0 : 0.0")
+                   .endFor()
+                .endFor()
+                .l("shadow /= 9.0");
+
+        code.l().l("return shadow");
+
+        return code.endFunction();
+    }
+
+    public static ShaderCode computeDirectionalLight(ShaderCode code, boolean withShadows) {
+        code.function("vec4", "computeDirectionalLight",
+                new String[][]{{"DirectionalLight", "light"},
+                        {"vec3", "position"},
+                        {"vec3", "normal"}});
+
+        if (withShadows) {
+            code.l("float shadow = computeShadow(vDirectionalShadowSpace, normalize(-light.direction), normal)")
+                    .l("return (1.0 - shadow) * computeLight(light.color, light.intensity, position, normalize(-light.direction), normal)");
+        } else {
+            code.l("return computeLight(light.color, light.intensity, position, normalize(-light.direction), normal)");
+        }
+        return code.endFunction();
+    }
+
+    public static ShaderCode computePointLight(ShaderCode code) {
+        code.function("vec4", "computePointLight", new String[][]{{"PointLight", "light"}
+                , {"vec3", "position"}
+                , {"vec3", "normal"}});
+
+        code.l().l("vec3 light_direction = light.position - position")
+                .l("vec3 to_light_dir  = normalize(light_direction)")
+                .l("vec4 light_color = computeLight(light.color, light.intensity, position, to_light_dir, normal)");
+
+        code.l().cmt("Attenuation")
+                .l("float distance = length(light_direction)")
+                .l("float attenuationInv = light.att_constant + light.att_linear * distance + light.att_quadratic * (distance * distance)");
+
+        code.l().l("return light_color / attenuationInv");
+
+        return code.endFunction();
+    }
+
+    public static ShaderCode computeSpotLight(ShaderCode code) {
+        code.function("vec4", "computeSpotLight", new String[][]{{"SpotLight", "light"}
+                , {"vec3", "position"}
+                , {"vec3", "normal"}});
+
+        code.l().l("vec3 light_direction = light.pl.position - position")
+                .l("vec3 to_light_dir  = normalize(light_direction)")
+                .l("vec3 from_light_dir  = -to_light_dir")
+                .l("float spot_alfa = dot(from_light_dir, normalize(light.conedir))")
+                .l("vec4 color = vec4(0, 0, 0, 0)");
+
+        code.beginIf("spot_alfa > light.cutoff")
+                .l("color = calcPointLight(light.pl, position, normal)")
+                .l("color *= (1.0 - (1.0 - spot_alfa)/(1.0 - light.cutoff))")
+                .endIf();
+
+        code.l("return color");
+
+        return code.endFunction();
+    }
 
     /**
      * Create uniform for each attribute of the material
@@ -122,7 +232,7 @@ public class ShaderProgramADS extends ShaderProgram {
         return code;
     }
 
-    public ShaderCode fragmentShader(int maxPointLights, int maxSpotLights, boolean hasTexture, boolean withShadows) {
+    public ShaderCode fragmentShader(boolean hasDirectionalLight, int maxPointLights, int maxSpotLights, boolean hasTexture, boolean withShadows) {
         ShaderCode code = new ShaderCode(glVersion, glCoreProfile)
                 .cmt("Fragment shader for A(mbient) D(iffuse) S(pecular) rendering")
                 .l();
@@ -168,7 +278,7 @@ public class ShaderProgramADS extends ShaderProgram {
                 .cmt("Attenuations")
                 .item("float", "att_constant")
                 .item("float", "att_linear")
-                .item("float", "att_exponent")
+                .item("float", "att_quadratic")
                 .endStruct().l();
 
         code.beginStruct("SpotLight")
@@ -191,7 +301,91 @@ public class ShaderProgramADS extends ShaderProgram {
                 .item("float", "shineness", "for reflectance computation")
                 .endStruct().l();
 
+        code.cmt("Fragment shader uniforms")
+                .l("uniform vec3 camera_pos")
+                .l("uniform sampler2D texture_sampler")
+                .l("uniform Material material")
+                .l().cmt("Lights")
+                .l("uniform vec3 ambientLight");
 
+        if (hasDirectionalLight) {
+            code.l("uniform DirectionalLight directionalLight");
+        }
+
+        if (maxPointLights > 0) {
+            code.l("uniform PointLight pointLights[MAX_POINT_LIGHTS]");
+        }
+
+        if (maxSpotLights > 0) {
+            code.l("uniform SpotLight spotLights[MAX_SPOT_LIGHTS]");
+        }
+
+        if (withShadows) {
+            code.l().cmt("Shadow map uniforms")
+                    .l("uniform sampler2D shadowMapSampler")
+                    .l("uniform float shadowBias");
+        }
+
+        code.l().cmt("Auxiliary functions").l();
+
+        code = computeLight(code);
+
+        if (withShadows) {
+            code.l();
+            code = computeShadow(code);
+        }
+
+        if (hasDirectionalLight) {
+            code.l();
+            code = computeDirectionalLight(code, withShadows);
+        }
+
+        if (maxPointLights > 0) {
+            code.l();
+            code = computePointLight(code);
+        }
+
+        if (maxSpotLights > 0) {
+            code.l();
+            code = computeSpotLight(code);
+        }
+
+        code.l().beginMain()
+                .l("vec3 normal = vNorm").l();
+
+        if (hasTexture) {
+            code.l("vec4 basecolor = texture(texture_sampler, text_coord)");
+        } else {
+            code.l("vec4 basecolor = vec4(material.color, 1)");
+        }
+
+        code.l().l("vec4 totalLight = vec4(ambientLight, 1.0)");
+
+        if (hasDirectionalLight) {
+            code.l().l("totalLight += calcDirectionalLight(directionalLight, vPos, normal)");
+        }
+
+        if (maxPointLights > 0) {
+            code.beginFor("int i = 0", "i < MAX_POINT_LIGHTS", "i++")
+                    .beginIf("pointLights[i].intensity > 0")
+                    .l("totalLight += calcPointLight(pointLights[i], vPos, normal)")
+                    .endIf();
+            code.endFor();
+        }
+
+        if (maxSpotLights > 0) {
+            code.beginFor("int i = 0", "i < MAX_SPOT_LIGHTS", "i++")
+                    .beginIf("spotLights[i].intensity > 0")
+                    .l("totalLight += calcSpotLight(spotLights[i], vPos, normal)")
+                    .endIf();
+            code.endFor();
+        }
+
+        code.l().l("vec4 finalColor = basecolor * totalLight")
+                .l("finalColor += material.emissiveAmount * material.emissive")
+                .l("fragColor = vec4((finalColor).xyz,1)");
+
+        return code.endMain();
     }
 }
 

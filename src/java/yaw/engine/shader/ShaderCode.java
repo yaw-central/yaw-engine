@@ -102,6 +102,55 @@ public class ShaderCode {
         return endBlock();
     }
 
+    public ShaderCode function(String comment, String ret_type, String name, String[][] arguments) {
+        mkIndent();
+        code.append(comment); code.append("\n");
+        code.append(ret_type); code.append(' '); code.append(name); code.append('(');
+        String sep = null;
+        for (String[] argument : arguments) {
+            if (sep != null) {
+                code.append(sep);
+            } else {
+                sep = ", ";
+            }
+            code.append(argument[0]);
+            code.append(' ');
+            code.append(argument[1]);
+            code.append(")\n");
+        }
+        return beginBlock();
+    }
+
+    public ShaderCode function(String ret_type, String name, String[][] arguments) {
+        return function("", ret_type, name, arguments);
+    }
+
+    public ShaderCode endFunction() {
+        return endBlock();
+    }
+
+    public ShaderCode beginIf(String cond) {
+        mkIndent();
+        code.append("if ("); code.append(cond); code.append(")\n");
+        return beginBlock();
+    }
+
+    public ShaderCode endIf() {
+        return endBlock();
+    }
+
+    public ShaderCode beginFor(String init, String cond, String update) {
+        mkIndent();
+        code.append("for (");
+        code.append(init); code.append("; "); code.append(cond); code.append("; "); code.append(update);
+        code.append(")\n");
+        return beginBlock();
+    }
+
+    public ShaderCode endFor() {
+        return endBlock();
+    }
+
     public ShaderCode beginMain() {
         mkIndent();
         code.append("void main()\n");
