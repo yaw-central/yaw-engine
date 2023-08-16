@@ -122,8 +122,7 @@ public class MeshLib {
                 20, 22, 21, 22, 23, 21};
 
         Geometry geom = GeomLib.makeCuboid(xLength, yLength, zLength).build();
-        Mesh lMesh = new Mesh(geom);
-        lMesh.getMaterial().setColor(color);
+        Mesh lMesh = new Mesh(geom, new Material(color));
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         return lMesh;
     }

@@ -34,6 +34,11 @@ public class Material {
         this.withShadows = withShadows;
     }
 
+    public Material(Vector3f baseColor) {
+        this(baseColor, new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(0, 0, 0), 0,
+                new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(1.0f, 1.0f, 1.0f), 32, false);
+    }
+
     public Material(Texture texture, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness, boolean withShadows) {
         this.texture = texture;
         this.ambient = ambient;

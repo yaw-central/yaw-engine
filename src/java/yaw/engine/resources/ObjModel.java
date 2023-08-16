@@ -1,5 +1,6 @@
 package yaw.engine.resources;
 
+import org.joml.Vector3f;
 import yaw.engine.geom.Geometry;
 import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.mesh.Material;
@@ -77,16 +78,17 @@ public class ObjModel {
      *
      * @return The Meshes corresponding to the OBJ/MTL model.
      */
-    public Mesh[] buildMeshes() {
+    public Mesh[] buildMeshes(boolean withShadows) {
         List<Mesh> meshes = new ArrayList<>();
         for (String objName : geometryIds) {
             Geometry geom = geometries.get(objName).build();
             Material mat;
             String matName = materialMap.get(objName);
             if (matName != null) {
-                mat = materials.get(matName).getMaterial();
+                mat = materials.get(matName).getMaterial(withShadows);
             } else {
-                mat = new Material();
+                // use white if material not provided (vertex colors ?)
+                mat = new Material(new Vector3f(1.0f, 1.0f, 1.0f));
             }
             /* DEBUG
             mat = new Material();

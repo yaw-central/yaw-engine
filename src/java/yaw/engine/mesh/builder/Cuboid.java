@@ -1,7 +1,9 @@
 package yaw.engine.mesh.builder;
 
+import org.joml.Vector3f;
 import yaw.engine.geom.GeomLib;
 import yaw.engine.geom.Geometry;
+import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 
@@ -149,7 +151,7 @@ public class Cuboid implements MeshBuilder {
                 20, 22, 21, 22, 23, 21};
 
         Geometry geom = GeomLib.makeCuboid(xLength, yLength, zLength).build();
-        Mesh lMesh = new Mesh(geom);
+        Mesh lMesh = new Mesh(geom, new Material(new Vector3f(1.0f, 1.0f, 1.0f)));
         lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
         return lMesh;
     }
