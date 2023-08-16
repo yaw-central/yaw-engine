@@ -127,58 +127,7 @@ public class ShaderProgramADS extends ShaderProgram {
         return code.endFunction();
     }
 
-    /**
-     * Create uniform for each attribute of the material
-     *
-     * @param uniformName uniform name
-     */
-    public void createMaterialUniform(String uniformName) {
-        createUniform(uniformName + ".color");
-        createUniform(uniformName + ".hasTexture");
-        createUniform(uniformName + ".reflectance");
-    }
 
-    /**
-     * Modifies the value of a uniform material with the specified material
-     *
-     * @param uniformName the uniform name
-     * @param material    the material
-     */
-    public void setUniform(String uniformName, Material material) {
-        setUniform(uniformName + ".color", material.getColor());
-        setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
-        setUniform(uniformName + ".reflectance", material.getReflectance());
-    }
-
-    public void init() {
-        /* Initialization of the shader program. */
-        // System.out.println(vertexShader(true).toString());
-        createVertexShader(vertexShader(true));
-        createFragmentShader(fragShader.SHADER_STRING);
-
-        /* Binds the code and checks that everything has been done correctly. */
-        link();
-
-        createUniform("worldMatrix");
-        createUniform("modelMatrix");
-        createUniform("normalMatrix");
-
-        /* Initialization of the shadow map matrix uniform. */
-        createUniform("directionalShadowMatrix");
-
-        /* Create uniform for material. */
-        createMaterialUniform("material");
-        createUniform("texture_sampler");
-        /* Initialization of the light's uniform. */
-        createUniform("camera_pos");
-        createUniform("specularPower");
-        createUniform("ambientLight");
-        createPointLightListUniform("pointLights", LightModel.MAX_POINTLIGHT);
-        createSpotLightUniformList("spotLights", LightModel.MAX_SPOTLIGHT);
-        createDirectionalLightUniform("directionalLight");
-        createUniform("shadowMapSampler");
-        createUniform("bias");
-    }
 
     public ShaderCode vertexShader(boolean withShadows) {
         ShaderCode code = new ShaderCode(glVersion, glCoreProfile)
@@ -359,16 +308,16 @@ public class ShaderProgramADS extends ShaderProgram {
             code.l("vec4 basecolor = vec4(material.color, 1)");
         }
 
-        code.l().l("vec4 totalLight = vec4(ambientLight, 1.0)");
+        code.l().l("vec4 totalLight = vec4(ambientLight * material.ambient, 1.0)");
 
         if (hasDirectionalLight) {
-            code.l().l("totalLight += calcDirectionalLight(directionalLight, vPos, normal)");
+            code.l().l("totalLight += computeDirectionalLight(directionalLight, vPos, normal)");
         }
 
         if (maxPointLights > 0) {
             code.beginFor("int i = 0", "i < MAX_POINT_LIGHTS", "i++")
                     .beginIf("pointLights[i].intensity > 0")
-                    .l("totalLight += calcPointLight(pointLights[i], vPos, normal)")
+                    .l("totalLight += computePointLight(pointLights[i], vPos, normal)")
                     .endIf();
             code.endFor();
         }
@@ -376,7 +325,7 @@ public class ShaderProgramADS extends ShaderProgram {
         if (maxSpotLights > 0) {
             code.beginFor("int i = 0", "i < MAX_SPOT_LIGHTS", "i++")
                     .beginIf("spotLights[i].intensity > 0")
-                    .l("totalLight += calcSpotLight(spotLights[i], vPos, normal)")
+                    .l("totalLight += computeSpotLight(spotLights[i], vPos, normal)")
                     .endIf();
             code.endFor();
         }
@@ -386,6 +335,59 @@ public class ShaderProgramADS extends ShaderProgram {
                 .l("fragColor = vec4((finalColor).xyz,1)");
 
         return code.endMain();
+    }
+
+    /**
+     * Create uniform for each attribute of the material
+     *
+     * @param uniformName uniform name
+     */
+    public void createMaterialUniform(String uniformName) {
+        createUniform(uniformName + ".color");
+        createUniform(uniformName + ".hasTexture");
+        createUniform(uniformName + ".reflectance");
+    }
+
+    /**
+     * Modifies the value of a uniform material with the specified material
+     *
+     * @param uniformName the uniform name
+     * @param material    the material
+     */
+    public void setUniform(String uniformName, Material material) {
+        setUniform(uniformName + ".color", material.getColor());
+        setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
+        setUniform(uniformName + ".reflectance", material.getReflectance());
+    }
+
+    public void init() {
+        /* Initialization of the shader program. */
+        // System.out.println(vertexShader(true).toString());
+        createVertexShader(vertexShader(true));
+        createFragmentShader(fragShader.SHADER_STRING);
+
+        /* Binds the code and checks that everything has been done correctly. */
+        link();
+
+        createUniform("worldMatrix");
+        createUniform("modelMatrix");
+        createUniform("normalMatrix");
+
+        /* Initialization of the shadow map matrix uniform. */
+        createUniform("directionalShadowMatrix");
+
+        /* Create uniform for material. */
+        createMaterialUniform("material");
+        createUniform("texture_sampler");
+        /* Initialization of the light's uniform. */
+        createUniform("camera_pos");
+        createUniform("specularPower");
+        createUniform("ambientLight");
+        createPointLightListUniform("pointLights", LightModel.MAX_POINTLIGHT);
+        createSpotLightUniformList("spotLights", LightModel.MAX_SPOTLIGHT);
+        createDirectionalLightUniform("directionalLight");
+        createUniform("shadowMapSampler");
+        createUniform("bias");
     }
 }
 
