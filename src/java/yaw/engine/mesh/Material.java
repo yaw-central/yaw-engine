@@ -8,8 +8,7 @@ import org.joml.Vector3f;
  */
 
 public class Material {
-    private Vector3f color;
-
+    private Vector3f baseColor;
     private Texture texture;
     private Vector3f ambient;
     private Vector3f emissive;
@@ -21,9 +20,9 @@ public class Material {
     //RGB vector
     private Vector3f mColor;
 
-    public Material(Vector3f color, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness) {
-        this.color = color;
-        this.texture = null;
+    public Material(Vector3f baseColor, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness) {
+        this.baseColor = baseColor;
+        texture = null;
         this.ambient = ambient;
         this.emissive = emissive;
         this.emissiveAmount = emissiveAmount;
@@ -33,7 +32,6 @@ public class Material {
     }
 
     public Material(Texture texture, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness) {
-        this.color = null;
         this.texture = texture;
         this.ambient = ambient;
         this.emissive = emissive;
@@ -43,69 +41,37 @@ public class Material {
         this.shineness = shineness;
     }
 
-    public Material(Vector3f color, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness) {
-        this(color, new Vector3f(1.0f, 1.0f, 1.0f), emissive, emissiveAmount, diffuse, specular, shineness);
-    }
-
-    public Material(Texture texture, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness) {
-        this(texture, new Vector3f(1.0f, 1.0f, 1.0f), emissive, emissiveAmount, diffuse, specular, shineness);
-    }
-
-    public Material(Vector3f color, Vector3f diffuse, Vector3f specular, float shineness) {
-        this(color, new Vector3f(0, 0, 0), 0.0f, diffuse, specular, shineness);
-    }
-
-    public Material(Texture texture, Vector3f diffuse, Vector3f specular, float shineness) {
-        this(texture, new Vector3f(0, 0, 0), 0.0f, diffuse, specular, shineness);
-    }
-
-    public Material(Vector3f color, Vector3f specular, float shineness) {
-        this(color, new Vector3f(1.0f, 1.0f, 1.0f), specular, shineness);
-    }
-
-    public Material(Texture texture, Vector3f specular, float shineness) {
-        this(texture, new Vector3f(1.0f, 1.0f, 1.0f), specular, shineness);
-    }
-
-    public Material(Vector3f color, float shineness) {
-        this(color, new Vector3f(1.0f, 1.0f, 1.0f), shineness);
-    }
-
-    public Material(Texture texture, float shineness) {
-        this(texture, new Vector3f(1.0f, 1.0f, 1.0f), shineness);
-    }
-
-    public Material(Vector3f color) {
-        this(color, 8f);
-    }
-
-    public Material(Texture texture) {
-        this(texture, 8f);
-    }
-
-    public Texture getTexture() {
-        return mTexture;
-    }
-
-    public void setTexture(Texture pTexture) {
-        mTexture = pTexture;
+    public Vector3f getBaseColor() {
+        return baseColor;
     }
 
     public boolean isTextured() {
-        return this.mTexture != null;
+        return texture != null;
     }
 
-    public Vector3f getColor() {
-        return mColor;
+    public Vector3f getAmbientColor() {
+        return ambient;
     }
 
-    public void setColor(Vector3f pColor) {mColor = pColor;}
-
-    public float getReflectance() {
-        return mReflectance;
+    public Vector3f getEmissiveColor() {
+        return emissive;
     }
 
-    public void setReflectance(float pReflectance) {
-        mReflectance = pReflectance;
+    public float getEmissiveAmount() {
+        return emissiveAmount;
     }
+
+    public Vector3f getDiffuseColor() {
+        return diffuse;
+    }
+
+    public Vector3f getSpecularColor() {
+        return specular;
+    }
+
+    public float getShineness() {
+        return shineness;
+    }
+
+
 }

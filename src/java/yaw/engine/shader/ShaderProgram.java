@@ -232,14 +232,7 @@ public abstract class ShaderProgram {
      * @param uniformName the uniform name
      * @param material    the material
      */
-    public void setUniform(String uniformName, Material material) {
-
-        setUniform(uniformName + ".color", material.getColor());
-
-        setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
-
-        setUniform(uniformName + ".reflectance", material.getReflectance());
-    }
+    public abstract void setUniform(String uniformName, Material material);
 
     /**
      * Modifies the value of a uniform Vector3f with the specified Vector3f

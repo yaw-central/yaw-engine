@@ -1,5 +1,6 @@
 package yaw.engine.shader;
 
+import org.joml.Vector3f;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Material;
 
@@ -238,7 +239,9 @@ public class ShaderProgramADS extends ShaderProgram {
 
         code.beginStruct("Material");
 
-        if (!hasTexture) {
+        if (hasTexture) {
+            code.item("sampler2D", "texture_sampler", "Texture (2D)");
+        } else {
             code.item("vec3", "color", "Non-textured material");
         }
 
@@ -252,7 +255,6 @@ public class ShaderProgramADS extends ShaderProgram {
 
         code.cmt("Fragment shader uniforms")
                 .l("uniform vec3 camera_pos")
-                .l("uniform sampler2D texture_sampler")
                 .l("uniform Material material")
                 .l().cmt("Lights")
                 .l("uniform vec3 ambientLight");
@@ -342,10 +344,17 @@ public class ShaderProgramADS extends ShaderProgram {
      *
      * @param uniformName uniform name
      */
-    public void createMaterialUniform(String uniformName) {
-        createUniform(uniformName + ".color");
-        createUniform(uniformName + ".hasTexture");
-        createUniform(uniformName + ".reflectance");
+    public void createMaterialUniform(String uniformName, boolean textured) {
+        if (textured) {
+            createUniform(uniformName + ".texture_sampler");
+        } else {
+            createUniform(uniformName + ".color");
+        }
+        createUniform(uniformName + ".ambient");
+        createUniform(uniformName + ".emissive");
+        createUniform(uniformName + ".diffuse");
+        createUniform(uniformName + ".specular");
+        createUniform(uniformName + ".shineness");
     }
 
     /**
@@ -355,16 +364,25 @@ public class ShaderProgramADS extends ShaderProgram {
      * @param material    the material
      */
     public void setUniform(String uniformName, Material material) {
-        setUniform(uniformName + ".color", material.getColor());
-        setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
-        setUniform(uniformName + ".reflectance", material.getReflectance());
+        if (material.isTextured()) {
+            setUniform(uniformName + ".texture_sampler", 0); // TODO : assign sampler slots more dynamically
+        } else {
+            setUniform(uniformName + ".color", material.getBaseColor());
+        }
+        setUniform(uniformName + ".ambient", material.getAmbientColor());
+        Vector3f emissiveColor = new Vector3f();
+        material.getEmissiveColor().mul(material.getEmissiveAmount(), emissiveColor);
+        setUniform(uniformName + ".emissive", emissiveColor);
+        setUniform(uniformName + ".diffuse", material.getDiffuseColor());
+        setUniform(uniformName + ".specular", material.getSpecularColor());
+        setUniform(uniformName + ".shineness", material.getShineness());
     }
 
-    public void init() {
+    public void init(boolean hasDirectionalLight, int maxPointLights, int maxSpotLights, boolean hasTexture, boolean withShadows) {
         /* Initialization of the shader program. */
         // System.out.println(vertexShader(true).toString());
-        createVertexShader(vertexShader(true));
-        createFragmentShader(fragShader.SHADER_STRING);
+        createVertexShader(vertexShader(withShadows));
+        createFragmentShader(fragmentShader(hasDirectionalLight, maxPointLights, maxSpotLights, hasTexture, withShadows));
 
         /* Binds the code and checks that everything has been done correctly. */
         link();
@@ -374,21 +392,32 @@ public class ShaderProgramADS extends ShaderProgram {
         createUniform("normalMatrix");
 
         /* Initialization of the shadow map matrix uniform. */
-        createUniform("directionalShadowMatrix");
+        if (withShadows) {
+            createUniform("directionalShadowMatrix");
+        }
 
         /* Create uniform for material. */
         createMaterialUniform("material");
-        createUniform("texture_sampler");
+
         /* Initialization of the light's uniform. */
         createUniform("camera_pos");
-        createUniform("specularPower");
+
         createUniform("ambientLight");
-        createPointLightListUniform("pointLights", LightModel.MAX_POINTLIGHT);
-        createSpotLightUniformList("spotLights", LightModel.MAX_SPOTLIGHT);
-        createDirectionalLightUniform("directionalLight");
-        createUniform("shadowMapSampler");
-        createUniform("bias");
+        if (hasDirectionalLight) {
+            createDirectionalLightUniform("directionalLight");
+        }
+
+        if (maxPointLights > 0) {
+            createPointLightListUniform("pointLights", LightModel.MAX_POINTLIGHT);
+        }
+
+        if (maxSpotLights > 0) {
+            createSpotLightUniformList("spotLights", LightModel.MAX_SPOTLIGHT);
+        }
+
+        if (withShadows) {
+            createUniform("shadowMapSampler");
+            createUniform("shadowBias");
+        }
     }
 }
-
-

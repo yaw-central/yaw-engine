@@ -33,7 +33,9 @@ public class MtlMaterial {
                 '}';
         return s;
     }
-    public Material getMaterial(){
+    public Material getMaterial() {
+        Material mat = new Material()
+
         Vector3f final_color = new Vector3f();
         Vector3f vide = new Vector3f(0, 0, 0);
 
