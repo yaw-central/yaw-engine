@@ -8,13 +8,16 @@ public class ShaderProgramADS extends ShaderProgram {
     private final String glVersion;
     private final boolean glCoreProfile;
 
-    public ShaderProgramADS(String glVersion, boolean glCoreProfile) {
+    private final ShaderProperties shaderProperties;
+
+    public ShaderProgramADS(String glVersion, boolean glCoreProfile, ShaderProperties shaderProperties) {
         this.glVersion = glVersion;
         this.glCoreProfile = glCoreProfile;
+        this.shaderProperties = shaderProperties;
     }
 
-    public ShaderProgramADS() {
-        this("330", true);
+    public ShaderProgramADS(ShaderProperties shaderProperties) {
+        this("330", true, shaderProperties);
     }
 
     public static ShaderCode computeLight(ShaderCode code) {
@@ -380,11 +383,15 @@ public class ShaderProgramADS extends ShaderProgram {
         setUniform(uniformName + ".shineness", material.getShineness());
     }
 
-    public void init(boolean hasDirectionalLight, int maxPointLights, int maxSpotLights, boolean hasTexture, boolean withShadows) {
+    public void init() {
         /* Initialization of the shader program. */
         // System.out.println(vertexShader(true).toString());
-        createVertexShader(vertexShader(withShadows));
-        createFragmentShader(fragmentShader(hasDirectionalLight, maxPointLights, maxSpotLights, hasTexture, withShadows));
+        createVertexShader(vertexShader(shaderProperties.withShadows));
+        createFragmentShader(fragmentShader(shaderProperties.hasDirectionalLight,
+                shaderProperties.maxPointLights,
+                shaderProperties.maxSpotLights,
+                shaderProperties.hasTexture,
+                shaderProperties.withShadows));
 
         /* Binds the code and checks that everything has been done correctly. */
         link();
@@ -394,7 +401,7 @@ public class ShaderProgramADS extends ShaderProgram {
         createUniform("normalMatrix");
 
         /* Initialization of the shadow map matrix uniform. */
-        if (withShadows) {
+        if (shaderProperties.withShadows) {
             createUniform("directionalShadowMatrix");
         }
 
@@ -405,19 +412,19 @@ public class ShaderProgramADS extends ShaderProgram {
         createUniform("camera_pos");
 
         createUniform("ambientLight");
-        if (hasDirectionalLight) {
+        if (shaderProperties.hasDirectionalLight) {
             createDirectionalLightUniform("directionalLight");
         }
 
-        if (maxPointLights > 0) {
-            createPointLightListUniform("pointLights", LightModel.MAX_POINTLIGHT);
+        if (shaderProperties.maxPointLights > 0) {
+            createPointLightListUniform("pointLights", shaderProperties.maxPointLights);
         }
 
-        if (maxSpotLights > 0) {
-            createSpotLightUniformList("spotLights", LightModel.MAX_SPOTLIGHT);
+        if (shaderProperties.maxSpotLights > 0) {
+            createSpotLightUniformList("spotLights", shaderProperties.maxSpotLights);
         }
 
-        if (withShadows) {
+        if (shaderProperties.withShadows) {
             createUniform("shadowMapSampler");
             createUniform("shadowBias");
         }

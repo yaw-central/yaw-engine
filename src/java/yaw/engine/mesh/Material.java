@@ -17,10 +17,12 @@ public class Material {
     private Vector3f specular;
     private float shineness;
 
+    public final boolean withShadows;
+
     //RGB vector
     private Vector3f mColor;
 
-    public Material(Vector3f baseColor, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness) {
+    public Material(Vector3f baseColor, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness, boolean withShadows) {
         this.baseColor = baseColor;
         texture = null;
         this.ambient = ambient;
@@ -29,9 +31,10 @@ public class Material {
         this.diffuse = diffuse;
         this.specular = specular;
         this.shineness = shineness;
+        this.withShadows = withShadows;
     }
 
-    public Material(Texture texture, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness) {
+    public Material(Texture texture, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness, boolean withShadows) {
         this.texture = texture;
         this.ambient = ambient;
         this.emissive = emissive;
@@ -39,6 +42,7 @@ public class Material {
         this.diffuse = diffuse;
         this.specular = specular;
         this.shineness = shineness;
+        this.withShadows = withShadows;
     }
 
     public Vector3f getBaseColor() {
@@ -74,4 +78,7 @@ public class Material {
     }
 
 
+    public Texture getTexture() {
+        return texture;
+    }
 }

@@ -10,10 +10,10 @@ import org.joml.Vector4f;
 public class LightModel {
     private AmbientLight ambientLight;
 
-    private boolean hasDirectionalLight;
+    public final boolean hasDirectionalLight;
     private DirectionalLight directionalLight;
 
-    private final int maxPointLights;
+    public final int maxPointLights;
     private int nbPointLights;
     private PointLight[] pointLights;
 
@@ -99,5 +99,5 @@ public class LightModel {
         directionalLight.bindShadowMap(shaderProgram);
 
     }
-    
+
 }

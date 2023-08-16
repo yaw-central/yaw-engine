@@ -6,8 +6,10 @@ import org.lwjgl.BufferUtils;
 import yaw.engine.camera.Camera;
 import yaw.engine.geom.Geometry;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 import yaw.engine.shader.ShaderProgram;
+import yaw.engine.shader.ShaderProperties;
 import yaw.engine.util.LoggerYAW;
 
 import java.nio.FloatBuffer;
@@ -44,13 +46,6 @@ public class Mesh {
     private boolean drawADS;
 
     /**
-     * Construct a Mesh with a default (solid, unicolor) material
-     */
-    public Mesh(Geometry geometry) {
-        this(geometry, new Material());
-    }
-
-    /**
      * Construct a Mesh
      *
      * @param geometry    The Geometry of the Mesh
@@ -63,6 +58,14 @@ public class Mesh {
         this.vboIdList = new ArrayList<>();
         this.drawADS = false;
         drawingStrategy = new DefaultDrawingStrategy();
+    }
+
+    public ShaderProperties getShaderProperties(LightModel lightModel) {
+        return new ShaderProperties(lightModel.hasDirectionalLight,
+                lightModel.maxPointLights,
+                lightModel.maxSpotLights,
+                material.isTextured(),
+                material.withShadows && lightModel.hasDirectionalLight);
     }
 
     /**
