@@ -1,6 +1,5 @@
 package test.yaw.unittests;
 
-import clojure.lang.Obj;
 import yaw.engine.resources.ObjEntry;
 import yaw.engine.resources.ObjLoader;
 

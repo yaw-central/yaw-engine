@@ -51,7 +51,7 @@ public class RotatingObj implements UpdateCallback {
 		//cube.rotateXYZ(0f, 3.1415925f * speed * (float) deltaTime, 0f);
 		//cube.rotateZAround(1f, new Vector3f(0f, 0f, -3f));
 
-		float angle = 2.0f * 3.1415925f * (float) deltaTime * speed;
+		float angle = 3.0f * 3.1415925f * (float) deltaTime * speed;
 		//System.out.println(deltaTime);
 		obj.rotateY(angle);
 		//cube.rotateXYZAround(0f, 3.1415925f * speed * (float) deltaTime, 0f, new Vector3f(0f, 0f, -10f));
@@ -64,9 +64,8 @@ public class RotatingObj implements UpdateCallback {
 
 		World world = new World(0, 0, 800, 600);
 		world.installScene(new SceneRenderer(new LightModel()));
-		world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
-		//world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
-		world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
+		world.getSceneLight().setDirectionalLight(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
+		world.getSceneLight().setAmbientLight(new AmbientLight(0.3f));
 
 		ObjLoader objLoader = new ObjLoader();
 		try {
@@ -89,7 +88,7 @@ public class RotatingObj implements UpdateCallback {
 		obji.translate(0f,0f, -5f);
 		*/
 
-		Mesh[] meshes = objLoader.getScene().buildMeshes();
+		Mesh[] meshes = objLoader.getScene().buildMeshes(false);
 
 		int i = 1;
 		ItemGroup grp = world.createGroup("obj");

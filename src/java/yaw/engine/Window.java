@@ -1,6 +1,5 @@
 package yaw.engine;
 
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;

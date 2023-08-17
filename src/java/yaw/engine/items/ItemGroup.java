@@ -14,7 +14,7 @@ public class ItemGroup extends Item {
 
     public ItemGroup(String id, Vector3f position, Quaternionf orientation, float scale){
        super(id, position, orientation, scale);
-       items = new HashMap<String, Item>();
+       items = new HashMap<>();
     }
 
     public ItemGroup(String id) {

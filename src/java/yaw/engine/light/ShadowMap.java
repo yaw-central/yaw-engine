@@ -8,10 +8,7 @@ import yaw.engine.camera.Camera;
 import yaw.engine.items.ItemObject;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
-import yaw.engine.shader.ShaderManager;
-import yaw.engine.shader.ShaderProgram;
-import yaw.engine.shader.shadowFragShader;
-import yaw.engine.shader.shadowVertShader;
+import yaw.engine.shader.*;
 
 
 import java.nio.FloatBuffer;
@@ -25,16 +22,12 @@ public class ShadowMap {
 
     private class ShadowShaderProgram extends ShaderProgram {
 
-        public ShadowShaderProgram() throws Exception {
+        public ShadowShaderProgram() {
             super();
         }
 
         public void init() {}
 
-        @Override
-        public void setUniform(String uniformName, Material material) {
-            // Don't do anything as there is no material
-        }
     }
 
     private int width;
@@ -96,7 +89,7 @@ public class ShadowMap {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         //float borderColor[] = { 0,0,0,0 };
-        float borderColor[] = { 1,1,1,1 };
+        float[] borderColor = { 1,1,1,1 };
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
         framebuffer = glGenFramebuffers();
@@ -152,7 +145,8 @@ public class ShadowMap {
             if(castingItems.isEmpty()) continue;
 
             try {
-                ShaderProgram shaderProgram = shaderManager.fetch("ADS");
+                // XXX : this will fail
+                ShaderProgramADS shaderProgram = (ShaderProgramADS) shaderManager.fetch("ADS");
                 lMesh.renderSetup(pCamera, shaderProgram);
                 for(ItemObject item : castingItems) {
                     lMesh.renderItem(item, shaderProgram);
@@ -176,7 +170,7 @@ public class ShadowMap {
         shaderProgram.setUniform("directionalShadowMatrix", new Matrix4f(projection).mul(view));
 
         shaderProgram.setUniform("shadowMapSampler", 1);
-        shaderProgram.setUniform("bias", bias);
+        shaderProgram.setUniform("shadowBias", bias);
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, depthMap);

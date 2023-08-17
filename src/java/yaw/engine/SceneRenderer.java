@@ -8,6 +8,8 @@ import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
 import yaw.engine.shader.ShaderManager;
 import yaw.engine.shader.ShaderProgram;
+import yaw.engine.shader.ShaderProgramADS;
+import yaw.engine.shader.ShaderProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +34,6 @@ public class SceneRenderer {
         mMeshMap = new HashMap<>();
         notInit = new ArrayList<>();
         this.lightModel = lightModel;
-
     }
 
     /**
@@ -92,31 +93,39 @@ public class SceneRenderer {
      */
 
     public void render(Camera pCamera, ShaderManager shaderManager) {
-        ShaderProgram shaderProgram = shaderManager.fetch("ADS");
-
-        /* Setup lights */
-        lightModel.setupShader(new Matrix4f().identity(), shaderProgram);
 
         /* Rendering of meshes */
 
         //ShaderProgram shaderProgram =shaderManager.fetch("ADS");
         List<Mesh> meshesToRemove = new ArrayList<>();
 
-        for (Mesh lMesh : mMeshMap.keySet()) {
-            List<ItemObject> lItems = mMeshMap.get(lMesh);
+        for (Mesh mesh : mMeshMap.keySet()) {
+            ShaderProperties meshProps = mesh.getShaderProperties(lightModel);
+            // TODO : ugly cast, fix when support for e.g. PBR materials
+            ShaderProgramADS meshProgram = (ShaderProgramADS) shaderManager.fetch(meshProps);
+            if (meshProgram == null) {
+                // create a shader program for this scene / mesh
+                meshProgram = new ShaderProgramADS(meshProps);
+                shaderManager.register(meshProps, meshProgram);
+                meshProgram.init();
+            }
+            /* Setup lights */
+            lightModel.setupShader(new Matrix4f().identity(), meshProgram);
+
+            List<ItemObject> lItems = mMeshMap.get(mesh);
             List<ItemObject> vertexHelpers = new ArrayList<>();
             List<ItemObject> normalHelpers = new ArrayList<>();
             List<ItemObject> axisHelpers = new ArrayList<>();
             if (lItems.isEmpty()) {
-                meshesToRemove.add(lMesh);
+                meshesToRemove.add(mesh);
             } else {
-                if (notInit.contains(lMesh)) {
-                    lMesh.initBuffers();
-                    notInit.remove(lMesh);
+                if (notInit.contains(mesh)) {
+                    mesh.initBuffers();
+                    notInit.remove(mesh);
                 }
-                lMesh.renderSetup(pCamera, shaderProgram);
+                mesh.renderSetup(pCamera, meshProgram);
                 for (ItemObject item : lItems) {
-                    lMesh.renderItem(item, shaderProgram);
+                    mesh.renderItem(item, meshProgram);
                     if (item.showVertexHelpers()) {
                         vertexHelpers.add(item);
                     }
@@ -128,16 +137,16 @@ public class SceneRenderer {
                     }
                 }
 
-                lMesh.renderCleanup(shaderProgram);
+                mesh.renderCleanup(meshProgram);
 
                 if (!vertexHelpers.isEmpty()) {
-                    lMesh.renderHelperVertices(vertexHelpers, pCamera, shaderManager.fetch("VertexHelper"));
+                    mesh.renderHelperVertices(vertexHelpers, pCamera, shaderManager.fetch("VertexHelper"));
                 }
                 if (!normalHelpers.isEmpty()) {
-                    lMesh.renderHelperNormals(normalHelpers, pCamera, shaderManager.fetch("NormalHelper"));
+                    mesh.renderHelperNormals(normalHelpers, pCamera, shaderManager.fetch("NormalHelper"));
                 }
                 if (!axisHelpers.isEmpty()) {
-                    lMesh.renderHelperAxes(axisHelpers, pCamera, shaderManager.fetch("AxisHelper"));
+                    mesh.renderHelperAxes(axisHelpers, pCamera, shaderManager.fetch("AxisHelper"));
                 }
             }
         }

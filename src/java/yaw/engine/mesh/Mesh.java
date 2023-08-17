@@ -6,8 +6,11 @@ import org.lwjgl.BufferUtils;
 import yaw.engine.camera.Camera;
 import yaw.engine.geom.Geometry;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.LightModel;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 import yaw.engine.shader.ShaderProgram;
+import yaw.engine.shader.ShaderProgramADS;
+import yaw.engine.shader.ShaderProperties;
 import yaw.engine.util.LoggerYAW;
 
 import java.nio.FloatBuffer;
@@ -17,11 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
@@ -49,13 +47,6 @@ public class Mesh {
     private boolean drawADS;
 
     /**
-     * Construct a Mesh with a default (solid, unicolor) material
-     */
-    public Mesh(Geometry geometry) {
-        this(geometry, new Material());
-    }
-
-    /**
      * Construct a Mesh
      *
      * @param geometry    The Geometry of the Mesh
@@ -68,6 +59,18 @@ public class Mesh {
         this.vboIdList = new ArrayList<>();
         this.drawADS = false;
         drawingStrategy = new DefaultDrawingStrategy();
+    }
+
+    public Mesh(Geometry geometry) {
+        this(geometry, new Material());
+    }
+
+    public ShaderProperties getShaderProperties(LightModel lightModel) {
+        return new ShaderProperties(lightModel.hasDirectionalLight,
+                lightModel.maxPointLights,
+                lightModel.maxSpotLights,
+                material.isTextured(),
+                material.withShadows && lightModel.hasDirectionalLight);
     }
 
     /**
@@ -126,15 +129,13 @@ public class Mesh {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-
     }
 
-    public void renderSetup(Camera pCamera, ShaderProgram shaderProgram) {
+    public void renderSetup(Camera pCamera, ShaderProgramADS shaderProgram) {
         initRender();
         shaderProgram.bind();
         /* Set the camera to render. */
         shaderProgram.setUniform("worldMatrix", pCamera.getWorldMat());
-        shaderProgram.setUniform("texture_sampler", 0);
         shaderProgram.setUniform("camera_pos", pCamera.getPosition());
 
         shaderProgram.setUniform("material", material);

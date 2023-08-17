@@ -1,5 +1,6 @@
 package yaw.engine.helper;
 
+import yaw.engine.mesh.Material;
 import yaw.engine.shader.ShaderCode;
 import yaw.engine.shader.ShaderProgram;
 

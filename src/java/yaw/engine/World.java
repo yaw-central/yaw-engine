@@ -16,8 +16,6 @@ import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
 
-import static org.lwjgl.opengl.GL11.glClearColor;
-
 /**
  * This is the facade of the engine, most Clojure calls are
  * made on an instance of this object. The stateful part
@@ -170,9 +168,7 @@ public class World  {
             lMaterial.setTexture(lTexture);
         }
         Geometry geom = new Geometry(pVertices, pTextCoords, pNormals, pIndices);
-        Mesh lMesh = new Mesh(geom);
-        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
-        lMesh.setMaterial(lMaterial);
+        Mesh lMesh = new Mesh(geom, lMaterial);
         return lMesh;
     }
 
@@ -191,9 +187,7 @@ public class World  {
         }
         Vector3f lMaterialColor = new Vector3f(rgb[0], rgb[1], rgb[2]);
         Material lMaterial = new Material(lMaterialColor);
-        Mesh lMesh = new Mesh(new Geometry(pVertices, pNormals, pIndices));
-        lMesh.setDrawingStrategy(new DefaultDrawingStrategy());
-        lMesh.setMaterial(lMaterial);
+        Mesh lMesh = new Mesh(new Geometry(pVertices, pNormals, pIndices), lMaterial);
         return lMesh;
     }
 

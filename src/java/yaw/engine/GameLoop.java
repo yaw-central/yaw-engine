@@ -245,9 +245,8 @@ public class GameLoop implements Runnable {
     /**
      * Allows to initialize the parameters of the class World.
      *
-     * @throws Exception Exception
      */
-    public synchronized void init() throws Exception {
+    public synchronized void init() {
         Window.init(initWidth, initHeight, initVSYNC);
 
         if(inputCallback != null) {
@@ -263,7 +262,7 @@ public class GameLoop implements Runnable {
 
     // UpdateRate: FIXED
     // FrameRate: VARIABLE
-    private void loop() throws InterruptedException {
+    private void loop() {
         double dt = 0.01; // Update Rate: 1 ~= 2 fps | 0.001 ~= 1000 fps
         double beforeTime = glfwGetTime();
         double lag = 0d;
@@ -302,7 +301,8 @@ public class GameLoop implements Runnable {
            /*  Input of critical section, allows to protect the creation of our logic of Game .
                1 Maximum thread in Synchronize -> mutual exclusion.*/
             synchronized (mSceneRenderer) {
-                mSceneRenderer.getLightModel().renderShadowMap(mSceneRenderer, mCamera, shaderManager);
+                // XXX: for now shadow mapping is deactivated
+                //mSceneRenderer.getLightModel().renderShadowMap(mSceneRenderer, mCamera, shaderManager);
                 mRenderer.render(mSceneRenderer, isResized, mCamera, mSkybox, shaderManager);
             }
 
@@ -315,9 +315,6 @@ public class GameLoop implements Runnable {
 
     private void initShaderManager() {
         shaderManager = new ShaderManager();
-        ShaderProgramADS shaderProgram = new ShaderProgramADS();
-        shaderProgram.init();
-        shaderManager.register("ADS", shaderProgram);
         // register helpers
         ShaderProgram helper = new HelperVerticesShaders();
         helper.init();
@@ -338,10 +335,6 @@ public class GameLoop implements Runnable {
             throw new Error("shaderManager non-null (please report)");
         }
         mSceneRenderer = sceneRenderer;
-        if (mLoop) {
-            // XXX: risky ?    (for scene uninstall/install ...)
-            initShaderManager();
-        }
     }
 
     private void cleanupScene() {

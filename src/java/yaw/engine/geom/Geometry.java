@@ -1,10 +1,6 @@
 package yaw.engine.geom;
 
 import org.joml.Vector3f;
-import yaw.engine.mesh.Material;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Geometry {
     private float[] vertices;//vertices

@@ -1,7 +1,6 @@
 package yaw.engine.shader;
 
 import yaw.engine.helper.*;
-import yaw.engine.light.LightModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,55 +26,51 @@ import java.util.Map;
  */
 public class ShaderManager {
 
-    private Map<String, ShaderProgram> shaderMap;
+    private Map<String, ShaderProgram> namedShadersMap;
 
-    private ArrayList<ShaderProgram> shaderlist;
+    private Map<ShaderProperties, ShaderProgram> meshShadersMap;
 
     public ShaderManager() {
-        shaderMap = new HashMap<>();
-        shaderlist = new ArrayList<>();
+        namedShadersMap = new HashMap<>();
+        meshShadersMap = new HashMap<>();
     }
 
     public void register(String key, ShaderProgram shaderProgram) {
-        if (shaderMap.containsKey(key)) {
+        if (namedShadersMap.containsKey(key)) {
             throw new Error("ShaderProgram '" + key + "' already registered");
         }
-        shaderMap.put(key, shaderProgram);
-    }
-
-    public void unregister(String key) {
-        if(!shaderMap.containsKey(key)) {
-            throw new Error("No such shader program: '" + key + "'");
-        }
-        shaderMap.remove(key);
+        namedShadersMap.put(key, shaderProgram);
     }
 
     public ShaderProgram fetch(String key) {
-        ShaderProgram prog = shaderMap.get(key);
+        ShaderProgram prog = namedShadersMap.get(key);
         if (prog == null) {
             throw new Error("No such shader program: '" + key + "'");
         }
         return prog;
     }
 
-    public void addShader(ShaderProgram mShaderProgram){
-        shaderlist.add(mShaderProgram);
-    }
-    
-    public ShaderProgram getShaderProgram(int id){
-        return shaderlist.get(id);
+    public void register(ShaderProperties props, ShaderProgram shaderProgram) {
+        if (namedShadersMap.containsKey(props)) {
+            throw new Error("ShaderProgram (mesh-specific) already registered");
+        }
+        meshShadersMap.put(props, shaderProgram);
     }
 
-    public ShaderProgramADS getShaderProgramAds() { return (ShaderProgramADS) shaderlist.get(0);}
-    public HelperVerticesShaders getShaderProgramHelperSummit() { return (HelperVerticesShaders) shaderlist.get(1);}
-    public HelperNormalsShaders getShaderProgramHelperNormals() { return (HelperNormalsShaders) shaderlist.get(2);}
-    public HelperAxesShaders getShaderProgramHelperAxesMesh() { return (HelperAxesShaders) shaderlist.get(3);}
+    public ShaderProgram fetch(ShaderProperties props) {
+        return meshShadersMap.get(props);
+    }
+
 
     /**
      * The Shader Program is deallocated
      */
     public void cleanUp(){
-        for(ShaderProgram sp : shaderlist){
+        for(ShaderProgram sp : namedShadersMap.values()) {
+            sp.cleanup();
+        }
+
+        for(ShaderProgram sp : meshShadersMap.values()) {
             sp.cleanup();
         }
     }

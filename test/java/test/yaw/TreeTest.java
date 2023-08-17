@@ -36,7 +36,7 @@ public class TreeTest implements UpdateCallback {
 
         world.getCamera().lookAt(new Vector3f(-1,2,3).add(center), new Vector3f(0,1f,0).add(center), new Vector3f(0,1,0));
 
-        world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
+        world.getSceneLight().setDirectionalLight(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
 
         //ShadowMap shadow = new ShadowMap();
         //shadow.setBias(0.0005f);
@@ -73,7 +73,7 @@ public class TreeTest implements UpdateCallback {
     }
 
     private interface ConeOperator {
-        public void cone(float bh, float r, int n);
+        void cone(float bh, float r, int n);
     }
 
     public static Mesh generateTreeMesh(int layers, float size, double rand) {
@@ -130,7 +130,7 @@ public class TreeTest implements UpdateCallback {
 
         Mesh treem = new Mesh(new Geometry(nvs, null, null, nis));
         treem.setDrawingStrategy(new DefaultDrawingStrategy());
-        Material mat = new Material(new Vector3f(0,1,0), 0.1f);
+        Material mat = new Material(new Vector3f(0,1,0));
         treem.setMaterial(mat);
 
         return treem;

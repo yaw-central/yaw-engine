@@ -35,7 +35,7 @@ public class DifferentLights implements UpdateCallback {
         long currentMillis = System.currentTimeMillis();
         if (currentMillis - prevDeltaRefreshMillis > deltaRefreshMillis) {
             double avgDeltaTime = totalDeltaTime / (double) nbUpdates;
-            System.out.println("Average deltaTime = " + Double.toString(avgDeltaTime) +" s ("+nbUpdates+")");
+            System.out.println("Average deltaTime = " + avgDeltaTime +" s ("+nbUpdates+")");
             nbUpdates = 0;
             totalDeltaTime = 0.0;
             prevDeltaRefreshMillis = currentMillis;
@@ -52,10 +52,10 @@ public class DifferentLights implements UpdateCallback {
         world.getCamera().setPosition(0,0,0);
         //world.getCamera().rotateXYZ(0,10,0);
 
-        world.getSceneLight().getSpotTable()[0] = new SpotLight(0, 255, 0, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -5, 10f);
-        world.getSceneLight().getSpotTable()[1] = new SpotLight(0, 0, 255, 0.2f, 0f,0f, 1, 0, 0.75f, 0, 0, 0, -2, 3);
-        world.getSceneLight().getSpotTable()[2] = new SpotLight(255, 0, 0, -0.2f, 0.0f, 0, 1f, 0, 0.75f, 0, 0f, 0, -2, 3f);
-        world.getSceneLight().setSun(new DirectionalLight());
+        world.getSceneLight().addSpotLight(new SpotLight(0, 255, 0, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -5, 10f));
+        world.getSceneLight().addSpotLight(new SpotLight(0, 0, 255, 0.2f, 0f,0f, 1, 0, 0.75f, 0, 0, 0, -2, 3));
+        world.getSceneLight().addSpotLight(new SpotLight(255, 0, 0, -0.2f, 0.0f, 0, 1f, 0, 0.75f, 0, 0f, 0, -2, 3f));
+        world.getSceneLight().setDirectionalLight(new DirectionalLight());
 
         //Mesh cubem = new Cuboid(1).generate();
         Mesh cubem = MeshExamples.makeDice(1);

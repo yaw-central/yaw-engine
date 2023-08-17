@@ -13,7 +13,6 @@ import yaw.engine.mesh.Material;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 
-import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL32.*;
 
 
@@ -75,6 +74,12 @@ public abstract class ShaderProgram {
         createGeometryShader(shaderCode.toString());
     }
 
+    private String fetchInfoLog() {
+        int[] logLength = {0};
+        glGetShaderiv(mProgramId, GL_INFO_LOG_LENGTH, logLength);
+        return "" + glGetShaderInfoLog(mProgramId, logLength[0]+1);
+    }
+
     /**
      * Links the program object.
      *
@@ -82,12 +87,12 @@ public abstract class ShaderProgram {
     public void link()  {
         glLinkProgram(mProgramId);
         if (glGetProgrami(mProgramId, GL_LINK_STATUS) == 0) {
-            throw new Error("Error linking Shader code: " + glGetShaderInfoLog(mProgramId, 1024));
+            throw new Error("Error linking Shader code\n  ==> " + fetchInfoLog());
         }
 
         glValidateProgram(mProgramId);
         if (glGetProgrami(mProgramId, GL_VALIDATE_STATUS) == 0) {
-            throw new Error("Error validating Shader code: " + glGetShaderInfoLog(mProgramId, 1024));
+            throw new Error("Error validating Shader code\n  ==> " + fetchInfoLog());
         }
 
     }
@@ -184,18 +189,6 @@ public abstract class ShaderProgram {
     }
 
     /**
-     * Create uniform for each attribute of the material
-     *
-     * @param uniformName uniform name
-     */
-    public void createMaterialUniform(String uniformName) {
-        createUniform(uniformName + ".color");
-        createUniform(uniformName + ".hasTexture");
-        createUniform(uniformName + ".reflectance");
-
-    }
-
-    /**
      * Retrieve a uniform location by name
      *
      * @param uniformName the uniform name
@@ -225,21 +218,6 @@ public abstract class ShaderProgram {
         value.get(fb);
         /*Warning can cause nullpointer exception*/
         glUniformMatrix3fv(mUniformsList.get(uniformName), false, fb);
-    }
-
-    /**
-     * Modifies the value of a uniform material with the specified material
-     *
-     * @param uniformName the uniform name
-     * @param material    the material
-     */
-    public void setUniform(String uniformName, Material material) {
-
-        setUniform(uniformName + ".color", material.getColor());
-
-        setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
-
-        setUniform(uniformName + ".reflectance", material.getReflectance());
     }
 
     /**
@@ -380,11 +358,11 @@ public abstract class ShaderProgram {
      */
     private void createPointLightUniform(String uniformName) {
         createUniform(uniformName + ".color");
-        createUniform(uniformName + ".position");
         createUniform(uniformName + ".intensity");
+        createUniform(uniformName + ".position");
         createUniform(uniformName + ".att_constant");
         createUniform(uniformName + ".att_linear");
-        createUniform(uniformName + ".att_exponent");
+        createUniform(uniformName + ".att_quadratic");
     }
 
     /**

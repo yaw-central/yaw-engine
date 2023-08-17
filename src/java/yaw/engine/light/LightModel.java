@@ -8,50 +8,44 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 public class LightModel {
-    // Maximum number of pointLight and spotLight which can be created.
-    // If this value is modified, it is needed to change the value in the frag.sh
-    public static final int MAX_POINTLIGHT = 5;
-    public static final int MAX_SPOTLIGHT = 5;
-    public float mSpecularPower = 8;
-    // Different lights used in the current scene
-    private AmbientLight mAmbient;
-    private DirectionalLight mSun;
-    private PointLight[] mPointTable;
-    private SpotLight[] mSpotTable;
-    private boolean isInit;
+    private AmbientLight ambientLight;
+
+    public final boolean hasDirectionalLight;
+    private DirectionalLight directionalLight;
+
+    public final int maxPointLights;
+    private int nbPointLights;
+    private PointLight[] pointLights;
+
+    public final int maxSpotLights;
+    private SpotLight[] spotLights;
+    private int nbSpotLights;
+
     /**
      * Constructor without parameters, it used to create the maximum of point light and spot light.
      */
+    public LightModel(boolean hasDirectionalLight, int maxPointLights, int maxSpotLights) {
+        ambientLight = new AmbientLight();
+        this.hasDirectionalLight = hasDirectionalLight;
+        directionalLight = null;
+
+        this.maxPointLights = maxPointLights;
+        this.maxSpotLights = maxSpotLights;
+
+        pointLights = new PointLight[maxPointLights];
+        nbPointLights = 0;
+
+        this.spotLights = new SpotLight[maxSpotLights];
+        nbSpotLights = 0;
+    }
+
     public LightModel() {
-        this.mAmbient = new AmbientLight();
-        removeSun();
-        this.mPointTable = new PointLight[MAX_POINTLIGHT];
-        for (int i = 0; i < MAX_POINTLIGHT; i++)
-            this.mPointTable[i] = new PointLight();
-        this.mSpotTable = new SpotLight[MAX_SPOTLIGHT];
-        for (int i = 0; i < MAX_SPOTLIGHT; i++)
-            this.mSpotTable[i] = new SpotLight();
-        isInit = false;
+        this(true, 5, 5);
     }
-
-    public void removeSun() {
-        this.mSun = new DirectionalLight();
-    }
-
-    public void setPointTable(PointLight point, int pos) {
-        this.mPointTable[pos] = point;
-    }
-
-    public void setSpotTable(SpotLight spot, int pos) {
-        this.mSpotTable[pos] = spot;
-    }
-
-
 
     public void renderShadowMap(SceneRenderer pSceneRenderer, Camera pCamera, ShaderManager shaderManager) {
-        mSun.renderShadowMap(pSceneRenderer, pCamera, shaderManager);
+        directionalLight.renderShadowMap(pSceneRenderer, pCamera, shaderManager);
     }
-
 
     /**
      * Set to the render the different light
@@ -60,13 +54,12 @@ public class LightModel {
      */
     public void setupShader(Matrix4f viewMatrix, ShaderProgram shaderProgram) {
         shaderProgram.bind();
-        shaderProgram.setUniform("ambientLight", mAmbient);
-        shaderProgram.setUniform("specularPower", mSpecularPower);
+        shaderProgram.setUniform("ambientLight", ambientLight);
 
         // Process Point Lights
-        for (int i = 0; i < MAX_POINTLIGHT; i++) {
+        for (int i = 0; i < nbPointLights; i++) {
             // Get a copy of the point light object and transform its position to view coordinates
-            PointLight currPointLight = new PointLight(mPointTable[i]);
+            PointLight currPointLight = new PointLight(pointLights[i]);
             Vector3f lightPos = new Vector3f(currPointLight.getPosition());
             Vector4f aux = new Vector4f(lightPos, 1);
             aux.mul(viewMatrix);
@@ -81,9 +74,9 @@ public class LightModel {
         }
 
         // Process Spot Ligths
-        for (int i = 0; i < MAX_SPOTLIGHT; i++) {
+        for (int i = 0; i < nbSpotLights; i++) {
             // Get a copy of the spot light object and transform its position and cone direction to view coordinates
-            SpotLight currSpotLight = new SpotLight(mSpotTable[i]);
+            SpotLight currSpotLight = new SpotLight(spotLights[i]);
             Vector4f dir = new Vector4f(currSpotLight.mConedir, 0);
             dir.mul(viewMatrix);
             currSpotLight.mConedir = new Vector3f(dir.x, dir.y, dir.z);
@@ -102,77 +95,49 @@ public class LightModel {
         }
 
         // Get a copy of the directional light object and transform its position to view coordinates
-        DirectionalLight currDirLight = new DirectionalLight(mSun);
-        Vector4f dir = new Vector4f(currDirLight.mDirection, 0);
-        dir.mul(viewMatrix);
-        currDirLight.mDirection = new Vector3f(dir.x, dir.y, dir.z);
-        shaderProgram.setUniform("directionalLight", currDirLight);
-        mSun.bindShadowMap(shaderProgram);
+        if (hasDirectionalLight && directionalLight != null) {
+            DirectionalLight currDirLight = new DirectionalLight(directionalLight);
+            Vector4f dir = new Vector4f(currDirLight.mDirection, 0);
+            dir.mul(viewMatrix);
+            currDirLight.mDirection = new Vector3f(dir.x, dir.y, dir.z);
+            shaderProgram.setUniform("directionalLight", currDirLight);
+            //directionalLight.bindShadowMap(shaderProgram);
+        }
 
-    }
-
-    /**
-     * getters and setters
-     */
-
-    public void setPointLight(PointLight pl, int pos) {
-        mPointTable[pos] = pl;
-    }
-
-    public void setSpotLight(SpotLight sl, int pos) {
-        mSpotTable[pos] = sl;
-    }
-
-    public DirectionalLight getSun() {
-        return this.mSun;
-    }
-
-    public void setSun(DirectionalLight sun) {
-        this.mSun = sun;
     }
 
     public AmbientLight getAmbientLight() {
-        return mAmbient;
+        return ambientLight;
     }
 
-    public int getMaxSpotLight() {
-        return MAX_POINTLIGHT;
+    public void setAmbientLight(AmbientLight ambientLight) {
+        this.ambientLight = ambientLight;
     }
 
-    public PointLight[] getPointTable() {
-        return mPointTable;
+    public DirectionalLight getDirectionalLight() {
+        return directionalLight;
     }
 
-    /**
-     * setters
-     */
-
-    public void setPointTable(PointLight[] pointTable) {
-        this.mPointTable = pointTable;
+    public void setDirectionalLight(DirectionalLight directionalLight) {
+        if (!hasDirectionalLight)  {
+            throw new Error("The light model as constructed does not accept a directional light");
+        }
+        this.directionalLight = directionalLight;
     }
 
-    public SpotLight[] getSpotTable() {
-        return mSpotTable;
+    public int addPointLight(PointLight pointLight) {
+        if (nbSpotLights >= maxSpotLights) {
+            throw new Error("Cannot add point light: maximum number reached");
+        }
+        pointLights[nbPointLights] = pointLight;
+        return nbPointLights - 1;
     }
 
-    public void setSpotTable(SpotLight[] spotTable) {
-        this.mSpotTable = spotTable;
+    public int addSpotLight(SpotLight spotLight) {
+        if (nbSpotLights >= maxSpotLights) {
+            throw new Error("Cannot add spot light: maximum number reached");
+        }
+        spotLights[nbSpotLights] = spotLight;
+        return nbSpotLights - 1;
     }
-
-    public float getSpecularPower() {
-        return mSpecularPower;
-    }
-
-    public void setSpecularPower(float x) {
-        mSpecularPower = x;
-    }
-
-    /**
-     * setters and  method remove for the ambient and directional light
-     */
-
-    public void setAmbient(AmbientLight ambient) {
-        this.mAmbient = ambient;
-    }
-
 }

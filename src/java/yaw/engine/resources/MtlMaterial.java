@@ -1,6 +1,5 @@
 package yaw.engine.resources;
 
-import clojure.core.Vec;
 import org.joml.Vector3f;
 import yaw.engine.mesh.Material;
 
@@ -9,8 +8,7 @@ import static org.joml.Math.clamp;
 public class MtlMaterial {
 
     private String name;
-    private Material mat;
-    public float shininess = 0;
+    public float shineness = 8;
 
     public Vector3f ambient  = null;
     public Vector3f diffuse = null;
@@ -20,12 +18,11 @@ public class MtlMaterial {
 
     public MtlMaterial(String name) {
         this.name = name;
-        mat = new Material();
     }
 
     public String toString() {
-        String s = "Material{" +
-                "shininess=" + shininess +
+        String s = "MtlMaterial{" +
+                "shininess=" + shineness +
                 ", ambient=" + ambient +
                 ", diffuse=" + diffuse +
                 ", specular=" + specular +
@@ -34,36 +31,21 @@ public class MtlMaterial {
                 '}';
         return s;
     }
-    public Material getMaterial(){
-        Vector3f final_color = new Vector3f();
-        Vector3f vide = new Vector3f(0, 0, 0);
 
-        //System.out.println(toString());
-
-       if (ambient != null) {
-            final_color.add(ambient.mul(opacity));
-        }
-
-        if (diffuse != null) {
-            final_color.mul(diffuse.mul(opacity));
-        }
-
-        if (specular != null) {
-            final_color.mul(specular.mul(opacity));
-        }
-
-        if (emissive != null && !vec3fEqual(emissive, vide)) {
-            final_color.mul(emissive.mul(opacity));
-        }
-
-        final_color.set(clamp(final_color.x, 0, 1), clamp(final_color.y, 0, 1), clamp(final_color.z, 0, 1));
-        mat.setColor(final_color);
-        mat.setReflectance(shininess);
-        return mat;
+    public Material getMaterial(boolean withShadows) {
+        // XXX : MTL has no notion of a "basic color"
+        Vector3f baseColor = new Vector3f(1.0f, 1.0f, 1.0f);
+        return new Material(baseColor,
+                ambient == null ? baseColor : ambient,
+                emissive == null ? new Vector3f(0, 0, 0) : emissive,
+                emissive == null ? 0 : 1.0f,
+                diffuse == null ? baseColor : diffuse,
+                specular == null ? baseColor : specular,
+                shineness,
+                withShadows);
     }
 
-    public boolean vec3fEqual(Vector3f v1, Vector3f v2)
-    {
-        return (v1.x == v2.x && v2.y == v1.y && v1.z == v2.z);
+    public Material getMaterial() {
+        return getMaterial(false);
     }
 }

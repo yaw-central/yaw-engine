@@ -48,17 +48,17 @@ public class MouseClickTest implements Mouse3DClickCallBack {
 
 
             if(RayCaster.isHitBoxClicked(this.window, hitbox, camera)){
-                hitbox.getMesh().getMaterial().setColor(new Vector3f(255, 0, 0));
-                hitbox2.getMesh().getMaterial().setColor(new Vector3f(0, 255, 0));
+                hitbox.getMesh().getMaterial().setBaseColor(new Vector3f(255, 0, 0));
+                hitbox2.getMesh().getMaterial().setBaseColor(new Vector3f(0, 255, 0));
                 selected = hitbox;
             }else {
-                hitbox.getMesh().getMaterial().setColor(new Vector3f(0, 255, 0));
+                hitbox.getMesh().getMaterial().setBaseColor(new Vector3f(0, 255, 0));
 
                 if (RayCaster.isHitBoxClicked(this.window, hitbox2, camera)) {
-                    hitbox2.getMesh().getMaterial().setColor(new Vector3f(255, 0, 0));
+                    hitbox2.getMesh().getMaterial().setBaseColor(new Vector3f(255, 0, 0));
                     selected = hitbox2;
                 } else {
-                    hitbox2.getMesh().getMaterial().setColor(new Vector3f(0, 255, 0));
+                    hitbox2.getMesh().getMaterial().setBaseColor(new Vector3f(0, 255, 0));
                     selected = null;
                 }
             }

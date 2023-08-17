@@ -3,10 +3,7 @@ package yaw.engine.resources;
 import yaw.engine.geom.GeometryBuilder;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ObjLoader {
     private LoadMode loadMode = LoadMode.LOAD_UNDEFINED;
@@ -203,10 +200,10 @@ public class ObjLoader {
                 }
                 GLVertex vertex = new GLVertex(positions, textCoords, normals);
 
-                int vertIndex = -1;
+                int vertIndex;
                 Integer vertId = vertexMap.get(vertex);
                 if (vertId != null) {
-                    vertIndex = vertId.intValue();
+                    vertIndex = vertId;
                 } else {
                     // new vertex
                     glVertices.add(vertex);
@@ -231,18 +228,18 @@ public class ObjLoader {
         GeometryBuilder geom = new GeometryBuilder();
 
         // we may now build the Mesh geometry
-        for (int i = 0; i < glVertices.size(); i++) {
-            geom.addVertices(glVertices.get(i).positions[0], glVertices.get(i).positions[1], glVertices.get(i).positions[2]);
+        for (GLVertex glVertex : glVertices) {
+            geom.addVertices(glVertex.positions[0], glVertex.positions[1], glVertex.positions[2]);
             if (hasTextCoords) {
-                geom.addTextCoord(glVertices.get(i).textCoords[0], glVertices.get(i).textCoords[1]);
+                geom.addTextCoord(glVertex.textCoords[0], glVertex.textCoords[1]);
             }
             if (hasNormals) {
-                geom.addNormal(glVertices.get(i).normals[0], glVertices.get(i).normals[1], glVertices.get(i).normals[2]);
+                geom.addNormal(glVertex.normals[0], glVertex.normals[1], glVertex.normals[2]);
             }
         }
 
-        for (int i = 0; i < glTriangles.size(); i++) {
-            geom.addTriangle(glTriangles.get(i).indice1, glTriangles.get(i).indice2, glTriangles.get(i).indice3);
+        for (GLTriangle glTriangle : glTriangles) {
+            geom.addTriangle(glTriangle.indice1, glTriangle.indice2, glTriangle.indice3);
         }
 
         if (objName == null) {
@@ -406,9 +403,9 @@ class GLVertex {
 
     @Override
     public int hashCode() {
-        return positions.hashCode()
-                + (textCoords == null ? 4242 : textCoords.hashCode())
-                + (normals == null ? 66666 : normals.hashCode());
+        return Arrays.hashCode(positions)
+                + (textCoords == null ? 4242 : Arrays.hashCode(textCoords)
+                + (normals == null ? 66666 : Arrays.hashCode(normals)));
     }
 
     @Override
@@ -420,19 +417,19 @@ class GLVertex {
             return false;
         }
         GLVertex other = (GLVertex) obj;
-        if (!other.positions.equals(positions)) {
+        if (!Arrays.equals(other.positions, positions)) {
             return false;
         }
         if (other.textCoords == null) {
             return textCoords == null;
         }
-        if (!other.textCoords.equals(textCoords)) {
+        if (!Arrays.equals(other.textCoords,textCoords)) {
             return false;
         }
         if (other.normals == null) {
             return normals == null;
         }
-        return other.normals.equals(normals);
+        return Arrays.equals(other.normals, normals);
     }
 }
 

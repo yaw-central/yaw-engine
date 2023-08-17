@@ -8,103 +8,95 @@ import org.joml.Vector3f;
  */
 
 public class Material {
-    private static final float REFLECTANCE_DEFAULT_VALUE = 0f;
-    private static final Vector3f DEFAULT_COLOUR = new Vector3f(1.0f, 1.0f, 1.0f);
+    private Vector3f baseColor;
+    private Texture texture;
+    private Vector3f ambient;
+    private Vector3f emissive;
+    private float emissiveAmount;
+    private Vector3f diffuse;
+    private Vector3f specular;
+    private float shineness;
+
+    public final boolean withShadows;
 
     //RGB vector
     private Vector3f mColor;
-    // Reflectance should be between 0 and 1
-    private float mReflectance;
-    //texture
-    private Texture mTexture;
 
-    /**
-     * Construct a material with the specified reflectance value and white
-     *
-     * @param pReflectance reflectance reflectance should be between 0 and 1
-     */
-    public Material(float pReflectance) {
-        this();
-        this.mReflectance = pReflectance;
+    public Material(Vector3f baseColor, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness, boolean withShadows) {
+        this.baseColor = baseColor;
+        texture = null;
+        this.ambient = ambient;
+        this.emissive = emissive;
+        this.emissiveAmount = emissiveAmount;
+        this.diffuse = diffuse;
+        this.specular = specular;
+        this.shineness = shineness;
+        this.withShadows = withShadows;
     }
 
-    /**
-     * Construct a material with white color and an initial reflectance value of 1000f
-     */
+    public Material(Vector3f baseColor) {
+        this(baseColor, new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(0, 0, 0), 0,
+                new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(1.0f, 1.0f, 1.0f), 32, false);
+    }
+
     public Material() {
-        this.mColor = DEFAULT_COLOUR;
-        this.mReflectance = REFLECTANCE_DEFAULT_VALUE;
+        this(new Vector3f(1.0f, 1.0f, 1.0f));
     }
 
-    /**
-     * Construct a material with the specified texture and an initial reflectance value of 1000f
-     *
-     * @param pTexture the texture
-     */
-    public Material(Texture pTexture) {
-        this();
-        this.mTexture = pTexture;
+    public Material(Texture texture, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness, boolean withShadows) {
+        this.texture = texture;
+        this.ambient = ambient;
+        this.emissive = emissive;
+        this.emissiveAmount = emissiveAmount;
+        this.diffuse = diffuse;
+        this.specular = specular;
+        this.shineness = shineness;
+        this.withShadows = withShadows;
     }
 
-    /**
-     * Construct a material with the specified texture and the specified reflectance
-     *
-     * @param pTexture     the texture
-     * @param pReflectance the reflectance
-     */
-    public Material(Texture pTexture, float pReflectance) {
-        this();
-        this.mTexture = pTexture;
-        this.mReflectance = pReflectance;
+    public Vector3f getBaseColor() {
+        return baseColor;
     }
 
-    /**
-     * Construct a material with the specified color and the specified reflectance value
-     *
-     * @param pColor       basic RGB vector
-     * @param pReflectance reflectance reflectance should be between 0 and 1
-     */
-    public Material(Vector3f pColor, float pReflectance) {
-        this();
-        this.mColor = pColor;
-        this.mReflectance = pReflectance;
+    public void setBaseColor(Vector3f baseColor) {
+        this.baseColor = baseColor;
     }
 
-    /**
-     * Construct a material with the specified color and an initial reflectance value of 1000f
-     *
-     * @param pColor basic RGB vector
-     */
-    public Material(Vector3f pColor) {
-        this();
-        this.mColor = pColor;
-        this.mReflectance = REFLECTANCE_DEFAULT_VALUE;
+    public boolean isTextured() {
+        return texture != null;
+    }
+
+    public Vector3f getAmbientColor() {
+        return ambient;
+    }
+
+    public Vector3f getEmissiveColor() {
+        return emissive;
+    }
+
+    public float getEmissiveAmount() {
+        return emissiveAmount;
+    }
+
+    public Vector3f getDiffuseColor() {
+        return diffuse;
+    }
+
+    public Vector3f getSpecularColor() {
+        return specular;
+    }
+
+    public float getShineness() {
+        return shineness;
     }
 
 
     public Texture getTexture() {
-        return mTexture;
+        return texture;
     }
 
-    public void setTexture(Texture pTexture) {
-        mTexture = pTexture;
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 
-    public boolean isTextured() {
-        return this.mTexture != null;
-    }
-
-    public Vector3f getColor() {
-        return mColor;
-    }
-
-    public void setColor(Vector3f pColor) {mColor = pColor;}
-
-    public float getReflectance() {
-        return mReflectance;
-    }
-
-    public void setReflectance(float pReflectance) {
-        mReflectance = pReflectance;
-    }
 }
