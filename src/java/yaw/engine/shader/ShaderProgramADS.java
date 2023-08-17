@@ -25,7 +25,7 @@ public class ShaderProgramADS extends ShaderProgram {
                 "vec4", "computeLight", new String[][]{{"vec3", "light_color"},
                         {"float", "light_intensity"},
                         {"vec3", "position"},
-                        {"vec3", "to_light-dir"},
+                        {"vec3", "to_light_dir"},
                         {"vec3", "normal"}});
 
         code.l("vec4 diffusecolor = vec4(0, 0, 0, 0)")
@@ -33,7 +33,7 @@ public class ShaderProgramADS extends ShaderProgram {
 
         code.l().cmt("Diffuse color")
                 .l("float diffuseFactor = max(dot(normal, to_light_dir), 0.0)")
-                .l("diffusecolor = vec4(light_color, 1.0) * light_intensity * diffuseFactor * material.diffuse");
+                .l("diffusecolor = vec4(light_color, 1.0) * light_intensity * diffuseFactor * vec4(material.diffuse, 1.0)");
 
         code.l().cmt("Specular color")
                 .l("vec3 camera_direction = normalize(camera_pos - position)")
@@ -41,7 +41,7 @@ public class ShaderProgramADS extends ShaderProgram {
                 .l("vec3 reflected_light = normalize(reflect(from_light_dir , normal))")
                 .l("float specularFactor = max( dot(camera_direction, reflected_light), 0.0)")
                 .l("specularFactor = pow(specularFactor, material.shineness)")
-                .l("speccolor = light_intensity  * specularFactor * material.specular * vec4(light_color, 1.0)");
+                .l("speccolor = light_intensity  * specularFactor * vec4(material.specular, 1.0) * vec4(light_color, 1.0)");
 
         code.l().l("return (diffusecolor + speccolor)");
 
@@ -122,7 +122,7 @@ public class ShaderProgramADS extends ShaderProgram {
                 .l("vec4 color = vec4(0, 0, 0, 0)");
 
         code.beginIf("spot_alfa > light.cutoff")
-                .l("color = calcPointLight(light.pl, position, normal)")
+                .l("color = computePointLight(light.pl, position, normal)")
                 .l("color *= (1.0 - (1.0 - spot_alfa)/(1.0 - light.cutoff))")
                 .endIf();
 
@@ -214,7 +214,7 @@ public class ShaderProgramADS extends ShaderProgram {
 
         code.l()
                 .cmt("Output values")
-                .l("out fragColor");
+                .l("out vec4 fragColor");
 
         code.l().cmt("Structures").l();
 
@@ -307,7 +307,7 @@ public class ShaderProgramADS extends ShaderProgram {
         }
 
         code.l().beginMain()
-                .l("vec3 normal = vNorm").l();
+                .l("vec3 normal = inNorm").l();
 
         if (hasTexture) {
             code.l("vec4 basecolor = texture(texture_sampler, text_coord)");
@@ -318,21 +318,21 @@ public class ShaderProgramADS extends ShaderProgram {
         code.l().l("vec4 totalLight = vec4(ambientLight * material.ambient, 1.0)");
 
         if (hasDirectionalLight) {
-            code.l().l("totalLight += computeDirectionalLight(directionalLight, vPos, normal)");
+            code.l().l("totalLight += computeDirectionalLight(directionalLight, inPos, normal)");
         }
 
         if (maxPointLights > 0) {
             code.beginFor("int i = 0", "i < nbPointLights", "i++")
                     .beginIf("pointLights[i].intensity > 0")
-                    .l("totalLight += computePointLight(pointLights[i], vPos, normal)")
+                    .l("totalLight += computePointLight(pointLights[i], inPos, normal)")
                     .endIf();
             code.endFor();
         }
 
         if (maxSpotLights > 0) {
             code.beginFor("int i = 0", "i < nbSpotLights", "i++")
-                    .beginIf("spotLights[i].intensity > 0")
-                    .l("totalLight += computeSpotLight(spotLights[i], vPos, normal)")
+                    .beginIf("spotLights[i].pl.intensity > 0")
+                    .l("totalLight += computeSpotLight(spotLights[i], inPos, normal)")
                     .endIf();
             code.endFor();
         }
@@ -387,11 +387,13 @@ public class ShaderProgramADS extends ShaderProgram {
         /* Initialization of the shader program. */
         // System.out.println(vertexShader(true).toString());
         createVertexShader(vertexShader(shaderProperties.withShadows));
-        createFragmentShader(fragmentShader(shaderProperties.hasDirectionalLight,
+        ShaderCode fragmentCode = fragmentShader(shaderProperties.hasDirectionalLight,
                 shaderProperties.maxPointLights,
                 shaderProperties.maxSpotLights,
                 shaderProperties.hasTexture,
-                shaderProperties.withShadows));
+                shaderProperties.withShadows);
+        System.out.println("Fragment shader:\n" + fragmentCode);
+        createFragmentShader(fragmentCode);
 
         /* Binds the code and checks that everything has been done correctly. */
         link();

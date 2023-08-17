@@ -301,7 +301,8 @@ public class GameLoop implements Runnable {
            /*  Input of critical section, allows to protect the creation of our logic of Game .
                1 Maximum thread in Synchronize -> mutual exclusion.*/
             synchronized (mSceneRenderer) {
-                mSceneRenderer.getLightModel().renderShadowMap(mSceneRenderer, mCamera, shaderManager);
+                // XXX: for now shadow mapping is deactivated
+                //mSceneRenderer.getLightModel().renderShadowMap(mSceneRenderer, mCamera, shaderManager);
                 mRenderer.render(mSceneRenderer, isResized, mCamera, mSkybox, shaderManager);
             }
 

@@ -99,12 +99,15 @@ public class ShaderCode {
     }
 
     public ShaderCode endStruct() {
-        return endBlock();
+        dedent();
+        mkIndent();
+        code.append("};\n");
+        return this;
     }
 
     public ShaderCode function(String comment, String ret_type, String name, String[][] arguments) {
         mkIndent();
-        code.append(comment); code.append("\n");
+        code.append("/* "); code.append(comment); code.append(" */\n");
         code.append(ret_type); code.append(' '); code.append(name); code.append('(');
         String sep = null;
         for (String[] argument : arguments) {
@@ -116,8 +119,8 @@ public class ShaderCode {
             code.append(argument[0]);
             code.append(' ');
             code.append(argument[1]);
-            code.append(")\n");
         }
+        code.append(")\n");
         return beginBlock();
     }
 
