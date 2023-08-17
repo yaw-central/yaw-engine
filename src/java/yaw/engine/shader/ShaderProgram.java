@@ -74,6 +74,12 @@ public abstract class ShaderProgram {
         createGeometryShader(shaderCode.toString());
     }
 
+    private String fetchInfoLog() {
+        int[] logLength = {0};
+        glGetShaderiv(mProgramId, GL_INFO_LOG_LENGTH, logLength);
+        return "" + glGetShaderInfoLog(mProgramId, logLength[0]+1);
+    }
+
     /**
      * Links the program object.
      *
@@ -81,12 +87,12 @@ public abstract class ShaderProgram {
     public void link()  {
         glLinkProgram(mProgramId);
         if (glGetProgrami(mProgramId, GL_LINK_STATUS) == 0) {
-            throw new Error("Error linking Shader code: " + glGetShaderInfoLog(mProgramId, 1024));
+            throw new Error("Error linking Shader code\n  ==> " + fetchInfoLog());
         }
 
         glValidateProgram(mProgramId);
         if (glGetProgrami(mProgramId, GL_VALIDATE_STATUS) == 0) {
-            throw new Error("Error validating Shader code: " + glGetShaderInfoLog(mProgramId, 1024));
+            throw new Error("Error validating Shader code\n  ==> " + fetchInfoLog());
         }
 
     }
