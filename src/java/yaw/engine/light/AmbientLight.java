@@ -45,9 +45,7 @@ public class AmbientLight {
      * Create the shaderValue with 1.
      */
     public AmbientLight() {
-        this.mColor = new Vector3f(1f, 1f, 1f);
-        this.mIntensity = 1f;
-        this.mShaderValue = new Vector3f(1f, 1f, 1f);
+        this(1f, 1f, 1f, 0.4f);
     }
 
     /**
@@ -57,9 +55,7 @@ public class AmbientLight {
      * @param intensity intensity
      */
     public AmbientLight(float intensity) {
-        this.mColor = new Vector3f(1f, 1f, 1f);
-        this.mIntensity = intensity;
-        this.mShaderValue = new Vector3f(mColor.x * intensity, mColor.y * intensity, mColor.z * intensity);
+        this(1f, 1f, 1f, intensity);
     }
 
     /**

@@ -1,11 +1,13 @@
 package test.yaw;
 
+import org.joml.Vector3f;
 import yaw.engine.SceneRenderer;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.LightModel;
 import yaw.engine.light.SpotLight;
+import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
 
 /**
@@ -30,6 +32,7 @@ public class CameraTest implements UpdateCallback {
         //world.getSceneLight().setSun(new DirectionalLight());
 
         Mesh cubem = MeshExamples.makeDice(1);
+        cubem.setMaterial(new Material(new Vector3f(0, 0, 7.0f)));
         cube = world.createItemObject("cube", 0f, 0, 0, 1.0f, cubem);
 
         world.registerUpdateCallback(this);
@@ -41,6 +44,7 @@ public class CameraTest implements UpdateCallback {
     }
 
     public void update(double deltaTime) {
+        cube.rotateY(3.1415925f * (speed / 100f) * (float) deltaTime);
         world.getCamera().rotateXYZ(0, 0, 3.1415925f * speed * (float) deltaTime);
     }
 

@@ -95,7 +95,7 @@ public class Material {
         return texture;
     }
 
-    public void setTexture(Texture lTexture) {
+    public void setTexture(Texture texture) {
         this.texture = texture;
     }
 

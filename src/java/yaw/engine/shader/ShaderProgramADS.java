@@ -311,7 +311,7 @@ public class ShaderProgramADS extends ShaderProgram {
                 .l("vec3 normal = vNorm").l();
 
         if (hasTexture) {
-            code.l("vec4 basecolor = texture(texture_sampler, text_coord)");
+            code.l("vec4 basecolor = texture(material.texture_sampler, vTexCoord)");
         } else {
             code.l("vec4 basecolor = vec4(material.color, 1)");
         }
@@ -388,7 +388,7 @@ public class ShaderProgramADS extends ShaderProgram {
     public void init() {
         /* Initialization of the shader program. */
         ShaderCode vertexCode = vertexShader(shaderProperties.withShadows);
-        System.out.println("Vertex shader:\n" + vertexCode);
+        //System.out.println("Vertex shader:\n" + vertexCode);
         createVertexShader(vertexCode);
 
         ShaderCode fragmentCode = fragmentShader(shaderProperties.hasDirectionalLight,
@@ -396,7 +396,7 @@ public class ShaderProgramADS extends ShaderProgram {
                 shaderProperties.maxSpotLights,
                 shaderProperties.hasTexture,
                 shaderProperties.withShadows);
-        System.out.println("Fragment shader:\n" + fragmentCode);
+        //System.out.println("Fragment shader:\n" + fragmentCode);
         createFragmentShader(fragmentCode);
 
         /* Binds the code and checks that everything has been done correctly. */

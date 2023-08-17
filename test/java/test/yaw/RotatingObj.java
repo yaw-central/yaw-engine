@@ -6,6 +6,7 @@ import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.Item;
 import yaw.engine.items.ItemGroup;
+import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Mesh;
@@ -50,7 +51,7 @@ public class RotatingObj implements UpdateCallback {
 		//cube.rotateXYZ(0f, 3.1415925f * speed * (float) deltaTime, 0f);
 		//cube.rotateZAround(1f, new Vector3f(0f, 0f, -3f));
 
-		float angle = 2.0f * 3.1415925f * (float) deltaTime * speed;
+		float angle = 3.0f * 3.1415925f * (float) deltaTime * speed;
 		//System.out.println(deltaTime);
 		obj.rotateY(angle);
 		//cube.rotateXYZAround(0f, 3.1415925f * speed * (float) deltaTime, 0f, new Vector3f(0f, 0f, -10f));
@@ -64,6 +65,7 @@ public class RotatingObj implements UpdateCallback {
 		World world = new World(0, 0, 800, 600);
 		world.installScene(new SceneRenderer(new LightModel()));
 		world.getSceneLight().setDirectionalLight(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
+		world.getSceneLight().setAmbientLight(new AmbientLight(0.3f));
 
 		ObjLoader objLoader = new ObjLoader();
 		try {
