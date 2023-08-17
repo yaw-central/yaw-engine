@@ -136,7 +136,9 @@ public class Mesh {
         shaderProgram.bind();
         /* Set the camera to render. */
         shaderProgram.setUniform("worldMatrix", pCamera.getWorldMat());
-        shaderProgram.setUniform("texture_sampler", 0);
+        if (material.isTextured()) {
+            shaderProgram.setUniform("texture_sampler", 0);
+        }
         shaderProgram.setUniform("camera_pos", pCamera.getPosition());
 
         shaderProgram.setUniform("material", material);

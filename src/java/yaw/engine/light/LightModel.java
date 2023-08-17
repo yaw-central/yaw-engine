@@ -25,7 +25,7 @@ public class LightModel {
      * Constructor without parameters, it used to create the maximum of point light and spot light.
      */
     public LightModel(boolean hasDirectionalLight, int maxPointLights, int maxSpotLights) {
-        ambientLight = null;
+        ambientLight = new AmbientLight();
         this.hasDirectionalLight = hasDirectionalLight;
         directionalLight = null;
 
@@ -95,12 +95,14 @@ public class LightModel {
         }
 
         // Get a copy of the directional light object and transform its position to view coordinates
-        DirectionalLight currDirLight = new DirectionalLight(directionalLight);
-        Vector4f dir = new Vector4f(currDirLight.mDirection, 0);
-        dir.mul(viewMatrix);
-        currDirLight.mDirection = new Vector3f(dir.x, dir.y, dir.z);
-        shaderProgram.setUniform("directionalLight", currDirLight);
-        directionalLight.bindShadowMap(shaderProgram);
+        if (hasDirectionalLight && directionalLight != null) {
+            DirectionalLight currDirLight = new DirectionalLight(directionalLight);
+            Vector4f dir = new Vector4f(currDirLight.mDirection, 0);
+            dir.mul(viewMatrix);
+            currDirLight.mDirection = new Vector3f(dir.x, dir.y, dir.z);
+            shaderProgram.setUniform("directionalLight", currDirLight);
+            //directionalLight.bindShadowMap(shaderProgram);
+        }
 
     }
 

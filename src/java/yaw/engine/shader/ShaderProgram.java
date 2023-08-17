@@ -189,18 +189,6 @@ public abstract class ShaderProgram {
     }
 
     /**
-     * Create uniform for each attribute of the material
-     *
-     * @param uniformName uniform name
-     */
-    public void createMaterialUniform(String uniformName) {
-        createUniform(uniformName + ".color");
-        createUniform(uniformName + ".hasTexture");
-        createUniform(uniformName + ".reflectance");
-
-    }
-
-    /**
      * Retrieve a uniform location by name
      *
      * @param uniformName the uniform name
@@ -370,11 +358,11 @@ public abstract class ShaderProgram {
      */
     private void createPointLightUniform(String uniformName) {
         createUniform(uniformName + ".color");
-        createUniform(uniformName + ".position");
         createUniform(uniformName + ".intensity");
+        createUniform(uniformName + ".position");
         createUniform(uniformName + ".att_constant");
         createUniform(uniformName + ".att_linear");
-        createUniform(uniformName + ".att_exponent");
+        createUniform(uniformName + ".att_quadratic");
     }
 
     /**

@@ -412,7 +412,7 @@ public class ShaderProgramADS extends ShaderProgram {
         }
 
         /* Create uniform for material. */
-        createMaterialUniform("material");
+        createMaterialUniform("material", shaderProperties.hasTexture);
 
         /* Initialization of the light's uniform. */
         createUniform("camera_pos");
