@@ -39,6 +39,10 @@ public class LightModel {
         nbSpotLights = 0;
     }
 
+    public LightModel() {
+        this(true, 5, 5);
+    }
+
     public void renderShadowMap(SceneRenderer pSceneRenderer, Camera pCamera, ShaderManager shaderManager) {
         directionalLight.renderShadowMap(pSceneRenderer, pCamera, shaderManager);
     }
@@ -100,4 +104,38 @@ public class LightModel {
 
     }
 
+    public AmbientLight getAmbientLight() {
+        return ambientLight;
+    }
+
+    public void setAmbientLight(AmbientLight ambientLight) {
+        this.ambientLight = ambientLight;
+    }
+
+    public DirectionalLight getDirectionalLight() {
+        return directionalLight;
+    }
+
+    public void setDirectionalLight(DirectionalLight directionalLight) {
+        if (!hasDirectionalLight)  {
+            throw new Error("The light model as constructed does not accept a directional light");
+        }
+        this.directionalLight = directionalLight;
+    }
+
+    public int addPointLight(PointLight pointLight) {
+        if (nbSpotLights >= maxSpotLights) {
+            throw new Error("Cannot add point light: maximum number reached");
+        }
+        pointLights[nbPointLights] = pointLight;
+        return nbPointLights - 1;
+    }
+
+    public int addSpotLight(SpotLight spotLight) {
+        if (nbSpotLights >= maxSpotLights) {
+            throw new Error("Cannot add spot light: maximum number reached");
+        }
+        spotLights[nbSpotLights] = spotLight;
+        return nbSpotLights - 1;
+    }
 }

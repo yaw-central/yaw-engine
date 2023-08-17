@@ -39,6 +39,10 @@ public class Material {
                 new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(1.0f, 1.0f, 1.0f), 32, false);
     }
 
+    public Material() {
+        this(new Vector3f(1.0f, 1.0f, 1.0f));
+    }
+
     public Material(Texture texture, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness, boolean withShadows) {
         this.texture = texture;
         this.ambient = ambient;
@@ -52,6 +56,10 @@ public class Material {
 
     public Vector3f getBaseColor() {
         return baseColor;
+    }
+
+    public void setBaseColor(Vector3f baseColor) {
+        this.baseColor = baseColor;
     }
 
     public boolean isTextured() {
@@ -86,4 +94,9 @@ public class Material {
     public Texture getTexture() {
         return texture;
     }
+
+    public void setTexture(Texture lTexture) {
+        this.texture = texture;
+    }
+
 }

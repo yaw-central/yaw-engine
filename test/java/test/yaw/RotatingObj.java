@@ -63,9 +63,7 @@ public class RotatingObj implements UpdateCallback {
 
 		World world = new World(0, 0, 800, 600);
 		world.installScene(new SceneRenderer(new LightModel()));
-		world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
-		//world.getSceneLight().getSun().setDirection(-1f, 3f, 5f);
-		world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
+		world.getSceneLight().setDirectionalLight(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
 
 		ObjLoader objLoader = new ObjLoader();
 		try {
@@ -88,7 +86,7 @@ public class RotatingObj implements UpdateCallback {
 		obji.translate(0f,0f, -5f);
 		*/
 
-		Mesh[] meshes = objLoader.getScene().buildMeshes();
+		Mesh[] meshes = objLoader.getScene().buildMeshes(false);
 
 		int i = 1;
 		ItemGroup grp = world.createGroup("obj");

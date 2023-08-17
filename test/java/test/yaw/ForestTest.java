@@ -33,17 +33,17 @@ public class ForestTest implements UpdateCallback {
         world.installScene(new SceneRenderer(new LightModel()));
         world.getCamera().lookAt(new Vector3f(-1,3,3).add(center), new Vector3f(0,1f,0).add(center), new Vector3f(0,1,0));
 
-        world.getSceneLight().setSun(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
+        world.getSceneLight().setDirectionalLight(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
 
         ShadowMap shadow = new ShadowMap(10000, 10000);
         shadow.setBias(0.01f);
-        world.getSceneLight().getSun().setShadowMap(shadow);
+        world.getSceneLight().getDirectionalLight().setShadowMap(shadow);
 
         world.getSceneLight().getAmbientLight().setIntensity(0.3f);
 
         Mesh floorm = new Rectangle(20).generate();
         Material ground = new Material();
-        ground.setColor(new Vector3f(0.6078f, 0.4627f, 0.3255f));
+        ground.setBaseColor(new Vector3f(0.6078f, 0.4627f, 0.3255f));
         floorm.setMaterial(ground);
 
         floor = world.createItemObject("floor", center.x, center.y, center.z, 1.0f, floorm);

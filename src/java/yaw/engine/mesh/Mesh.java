@@ -9,6 +9,7 @@ import yaw.engine.items.ItemObject;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 import yaw.engine.shader.ShaderProgram;
+import yaw.engine.shader.ShaderProgramADS;
 import yaw.engine.shader.ShaderProperties;
 import yaw.engine.util.LoggerYAW;
 
@@ -58,6 +59,10 @@ public class Mesh {
         this.vboIdList = new ArrayList<>();
         this.drawADS = false;
         drawingStrategy = new DefaultDrawingStrategy();
+    }
+
+    public Mesh(Geometry geometry) {
+        this(geometry, new Material());
     }
 
     public ShaderProperties getShaderProperties(LightModel lightModel) {
@@ -126,7 +131,7 @@ public class Mesh {
 
     }
 
-    public void renderSetup(Camera pCamera, ShaderProgram shaderProgram) {
+    public void renderSetup(Camera pCamera, ShaderProgramADS shaderProgram) {
         initRender();
         shaderProgram.bind();
         /* Set the camera to render. */

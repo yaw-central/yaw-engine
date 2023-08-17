@@ -101,7 +101,8 @@ public class SceneRenderer {
 
         for (Mesh mesh : mMeshMap.keySet()) {
             ShaderProperties meshProps = mesh.getShaderProperties(lightModel);
-            ShaderProgram meshProgram = shaderManager.fetch(meshProps);
+            // TODO : ugly cast, fix when support for e.g. PBR materials
+            ShaderProgramADS meshProgram = (ShaderProgramADS) shaderManager.fetch(meshProps);
             if (meshProgram == null) {
                 // create a shader program for this scene / mesh
                 meshProgram = new ShaderProgramADS(meshProps);
@@ -110,7 +111,6 @@ public class SceneRenderer {
             }
             /* Setup lights */
             lightModel.setupShader(new Matrix4f().identity(), meshProgram);
-
 
             List<ItemObject> lItems = mMeshMap.get(mesh);
             List<ItemObject> vertexHelpers = new ArrayList<>();

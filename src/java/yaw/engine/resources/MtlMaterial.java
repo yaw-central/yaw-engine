@@ -44,4 +44,8 @@ public class MtlMaterial {
                 shineness,
                 withShadows);
     }
+
+    public Material getMaterial() {
+        return getMaterial(false);
+    }
 }

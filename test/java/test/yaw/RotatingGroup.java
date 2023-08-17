@@ -71,7 +71,7 @@ public class RotatingGroup implements UpdateCallback {
         Mesh cubem2 = MeshLib.makeSolidCube(1, ColorLib.RED);
         Mesh cubem3 = MeshLib.makeSolidCube(1, ColorLib.YELLOW);
 
-        world.getSceneLight().setPointLight(new PointLight(ColorLib.YELLOW, new Vector3f(0, 0, -8.0f), 1.0f, 1.0f, 0.09f, 0.032f), 0);
+        world.getSceneLight().addPointLight(new PointLight(ColorLib.YELLOW, new Vector3f(0, 0, -8.0f), 1.0f, 1.0f, 0.09f, 0.032f));
 
         ItemObject cube = world.createItemObject("cube", -2.5f, 0f, -8f, 1.0f, cubem);
         //cube.getMesh().getMaterial().setTexture(new Texture("/resources/diamond.png"));

@@ -19,7 +19,7 @@ public class HitBox extends ItemObject {
      */
     public HitBox(String id, Vector3f position, Quaternionf orientation, float scale, float xLength, float yLength, float zLength, Boolean visible) {
         super(id, position, orientation, scale, DeprecatedMeshBuilder.generateBoundingBox(xLength, yLength, zLength, visible));
-        getMesh().getMaterial().setColor(new Vector3f(0, 255, 0));
+        getMesh().getMaterial().setBaseColor(new Vector3f(0, 255, 0));
     }
 
     /**

@@ -73,8 +73,8 @@ public class MtlLoader {
             objModel.addMaterial(matName, material);
             currentMaterial = material;
         } else if (parts[0].equals("Ns")) {
-            float shininess = parseMaterialFloat("shininess", parts, linepos);
-            currentMaterial.shininess = shininess;
+            float shineness = parseMaterialFloat("shineness", parts, linepos);
+            currentMaterial.shineness = shineness;
         } else if (parts[0].equals("Ka")) {
             Vector3f ambient = parseMaterialVector3f("ambient", parts, linepos);
             currentMaterial.ambient = ambient;

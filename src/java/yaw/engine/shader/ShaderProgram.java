@@ -227,14 +227,6 @@ public abstract class ShaderProgram {
     }
 
     /**
-     * Modifies the value of a uniform material with the specified material
-     *
-     * @param uniformName the uniform name
-     * @param material    the material
-     */
-    public abstract void setUniform(String uniformName, Material material);
-
-    /**
      * Modifies the value of a uniform Vector3f with the specified Vector3f
      *
      * @param uniformName the uniform name
