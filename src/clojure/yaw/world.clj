@@ -11,8 +11,9 @@ functional (e.g. FRP) approaches, such as using the companion
 framework: Yaw-reactive.
 "
   (:import (yaw.engine World
+                       SceneRenderer
                        InputCallback)
-           (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight)
+           (yaw.engine.light AmbientLight DirectionalLight PointLight SpotLight LightModel)
            (yaw.engine.camera Camera))
   
   (:require [yaw.util :as u]
@@ -45,7 +46,10 @@ framework: Yaw-reactive.
              width  800
              height 600
              vsync true}}]
-  (let [world (World. x y width height vsync)]
+  (let [world (World. x y width height vsync)
+        lights (LightModel.)
+        scene (SceneRenderer. lights)]
+    (.installScene world scene)
     (.launchAsync world)
     world))
 
