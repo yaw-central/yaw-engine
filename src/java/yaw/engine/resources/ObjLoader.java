@@ -249,7 +249,6 @@ public class ObjLoader {
         if (matName != null) {
             objModel.assignMaterial(objName, matName);
         }
-
         return linepos;
     }
 

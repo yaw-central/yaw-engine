@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL30.*;
 
 /**
@@ -258,8 +259,9 @@ public class Mesh {
     public void initRender() {
 
         glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, 0);
-
+        glBindTexture(GL_TEXTURE_2D, 1);
         Texture texture = material != null ? material.getTexture() : null;
         if (texture != null) {
             //load the texture if needed
@@ -273,13 +275,23 @@ public class Mesh {
             // Bind the texture
             texture.bind();
         }
+        Texture specularMap = material != null ? material.getSpecularTexture() : null;
+        if (specularMap != null){
+            if (!specularMap.isActivated()){
+                specularMap.init();
+            }
+            // Activate second texture bank
+            glActiveTexture(GL_TEXTURE1);
 
+            //bind specularMap
+            specularMap.bind();
+        }
         // Draw the mesh
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
-
+        glEnableVertexAttribArray(3);
     }
 
     protected void endRender() {
@@ -287,6 +299,7 @@ public class Mesh {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
         glBindVertexArray(0);
 
         //glBindTexture(GL_TEXTURE_2D, 0);

@@ -48,16 +48,31 @@ public class Texture {
             try {
                 lInputStream = Texture.class.getResourceAsStream(mFileName);
                 // Load Texture file
+
                 PNGDecoder mDecoder = new PNGDecoder(lInputStream);
+
+                //
 
                 this.mWidth = mDecoder.getWidth();
                 this.mHeight = mDecoder.getHeight();
+                ByteBuffer lByteBuffer;
+                if (mDecoder.isRGB()){
+                    // Load texture contents into a byte buffer
+                    lByteBuffer = ByteBuffer.allocateDirect(
+                            4 * mDecoder.getWidth() * mDecoder.getHeight());
+                    mDecoder.decode(lByteBuffer, mDecoder.getWidth() * 4, PNGDecoder.Format.RGBA);
+                    lByteBuffer.flip();
+                }
+                else{
 
-                // Load texture contents into a byte buffer
-                ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(
-                        4 * mDecoder.getWidth() * mDecoder.getHeight());
-                mDecoder.decode(lByteBuffer, mDecoder.getWidth() * 4, PNGDecoder.Format.RGBA);
-                lByteBuffer.flip();
+                    // Load texture contents into a byte buffer
+                    lByteBuffer = ByteBuffer.allocateDirect(
+                            4 * mDecoder.getWidth() * mDecoder.getHeight());
+                    mDecoder.decode(lByteBuffer, mDecoder.getWidth() * 4, PNGDecoder.Format.LUMINANCE);
+                    lByteBuffer.flip();
+
+                }
+
 
                 // Create a new OpenGL texture
                 this.mId = glGenTextures();
@@ -75,6 +90,7 @@ public class Texture {
                 // Generate Mip Map: A mipmap is a decreasing resolution set of images generated from a high detailed texture.
                 glGenerateMipmap(GL_TEXTURE_2D);
                 lInputStream.close();
+
             } catch (IOException pE) {
 
                 pE.printStackTrace();
