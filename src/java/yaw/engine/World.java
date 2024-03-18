@@ -16,7 +16,7 @@ import yaw.engine.skybox.Skybox;
 
 import java.util.Vector;
 
-/** sale eau
+/** 
  * This is the facade of the engine, most Clojure calls are
  * made on an instance of this object. The stateful part
  * is delegated to the underlying MainLoop.
