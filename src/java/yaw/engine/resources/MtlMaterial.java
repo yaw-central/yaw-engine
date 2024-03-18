@@ -2,6 +2,7 @@ package yaw.engine.resources;
 
 import org.joml.Vector3f;
 import yaw.engine.mesh.Material;
+import yaw.engine.mesh.Texture;
 
 import static org.joml.Math.clamp;
 
@@ -16,18 +17,29 @@ public class MtlMaterial {
     public Vector3f emissive = null;
     public float opacity = 0;
 
+    // Add texture path fields
+    public String map_Kd = null;
+    public String map_Bump = null;
+    public String map_Ns = null;
+
+
     public MtlMaterial(String name) {
         this.name = name;
     }
 
     public String toString() {
         String s = "MtlMaterial{" +
-                "shininess=" + shineness +
+                "name='" + name + '\'' +
+                ", shineness=" + shineness +
                 ", ambient=" + ambient +
                 ", diffuse=" + diffuse +
                 ", specular=" + specular +
                 ", emissive=" + emissive +
                 ", opacity=" + opacity +
+                ", map_Kd='" + map_Kd + '\'' +
+                ", map_Bump='" + map_Bump + '\'' +
+                ", map_Ns='" + map_Ns + '\'' +
+                ", opacity=" +opacity +
                 '}';
         return s;
     }
@@ -42,7 +54,11 @@ public class MtlMaterial {
                 diffuse == null ? baseColor : diffuse,
                 specular == null ? baseColor : specular,
                 shineness,
-                withShadows);
+                withShadows,
+                map_Kd == null ? null : new Texture(map_Kd),
+                map_Bump == null ? null : new Texture(map_Bump),
+                map_Ns == null ? null : new Texture(map_Ns),
+                opacity);
     }
 
     public Material getMaterial() {
