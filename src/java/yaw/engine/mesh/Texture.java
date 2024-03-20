@@ -124,7 +124,7 @@ public class Texture {
         // sends the white pixel to the texture
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, whitePixel);
 
-        Texture whiteTexture = new Texture(""); // Utilisez un constructeur approprié ou modifiez selon vos besoins
+        Texture whiteTexture = new Texture(""); // creating the texture
         whiteTexture.mId = 1;
         whiteTexture.mWidth = 1;
         whiteTexture.mHeight = 1;
