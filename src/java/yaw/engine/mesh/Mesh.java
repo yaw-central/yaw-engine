@@ -139,6 +139,11 @@ public class Mesh {
         shaderProgram.setUniform("worldMatrix", pCamera.getWorldMat());
         shaderProgram.setUniform("camera_pos", pCamera.getPosition());
 
+        /* uniforms PBR */
+        shaderProgram.setUniform("material.texture_sampler", 0);
+        shaderProgram.setUniform("material.specularMap", 1);
+        //shaderProgram.setUniform("material.normalMap", 2);
+
         shaderProgram.setUniform("material", material);
     }
 
@@ -226,6 +231,10 @@ public class Mesh {
         if (texture != null) {
             texture.cleanup();
         }
+
+        Texture spec = material.getSpecularTexture();
+        if (spec != null) spec.cleanup();
+
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
@@ -258,10 +267,10 @@ public class Mesh {
 
     public void initRender() {
 
-        glActiveTexture(GL_TEXTURE0);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glBindTexture(GL_TEXTURE_2D, 1);
+        //glActiveTexture(GL_TEXTURE0);
+        //glActiveTexture(GL_TEXTURE1);
+        //glBindTexture(GL_TEXTURE_2D, 0);
+        //glBindTexture(GL_TEXTURE_2D, 1);
         Texture texture = material != null ? material.getTexture() : null;
         if (texture != null) {
             //load the texture if needed
@@ -270,27 +279,36 @@ public class Mesh {
             }
             // Activate first texture bank
             glActiveTexture(GL_TEXTURE0);
-
-
+            glBindTexture(GL_TEXTURE_2D, texture.getId()); // Binds the texture to its mId
+            System.out.println("texutre diffuse"+texture.getId());
             // Bind the texture
             texture.bind();
         }
         Texture specularMap = material != null ? material.getSpecularTexture() : null;
         if (specularMap != null){
+            //System.out.println("specular not null");
             if (!specularMap.isActivated()){
                 specularMap.init();
             }
             // Activate second texture bank
             glActiveTexture(GL_TEXTURE1);
-
+            glBindTexture(GL_TEXTURE_2D, specularMap.getId()); // Binds the texture to its mId
+            System.out.println("texutre specular"+specularMap.getId());
             //bind specularMap
             specularMap.bind();
+        } else{
+            //if no specular map is provided use a default white texture
+            if (material != null){
+                material.setSpecularTexture(Texture.createWhiteTexture()); // TODO : create this texture only once ? to avoid multiple identical white textures
+            }
         }
         // Draw the mesh
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
+
+        //color
         glEnableVertexAttribArray(3);
     }
 

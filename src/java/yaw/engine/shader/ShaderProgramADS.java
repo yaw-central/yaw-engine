@@ -4,10 +4,13 @@ import org.joml.Vector3f;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Material;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ShaderProgramADS extends ShaderProgram {
     private final String glVersion;
     private final boolean glCoreProfile;
-
+    private Map<String, Integer> textureSamplerLocations = new HashMap<>();
     private final ShaderProperties shaderProperties;
 
     public ShaderProgramADS(String glVersion, boolean glCoreProfile, ShaderProperties shaderProperties) {
@@ -406,16 +409,17 @@ public class ShaderProgramADS extends ShaderProgram {
      * @param material    the material
      */
     public void setUniform(String uniformName, Material material) {
+        // Dynamic texture sampler slot assignement
         if (material.isTextured()) {
-            setUniform(uniformName + ".texture_sampler", 0); // TODO : assign sampler slots more dynamically
-            if (material.getSpecularTexture() != null){
-                // a completer
-                setUniform(uniformName + ".specularMap", 1);
+            Integer diffuseSlot = textureSamplerLocations.getOrDefault(uniformName + ".texture_sampler", 0);
+            setUniform(uniformName + ".texture_sampler", diffuseSlot);
+            if (material.getSpecularTexture() != null) {
+                Integer specularSlot = textureSamplerLocations.getOrDefault(uniformName + ".specularMap", 1);
+                setUniform(uniformName + ".specularMap", specularSlot);
             }
         } else {
             setUniform(uniformName + ".color", material.getBaseColor());
         }
-
         setUniform(uniformName + ".ambient", material.getAmbientColor());
         Vector3f emissiveColor = new Vector3f();
         material.getEmissiveColor().mul(material.getEmissiveAmount(), emissiveColor);
@@ -423,7 +427,17 @@ public class ShaderProgramADS extends ShaderProgram {
         setUniform(uniformName + ".diffuse", material.getDiffuseColor());
         setUniform(uniformName + ".specular", material.getSpecularColor());
         setUniform(uniformName + ".shininess", material.getShineness());
+    }
 
+    public void initTextureSamplers() {
+        // Dynamic assignement of samplre slots
+        textureSamplerLocations.put("material.texture_sampler", 0); // Diffuse map
+        textureSamplerLocations.put("material.specularMap", 1); // Specular map
+
+        // for each texture create a uniform
+        textureSamplerLocations.forEach((uniformName, location) -> {
+            createUniform(uniformName);
+        });
     }
 
     public void init() {
@@ -475,5 +489,7 @@ public class ShaderProgramADS extends ShaderProgram {
             createUniform("shadowMapSampler");
             createUniform("shadowBias");
         }
+
+        this.initTextureSamplers(); // initialising the texturesampler hashmap
     }
 }

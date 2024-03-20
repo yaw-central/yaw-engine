@@ -117,7 +117,6 @@ public class Material {
         return shininess;
     }
 
-
     public Texture getTexture() {
         return texture;
     }
@@ -126,7 +125,8 @@ public class Material {
         this.texture = texture;
     }
 
-
     //texture pour lumiere speculaire
     public Texture getSpecularTexture(){ return map_Ns; }
+
+    public void setSpecularTexture(Texture texture) {this.map_Ns = texture;}
 }

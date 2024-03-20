@@ -95,6 +95,7 @@ public class ObjModel {
                     //  texture not provided
                     mat.setSpecularColor(new Vector3f(1,1,1));
                 }
+
             } else {
                 // use white if material not provided (vertex colors ?)
                 mat = new Material(new Vector3f(1.0f, 1.0f, 1.0f));
