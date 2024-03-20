@@ -4,10 +4,13 @@ import org.joml.Vector3f;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.Material;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ShaderProgramADS extends ShaderProgram {
     private final String glVersion;
     private final boolean glCoreProfile;
-
+    private Map<String, Integer> textureSamplerLocations = new HashMap<>();
     private final ShaderProperties shaderProperties;
 
     public ShaderProgramADS(String glVersion, boolean glCoreProfile, ShaderProperties shaderProperties) {
@@ -40,7 +43,7 @@ public class ShaderProgramADS extends ShaderProgram {
                 .l("vec3 from_light_dir = -to_light_dir")
                 .l("vec3 reflected_light = normalize(reflect(from_light_dir , normal))")
                 .l("float specularFactor = max( dot(camera_direction, reflected_light), 0.0)")
-                .l("specularFactor = pow(specularFactor, material.shineness)")
+                .l("specularFactor = pow(specularFactor, material.shininess)")
                 .l("speccolor = light_intensity  * specularFactor * vec4(material.specular, 1.0) * vec4(light_color, 1.0)");
 
         code.l().l("return (diffusecolor + speccolor)");
@@ -65,10 +68,10 @@ public class ShaderProgramADS extends ShaderProgram {
         code.l().l("float shadow = 0.0")
                 .l("vec2 texelSize = 1.0 / textureSize(shadowMapSampler, 0")
                 .beginFor("int x = -1", "x <= 1", "++x")
-                   .beginFor("int y = -1", "y <= 1", "++y")
-                      .l("float pcfDepth = texture(shadowMapSampler, projCoords.xy + vec2(x, y) * texelSize).r")
-                      .l("shadow += currentDepth-rbias > pcfDepth ? 1.0 : 0.0")
-                   .endFor()
+                .beginFor("int y = -1", "y <= 1", "++y")
+                .l("float pcfDepth = texture(shadowMapSampler, projCoords.xy + vec2(x, y) * texelSize).r")
+                .l("shadow += currentDepth-rbias > pcfDepth ? 1.0 : 0.0")
+                .endFor()
                 .endFor()
                 .l("shadow /= 9.0");
 
@@ -140,11 +143,14 @@ public class ShaderProgramADS extends ShaderProgram {
                 .l("layout(location = 0) in vec3 position")
                 .l("layout(location = 1) in vec2 texCoord")
                 .l("layout(location = 2) in vec3 normal")
+                .l("layout(location = 3) in vec4 color")
                 .l()
                 .cmt("Output values")
                 .l("out vec3 vPos")
                 .l("out vec2 vTexCoord")
-                .l("out vec3 vNorm");
+                .l("out vec3 vNorm")
+                .l("out vec4 vColor")
+                ;
 
         if (withShadows) {
             code.l().cmt("Shadow properties")
@@ -173,7 +179,11 @@ public class ShaderProgramADS extends ShaderProgram {
                 .cmt("Computation of normal vector")
                 .l("vNorm = normalize(mat3(normalMatrix) * normal)")
                 .cmt("Texture coordinates")
-                .l("vTexCoord = texCoord");
+                .l("vTexCoord = texCoord")
+
+                .cmt("Added Vertexes Color")
+                .l("vColor = color")
+        ;
 
         if (withShadows) {
             code.l().cmt("Shadow output")
@@ -207,7 +217,11 @@ public class ShaderProgramADS extends ShaderProgram {
         code.l().cmt("Input values")
                 .l("in vec3 vPos")
                 .l("in vec2 vTexCoord")
-                .l("in vec3 vNorm");
+                .l("in vec3 vNorm")
+
+                .cmt("Added vertexes color")
+                .l("in vec4 vColor")
+        ;
 
         if (withShadows) {
             code.l("in vec4 vDirectionalShadowSpace");
@@ -245,6 +259,7 @@ public class ShaderProgramADS extends ShaderProgram {
 
         if (hasTexture) {
             code.item("sampler2D", "texture_sampler", "Texture (2D)");
+            code.item("sampler2D", "specularMap", "Specular"); // hasSpecular??
         } else {
             code.item("vec3", "color", "Non-textured material");
         }
@@ -254,14 +269,18 @@ public class ShaderProgramADS extends ShaderProgram {
                 .item("float", "emissiveAmount", "The percentage (0 .. 1.0) of emissive color")
                 .item("vec3", "diffuse", "the diffuse color (if no diffuse map")
                 .item("vec3", "specular", "the specular color (if no specular map)")
-                .item("float", "shineness", "for reflectance computation")
+                .item("float", "shininess", "for reflectance computation")
+
+                .cmt("Added opacity for PBR")
+                .item("float", "opacity","material opacity from 0.0 (fully transparent) to 1.0 (fully opaque)")
                 .endStruct().l();
 
         code.cmt("Fragment shader uniforms")
                 .l("uniform vec3 camera_pos")
                 .l("uniform Material material")
                 .l().cmt("Lights")
-                .l("uniform vec3 ambientLight");
+                .l("uniform vec3 ambientLight")
+        ;
 
         if (hasDirectionalLight) {
             code.l("uniform DirectionalLight directionalLight");
@@ -313,7 +332,7 @@ public class ShaderProgramADS extends ShaderProgram {
         if (hasTexture) {
             code.l("vec4 basecolor = texture(material.texture_sampler, vTexCoord)");
         } else {
-            code.l("vec4 basecolor = vec4(material.color, 1)");
+            code.l("vec4 basecolor = vec4(material.baseColor, 1)");
         }
 
         code.l().l("vec4 totalLight = vec4(ambientLight * material.ambient, 1.0)");
@@ -338,9 +357,27 @@ public class ShaderProgramADS extends ShaderProgram {
             code.endFor();
         }
 
-        code.l().l("vec4 finalColor = basecolor * totalLight")
-                .l("finalColor += vec4(material.emissiveAmount * material.emissive, 1)")
-                .l("fragColor = vec4((finalColor).xyz,1)");
+        //PBR calculations
+        code.l("vec3 lightDirection = normalize(directionalLight.direction);")
+                .l("float fakeLight = dot(lightDirection, normal) * .5 + .5;")
+                .l("vec3 surfaceToViewDirection = normalize(vPos);")
+                .l("vec3 halfVector = normalize(lightDirection + surfaceToViewDirection);")
+                .l("float specularLight = clamp(dot(normal, halfVector), 0.0, 1.0);");
+
+        // TODO : peut etre rajouter condition hasSpecularMap
+        code.l().l("vec4 specularMapColor = texture(material.specularMap, vTexCoord)")
+                .l("vec3 effectiveSpecular = material.specular * specularMapColor.rgb");
+
+        code.l().l("vec3 effectiveDiffuse = material.diffuse * basecolor.rgb * vColor.rgb")
+                .l("float effectiveOpacity = material.opacity * basecolor.a * vColor.a");
+
+        code.l("vec3 totalLightRGB = totalLight.rgb;")
+                .l("vec3 emissiveRGB = material.emissiveAmount * material.emissive;")
+                //.l("vec3 effectiveSpecular = material.specular * pow(specularLight, material.shininess);")
+                .l("fragColor = vec4(emissiveRGB + totalLightRGB + effectiveDiffuse * fakeLight + effectiveSpecular * pow(specularLight, material.shininess), effectiveOpacity);");
+                //.l("vec4 finalColor = vec4(finalColorRGB, effectiveOpacity);")
+                //.l("fragColor = vec4(finalColor.xyz, 1);");
+
 
         return code.endMain();
 
@@ -354,6 +391,7 @@ public class ShaderProgramADS extends ShaderProgram {
     public void createMaterialUniform(String uniformName, boolean textured) {
         if (textured) {
             createUniform(uniformName + ".texture_sampler");
+            createUniform(uniformName + ".specularMap");
         } else {
             createUniform(uniformName + ".color");
         }
@@ -361,7 +399,7 @@ public class ShaderProgramADS extends ShaderProgram {
         createUniform(uniformName + ".emissive");
         createUniform(uniformName + ".diffuse");
         createUniform(uniformName + ".specular");
-        createUniform(uniformName + ".shineness");
+        createUniform(uniformName + ".shininess");
     }
 
     /**
@@ -371,8 +409,14 @@ public class ShaderProgramADS extends ShaderProgram {
      * @param material    the material
      */
     public void setUniform(String uniformName, Material material) {
+        // Dynamic texture sampler slot assignement
         if (material.isTextured()) {
-            setUniform(uniformName + ".texture_sampler", 0); // TODO : assign sampler slots more dynamically
+            Integer diffuseSlot = textureSamplerLocations.getOrDefault(uniformName + ".texture_sampler", 0);
+            setUniform(uniformName + ".texture_sampler", diffuseSlot);
+            if (material.getSpecularTexture() != null) {
+                Integer specularSlot = textureSamplerLocations.getOrDefault(uniformName + ".specularMap", 1);
+                setUniform(uniformName + ".specularMap", specularSlot);
+            }
         } else {
             setUniform(uniformName + ".color", material.getBaseColor());
         }
@@ -382,7 +426,18 @@ public class ShaderProgramADS extends ShaderProgram {
         setUniform(uniformName + ".emissive", emissiveColor);
         setUniform(uniformName + ".diffuse", material.getDiffuseColor());
         setUniform(uniformName + ".specular", material.getSpecularColor());
-        setUniform(uniformName + ".shineness", material.getShineness());
+        setUniform(uniformName + ".shininess", material.getShineness());
+    }
+
+    public void initTextureSamplers() {
+        // Dynamic assignement of samplre slots
+        textureSamplerLocations.put("material.texture_sampler", 0); // Diffuse map
+        textureSamplerLocations.put("material.specularMap", 1); // Specular map
+
+        // for each texture create a uniform
+        textureSamplerLocations.forEach((uniformName, location) -> {
+            createUniform(uniformName);
+        });
     }
 
     public void init() {
@@ -434,5 +489,7 @@ public class ShaderProgramADS extends ShaderProgram {
             createUniform("shadowMapSampler");
             createUniform("shadowBias");
         }
+
+        this.initTextureSamplers(); // initialising the texturesampler hashmap
     }
 }

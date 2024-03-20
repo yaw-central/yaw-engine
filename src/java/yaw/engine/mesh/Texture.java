@@ -48,16 +48,31 @@ public class Texture {
             try {
                 lInputStream = Texture.class.getResourceAsStream(mFileName);
                 // Load Texture file
+
                 PNGDecoder mDecoder = new PNGDecoder(lInputStream);
+
+                //
 
                 this.mWidth = mDecoder.getWidth();
                 this.mHeight = mDecoder.getHeight();
+                ByteBuffer lByteBuffer;
+                if (mDecoder.isRGB()){
+                    // Load texture contents into a byte buffer
+                    lByteBuffer = ByteBuffer.allocateDirect(
+                            4 * mDecoder.getWidth() * mDecoder.getHeight());
+                    mDecoder.decode(lByteBuffer, mDecoder.getWidth() * 4, PNGDecoder.Format.RGBA);
+                    lByteBuffer.flip();
+                }
+                else{
 
-                // Load texture contents into a byte buffer
-                ByteBuffer lByteBuffer = ByteBuffer.allocateDirect(
-                        4 * mDecoder.getWidth() * mDecoder.getHeight());
-                mDecoder.decode(lByteBuffer, mDecoder.getWidth() * 4, PNGDecoder.Format.RGBA);
-                lByteBuffer.flip();
+                    // Load texture contents into a byte buffer
+                    lByteBuffer = ByteBuffer.allocateDirect(
+                            4 * mDecoder.getWidth() * mDecoder.getHeight());
+                    mDecoder.decode(lByteBuffer, mDecoder.getWidth() * 4, PNGDecoder.Format.LUMINANCE);
+                    lByteBuffer.flip();
+
+                }
+
 
                 // Create a new OpenGL texture
                 this.mId = glGenTextures();
@@ -75,6 +90,7 @@ public class Texture {
                 // Generate Mip Map: A mipmap is a decreasing resolution set of images generated from a high detailed texture.
                 glGenerateMipmap(GL_TEXTURE_2D);
                 lInputStream.close();
+
             } catch (IOException pE) {
 
                 pE.printStackTrace();
@@ -88,6 +104,32 @@ public class Texture {
                 }
             }
         }
+    }
+    /**
+     * Creates a white texture of 1*1 pixel size and loads it to the graphic card
+     */
+    public static Texture createWhiteTexture(){
+        ByteBuffer whitePixel = ByteBuffer.allocateDirect(4);
+        whitePixel.put((byte) 255).put((byte) 255).put((byte) 255).put((byte) 255); // RGBA
+        whitePixel.flip();
+
+        // generate a texture id and binds it
+        int textureId = glGenTextures();
+
+        glBindTexture(GL_TEXTURE_2D, textureId);
+        System.out.println("texutre white specular"+textureId);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        // sends the white pixel to the texture
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, whitePixel);
+
+        Texture whiteTexture = new Texture(""); // creating the texture
+        whiteTexture.mId = 1;
+        whiteTexture.mWidth = 1;
+        whiteTexture.mHeight = 1;
+
+        return whiteTexture;
     }
 
     public void bind() {

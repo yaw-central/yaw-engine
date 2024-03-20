@@ -5,6 +5,7 @@ import yaw.engine.geom.Geometry;
 import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.mesh.Material;
 import yaw.engine.mesh.Mesh;
+import yaw.engine.mesh.Texture;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,6 +87,15 @@ public class ObjModel {
             String matName = materialMap.get(objName);
             if (matName != null) {
                 mat = materials.get(matName).getMaterial(withShadows);
+                // Textures
+                if (mat.map_Kd != null){
+                    mat.setTexture(mat.map_Kd);
+                }
+                else{
+                    //  texture not provided
+                    mat.setSpecularColor(new Vector3f(1,1,1));
+                }
+
             } else {
                 // use white if material not provided (vertex colors ?)
                 mat = new Material(new Vector3f(1.0f, 1.0f, 1.0f));
