@@ -70,6 +70,7 @@ public class MtlLoader {
             }
             String matName = parts[1];
             MtlMaterial material = new MtlMaterial(matName);
+            //System.out.println("MTL material: " + material);
             objModel.addMaterial(matName, material);
             currentMaterial = material;
         } else if (parts[0].equals("Ns")) {
@@ -90,6 +91,16 @@ public class MtlLoader {
         } else if (parts[0].equals("d")) {
             float opacity = parseMaterialFloat("opacity", parts, linepos);
             currentMaterial.opacity = opacity;
+        }
+        // gestion des textures
+        //TODO : gerer si ces lignes contiennent des options, avec une methode auxiliaire
+        else if (parts[0].equals("map_Kd")) {
+            currentMaterial.map_Kd = parts[1];
+        } else if (parts[0].equals("map_bump")) {
+            currentMaterial.map_Bump = parts[1];
+        } else if (parts[0].equals("map_Ns")) {
+            System.out.println("map_Ns : " + parts[1]);
+            currentMaterial.map_Ns = parts[1];
         } else {
             // unsupported entry : emit warning ?
         }

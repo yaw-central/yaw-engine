@@ -10,19 +10,32 @@ import org.joml.Vector3f;
 public class Material {
     private Vector3f baseColor;
     private Texture texture;
+
     private Vector3f ambient;
     private Vector3f emissive;
     private float emissiveAmount;
     private Vector3f diffuse;
     private Vector3f specular;
-    private float shineness;
+    private float shininess;
+
 
     public final boolean withShadows;
 
     //RGB vector
     private Vector3f mColor;
 
-    public Material(Vector3f baseColor, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness, boolean withShadows) {
+    public Texture map_Kd = null;
+    public Texture map_Bump = null;
+    public Texture map_Ns = null;
+    public float opacity;
+
+    /* Debug
+    public String toString(){
+        return "MATERIAL\nmap_kd = " + map_Kd.getId() +
+                " map_ns = " + map_Ns.getId();
+    } */
+
+    public Material(Vector3f baseColor, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shininess, boolean withShadows) {
         this.baseColor = baseColor;
         texture = null;
         this.ambient = ambient;
@@ -30,7 +43,7 @@ public class Material {
         this.emissiveAmount = emissiveAmount;
         this.diffuse = diffuse;
         this.specular = specular;
-        this.shineness = shineness;
+        this.shininess = shininess;
         this.withShadows = withShadows;
     }
 
@@ -50,8 +63,25 @@ public class Material {
         this.emissiveAmount = emissiveAmount;
         this.diffuse = diffuse;
         this.specular = specular;
-        this.shineness = shineness;
+        this.shininess = shineness;
         this.withShadows = withShadows;
+    }
+
+    public Material(Vector3f baseColor, Vector3f ambient, Vector3f emissive, float emissiveAmount, Vector3f diffuse, Vector3f specular, float shineness, boolean withShadows, Texture map_Kd, Texture map_Bump, Texture map_Ns,float opacity) {
+        this.baseColor = baseColor;
+        texture = null;
+        this.ambient = ambient;
+        this.emissive = emissive;
+        this.emissiveAmount = emissiveAmount;
+        this.diffuse = diffuse;
+        this.specular = specular;
+        this.shininess = shineness;
+        this.withShadows = withShadows;
+
+        this.map_Kd = map_Kd;
+        this.map_Bump = map_Bump;
+        this.map_Ns = map_Ns;
+        this.opacity = opacity;
     }
 
     public Vector3f getBaseColor() {
@@ -86,10 +116,11 @@ public class Material {
         return specular;
     }
 
-    public float getShineness() {
-        return shineness;
-    }
+    public void setSpecularColor(Vector3f specularColor){ this.specular = specularColor;}
 
+    public float getShineness() {
+        return shininess;
+    }
 
     public Texture getTexture() {
         return texture;
@@ -99,4 +130,28 @@ public class Material {
         this.texture = texture;
     }
 
+    //texture pour lumiere speculaire
+    public Texture getSpecularTexture(){ return map_Ns; }
+
+    public void setSpecularTexture(Texture texture) {this.map_Ns = texture;}
+
+    public Texture getNormalTexture(){ return map_Bump; }
+
+    public boolean hasNormalMap() {
+        if (map_Bump == null){
+            System.out.println("material has no normal map");
+        } else {
+            System.out.println("material has normal map: " + map_Bump);
+        }
+        return map_Bump != null;
+    }
+
+    public boolean hasSpecularMap() {
+        System.out.println("BASE COLOR: " + map_Kd);
+        if (map_Ns == null) {
+            System.out.println("material has no specular map");
+        } else {
+            System.out.println("material has specular map: " + map_Ns);
+        }
+        return map_Ns != null;}
 }

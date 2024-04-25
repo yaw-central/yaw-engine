@@ -9,7 +9,6 @@ import yaw.engine.items.ItemObject;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
 import yaw.engine.shader.ShaderProgram;
-import yaw.engine.shader.ShaderProgramADS;
 import yaw.engine.shader.ShaderProgramPBR;
 import yaw.engine.shader.ShaderProperties;
 import yaw.engine.util.LoggerYAW;
@@ -32,7 +31,7 @@ import static org.lwjgl.opengl.GL30.*;
  *   The class is responsible for the rendering of an object, but
  *   several objects can share the same Mesh.
  */
-public class Mesh {
+public class MeshPBR extends Mesh{
     private final List<Integer> vboIdList;
     //reference to the VAO(wrapper)
     private int vaoId;
@@ -53,21 +52,19 @@ public class Mesh {
      * @param geometry    The Geometry of the Mesh
      * @param material    The Material of the Mesh
      */
-    public Mesh(Geometry geometry, Material material) {
-        this.geometry = geometry;
-        this.material = material;
+    public MeshPBR(Geometry geometry, Material material) {
+        super(geometry, material);
         this.attributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
         this.drawADS = false;
         drawingStrategy = new DefaultDrawingStrategy();
     }
 
-    public Mesh(Geometry geometry) {
+    public MeshPBR(Geometry geometry) {
         this(geometry, new Material());
     }
 
     public ShaderProperties getShaderProperties(LightModel lightModel) {
-        System.out.println("material has spec map: "+ material.hasSpecularMap());
         return new ShaderProperties(lightModel.hasDirectionalLight,
                 lightModel.maxPointLights,
                 lightModel.maxSpotLights,
@@ -84,12 +81,8 @@ public class Mesh {
         vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
 
-        //System.out.println("vaoid = " + vaoId);
-
         //Initialization of VBO
-        if (geometry == null) {
-            throw new IllegalStateException("Geometry is not initialized.");
-        }
+
         //VBO of vertex layout 0 in vertShader.vs
         float[] vertices = geometry.getVertices();
         FloatBuffer verticeBuffer = BufferUtils.createFloatBuffer(vertices.length);
@@ -152,16 +145,6 @@ public class Mesh {
 //        if (material.hasSpecularMap()) {
 //            shaderProgram.setUniform("material.specularMap", 1); // Texture unit 1
 //        }
-    }
-
-    public void renderSetup(Camera pCamera, ShaderProgramADS shaderProgram) {
-        initRender();
-        shaderProgram.bind();
-        /* Set the camera to render. */
-        shaderProgram.setUniform("worldMatrix", pCamera.getWorldMat());
-        shaderProgram.setUniform("camera_pos", pCamera.getPosition());
-
-        shaderProgram.setUniform("material", material);
     }
 
     public void renderItem(ItemObject item, ShaderProgram shaderProgram) {
@@ -280,6 +263,9 @@ public class Mesh {
 
     public void initRender() {
 
+        glActiveTexture(GL_TEXTURE0); // TODO: a verifier si ca sert
+        glBindTexture(GL_TEXTURE_2D, 0);
+
         Texture texture = material != null ? material.getTexture() : null;
         if (texture != null) {
             //load the texture if needed
@@ -293,25 +279,18 @@ public class Mesh {
         }
         Texture specularMap = material != null ? material.getSpecularTexture() : null;
         if (specularMap != null) {
-            if (!specularMap.isActivated()) {
-                specularMap.init();
-            }
-            System.out.println("SPECULAR MAP: " + specularMap + "\nbinding");
             // Activate second texture bank for specular map
             glActiveTexture(GL_TEXTURE1);
             // Bind the specular map
             specularMap.bind();
         }
+
         Texture normalMap = material != null ? material.getNormalTexture() : null;
         if (normalMap != null) {
-            if (!normalMap.isActivated()) {
-                normalMap.init();
-            }
-            // Activate third texture bank for normal map
+            System.out.println("===========================NORMAL NOT NULL");
             glActiveTexture(GL_TEXTURE2);
-            // Bind the normal map
             normalMap.bind();
-        }
+        } else System.out.println("NORMAL NULL!!!!");
 
         // Draw the mesh
         glBindVertexArray(vaoId);
@@ -332,6 +311,8 @@ public class Mesh {
         glBindTexture(GL_TEXTURE_2D, 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     public Material getMaterial() {
@@ -348,9 +329,5 @@ public class Mesh {
 
     public Geometry getGeometry() {
         return geometry;
-    }
-
-    public String toString(){
-        return "Mesh with mat: "+material.getSpecularTexture();
     }
 }
