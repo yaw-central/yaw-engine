@@ -61,6 +61,7 @@ public class ObjLoader {
         while (linepos < lines.length - 1) {
             linepos++;
             ObjEntry entry = parseLine(linepos, lines[linepos - 1]);
+            System.out.println("entry type: " + entry.getType());
             switch (entry.getType()) {
                 case MTLLIB:
                     MtlLoader mtlLoader = new MtlLoader(objModel);
@@ -242,6 +243,8 @@ public class ObjLoader {
             geom.addTriangle(glTriangle.indice1, glTriangle.indice2, glTriangle.indice3);
         }
 
+        geom.generateTangents();
+
         if (objName == null) {
             objName = objModel.getFreshGeomName();
         }
@@ -249,7 +252,6 @@ public class ObjLoader {
         if (matName != null) {
             objModel.assignMaterial(objName, matName);
         }
-
         return linepos;
     }
 
@@ -319,7 +321,9 @@ public class ObjLoader {
             float tx, ty;
             try {
                 tx = Float.parseFloat(parts[1]);
-                ty = Float.parseFloat(parts[2]);
+                ty = 1.0f - Float.parseFloat(parts[2]); // on a inversé les coordonnées de textures car en OpenGL, l'origine (0,0) est en haut à droite
+                                                        // dans notre cas, l'origine est en bas à gauche
+                                                        // le mapping est correcte maintenant
             } catch (NumberFormatException e) {
                 throw new ParseError("Cannot parse texture coordinates", linepos, e);
             }
