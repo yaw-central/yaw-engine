@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 import yaw.engine.geom.Geometry;
 import yaw.engine.geom.GeometryBuilder;
 import yaw.engine.mesh.Material;
+import yaw.engine.mesh.MaterialADS;
 import yaw.engine.mesh.Mesh;
 
 import java.util.ArrayList;
@@ -88,13 +89,13 @@ public class ObjModel {
                 mat = materials.get(matName).getMaterial(withShadows);
             } else {
                 // use white if material not provided (vertex colors ?)
-                mat = new Material(new Vector3f(1.0f, 1.0f, 1.0f));
+                mat = new MaterialADS(new Vector3f(1.0f, 1.0f, 1.0f));
             }
             /* DEBUG
             mat = new Material();
             mat.setColor(new Vector3f(0.1f , 0.7f, 0.9f));
             */
-            Mesh mesh = new Mesh(geom, mat);
+            Mesh mesh = new Mesh(geom, mat,false);
             meshes.add(mesh);
         }
         Mesh[] witness = new Mesh[1];

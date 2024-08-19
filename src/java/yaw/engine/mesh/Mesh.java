@@ -8,8 +8,10 @@ import yaw.engine.geom.Geometry;
 import yaw.engine.items.ItemObject;
 import yaw.engine.light.LightModel;
 import yaw.engine.mesh.strategy.DefaultDrawingStrategy;
+import yaw.engine.resources.MtlMaterial;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.shader.ShaderProgramADS;
+import yaw.engine.shader.ShaderProgramPBR;
 import yaw.engine.shader.ShaderProperties;
 import yaw.engine.util.LoggerYAW;
 
@@ -46,23 +48,27 @@ public class Mesh {
     private MeshDrawingStrategy drawingStrategy;
     private boolean drawADS;
 
+    private boolean isPBR;
     /**
      * Construct a Mesh
      *
      * @param geometry    The Geometry of the Mesh
      * @param material    The Material of the Mesh
      */
-    public Mesh(Geometry geometry, Material material) {
+    public Mesh(Geometry geometry, Material material, boolean isPBR) {
         this.geometry = geometry;
         this.material = material;
         this.attributes = new HashMap<>();
         this.vboIdList = new ArrayList<>();
         this.drawADS = false;
         drawingStrategy = new DefaultDrawingStrategy();
+        this.isPBR = isPBR;
     }
-
+    public Mesh(Geometry geometry, Material material) {
+        this(geometry, material, false);
+    }
     public Mesh(Geometry geometry) {
-        this(geometry, new Material());
+        this(geometry, new MaterialADS(), false);
     }
 
     public ShaderProperties getShaderProperties(LightModel lightModel) {
@@ -70,7 +76,8 @@ public class Mesh {
                 lightModel.maxPointLights,
                 lightModel.maxSpotLights,
                 material.isTextured(),
-                material.withShadows && lightModel.hasDirectionalLight);
+                material.withShadows && lightModel.hasDirectionalLight,
+                isPBR);
     }
 
     /**
@@ -131,13 +138,12 @@ public class Mesh {
 
     }
 
-    public void renderSetup(Camera pCamera, ShaderProgramADS shaderProgram) {
+    public void renderSetup(Camera pCamera, ShaderProgram shaderProgram) {
         initRender();
         shaderProgram.bind();
         /* Set the camera to render. */
         shaderProgram.setUniform("worldMatrix", pCamera.getWorldMat());
         shaderProgram.setUniform("camera_pos", pCamera.getPosition());
-
         shaderProgram.setUniform("material", material);
     }
 
@@ -225,6 +231,35 @@ public class Mesh {
         if (texture != null) {
             texture.cleanup();
         }
+        Texture texture2 = material.getSpecularTexture();
+        if (texture2 != null) {
+            texture2.cleanup();
+        }
+
+        Texture texture3 = material.getNormalTexture();
+        if (texture3 != null) {
+            texture3.cleanup();
+        }
+
+        Texture texture4 = material.getMetallicRoughnessTexture();
+        if (texture4 != null) {
+            texture4.cleanup();
+        }
+
+        Texture texture5 = material.getPbrNormalTexture();
+        if (texture5 != null) {
+            texture5.cleanup();
+        }
+
+        Texture texture6 = material.getEmissiveTexture();
+        if (texture6 != null) {
+            texture6.cleanup();
+        }
+
+        Texture texture7 = material.getOcclusionTexture();
+        if (texture7 != null) {
+            texture7.cleanup();
+        }
         // Delete the VAO
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
@@ -295,6 +330,39 @@ public class Mesh {
             normalMap.bind();
         }
 
+        // PBR
+
+        Texture metal = material != null ? material.getMetallicRoughnessTexture() : null;
+        if (metal != null) {
+            if (!metal.isActivated()) {
+                metal.init();
+            }
+            glActiveTexture(GL_TEXTURE3);
+            metal.bind();
+        }
+
+        Texture pbrNormal = material != null ? material.getPbrNormalTexture() : null;
+        if (pbrNormal != null) {
+            if (!pbrNormal.isActivated()) {
+                pbrNormal.init();
+            }
+            glActiveTexture(GL_TEXTURE4);
+            pbrNormal.bind();
+        }
+
+        Texture emissive = material != null ? material.getEmissiveTexture() : null;
+        if (emissive != null) {
+            if (!emissive.isActivated()) {
+                emissive.init();
+            }
+            glActiveTexture(GL_TEXTURE5);
+            emissive.bind();
+        }
+
+        Texture texture7 = material != null ? material.getOcclusionTexture() : null;
+        if (texture7 != null) {
+            texture7.init();
+        }
         // Draw the mesh
         glBindVertexArray(vaoId);
         glEnableVertexAttribArray(0);

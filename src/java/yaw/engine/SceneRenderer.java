@@ -10,6 +10,7 @@ import yaw.engine.shader.ShaderManager;
 import yaw.engine.shader.ShaderProgram;
 import yaw.engine.shader.ShaderProgramADS;
 import yaw.engine.shader.ShaderProperties;
+import yaw.engine.shader.ShaderProgramPBR;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,15 +102,19 @@ public class SceneRenderer {
 
         for (Mesh mesh : mMeshMap.keySet()) {
             ShaderProperties meshProps = mesh.getShaderProperties(lightModel);
-            // TODO : ugly cast, fix when support for e.g. PBR materials
-            ShaderProgramADS meshProgram = (ShaderProgramADS) shaderManager.fetch(meshProps);
-            if (meshProgram == null) {
-                // create a shader program for this scene / mesh
-                meshProgram = new ShaderProgramADS(meshProps);
+            ShaderProgram meshProgram;
+            meshProgram = shaderManager.fetch(meshProps);
+            if(meshProgram == null){
+                if (meshProps.isPBR) {
+                    meshProgram = new ShaderProgramPBR(meshProps);
+                } else {
+                    meshProgram = new ShaderProgramADS(meshProps);
+                }
                 shaderManager.register(meshProps, meshProgram);
                 meshProgram.prepareMaterial(mesh.getMaterial());
                 meshProgram.init();
             }
+
             /* Setup lights */
             lightModel.setupShader(new Matrix4f().identity(), meshProgram);
 
