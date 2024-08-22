@@ -5,6 +5,8 @@ import yaw.engine.SceneRenderer;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.AmbientLight;
+import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.LightModel;
 import yaw.engine.light.SpotLight;
 import yaw.engine.mesh.Material;
@@ -26,6 +28,9 @@ public class CameraTest implements UpdateCallback {
         world = new World(0, 0, 800, 600);
         world.installScene(new SceneRenderer(new LightModel()));
         world.getCamera().setPosition(0,0,5);
+
+        world.getSceneLight().setDirectionalLight(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
+        world.getSceneLight().setAmbientLight(new AmbientLight(0.3f));
 
         //world.getSceneLight().getSpotTable()[0] = new SpotLight(0, 255, 0, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -5, 10f);
         world.getSceneLight().addSpotLight(new SpotLight(0, 255, 0, 0.2f, 0f,0f, 1, 0, 0.75f, 0, 0, 0, -5, 3));

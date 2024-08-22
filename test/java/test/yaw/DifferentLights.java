@@ -1,9 +1,11 @@
 package test.yaw;
 
+import org.joml.Vector3f;
 import yaw.engine.SceneRenderer;
 import yaw.engine.UpdateCallback;
 import yaw.engine.World;
 import yaw.engine.items.ItemObject;
+import yaw.engine.light.AmbientLight;
 import yaw.engine.light.DirectionalLight;
 import yaw.engine.light.LightModel;
 import yaw.engine.light.SpotLight;
@@ -52,10 +54,12 @@ public class DifferentLights implements UpdateCallback {
         world.getCamera().setPosition(0,0,0);
         //world.getCamera().rotateXYZ(0,10,0);
 
+        world.getSceneLight().setDirectionalLight(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
+        world.getSceneLight().setAmbientLight(new AmbientLight(0.3f));
+
         world.getSceneLight().addSpotLight(new SpotLight(0, 255, 0, 0, 0, 0, 1, 0, 0.5f, 0, 0, 0, -5, 10f));
         world.getSceneLight().addSpotLight(new SpotLight(0, 0, 255, 0.2f, 0f,0f, 1, 0, 0.75f, 0, 0, 0, -2, 3));
         world.getSceneLight().addSpotLight(new SpotLight(255, 0, 0, -0.2f, 0.0f, 0, 1f, 0, 0.75f, 0, 0f, 0, -2, 3f));
-        world.getSceneLight().setDirectionalLight(new DirectionalLight());
 
         //Mesh cubem = new Cuboid(1).generate();
         Mesh cubem = MeshExamples.makeDice(1);

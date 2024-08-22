@@ -73,6 +73,7 @@ public class IncludedHitBoxTest implements UpdateCallback {
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
         world.installScene(new SceneRenderer(new LightModel()));
         //THE WORLD IS NOW INIT IN THE THREAD
+        world.getSceneLight().setAmbientLight(new AmbientLight(0.3f));
 
 
 

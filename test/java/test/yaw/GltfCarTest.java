@@ -52,7 +52,7 @@ public class GltfCarTest implements UpdateCallback {
 
         float angle = 3.0f * 3.1415925f * (float) deltaTime * speed;
         //System.out.println(deltaTime);
-        obj.rotateZ(angle);
+        //obj.rotateY(angle);
         //cube.rotateXYZAround(0f, 3.1415925f * speed * (float) deltaTime, 0f, new Vector3f(0f, 0f, -10f));
         //cube.rotateX(0.0f);
 

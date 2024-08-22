@@ -90,6 +90,8 @@ public class TestHitBox implements UpdateCallback {
         World world = new World(0, 0, 700, 700);/* Create the world with its dimensions. */
         world.installScene(new SceneRenderer(new LightModel()));
         //THE WORLD IS NOW INIT IN THE THREAD
+        world.getSceneLight().setDirectionalLight(new DirectionalLight(new Vector3f(1,1,1), 0.7f, new Vector3f(-1,-1,-1)));
+        world.getSceneLight().setAmbientLight(new AmbientLight(0.3f));
         //testing texture here
         /*Float[] f = new Float[]{0.f, 0.f, -2.f};
         Item c1 = world.createItem("1", f, 1, MeshBuilderOld.generateBlock(1, 1, 1));
